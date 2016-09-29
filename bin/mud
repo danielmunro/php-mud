@@ -1,0 +1,28 @@
+#!/usr/bin/env php
+
+<?php
+
+require_once __DIR__.'/../vendor/autoload.php';
+
+$room = new \PhpMud\Entity\Room();
+$room->setTitle('title');
+$room->setDescription('foo');
+
+$secondRoom = new \PhpMud\Entity\Room();
+$secondRoom->setTitle('new title');
+$secondRoom->setDescription('foo 2');
+
+$direction = new \PhpMud\Entity\Direction($room, 'north', $secondRoom);
+$room->getDirections()->add($direction);
+
+$d2 = new \PhpMud\Entity\Direction($secondRoom, 'south', $room);
+$secondRoom->getDirections()->add($d2);
+
+$loop = React\EventLoop\Factory::create();
+$socket = new React\Socket\Server($loop);
+$server = new PhpMud\Server($room);
+$server->listen($socket, 9000);
+$loop->addPeriodicTimer(0, [$server, 'heartbeat']);
+$loop->addPeriodicTimer(1, [$server, 'pulse']);
+$server->tick($loop);
+$loop->run();
