@@ -22,7 +22,6 @@ use PhpMud\Command\Quit;
 use PhpMud\Command\South;
 use PhpMud\Command\Up;
 use PhpMud\Command\West;
-use PhpMud\Command\Wish;
 use PhpMud\Entity\Mob;
 use React\Socket\Connection;
 use function Functional\first;

@@ -14,6 +14,7 @@ namespace PhpMud\Command;
 
 use PhpMud\Entity\Mob;
 use PhpMud\Entity\Direction;
+use PhpMud\Enum\CommandResult;
 use PhpMud\Output;
 
 trait Move
@@ -26,7 +27,7 @@ trait Move
             return strpos($d->getDirection(), $direction->getValue()) === 0;
         })->first();
         if (!$targetDirection) {
-            return new Output('Alas, that direction does not exist');
+            return new Output('Alas, that direction does not exist', CommandResult::FAILURE());
         }
         $mob->setRoom($targetDirection->getTargetRoom());
         $mob->getRoom()->getMobs()->add($mob);
