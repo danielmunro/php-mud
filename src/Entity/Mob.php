@@ -42,7 +42,7 @@ class Mob
         return $this->room;
     }
 
-    public function setRoom(Room $room): void
+    public function setRoom(Room $room)
     {
         $this->room = $room;
     }

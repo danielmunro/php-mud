@@ -59,7 +59,7 @@ class Server
      * @param SocketServer $socket
      * @param int $port
      */
-    public function listen(SocketServer $socket, int $port): void
+    public function listen(SocketServer $socket, int $port)
     {
         $socket->on(ServerEvent::CONNECTION, [$this, 'addConnection']);
         $socket->listen($port);
@@ -68,7 +68,7 @@ class Server
     /**
      * @param Connection $connection
      */
-    public function addConnection(Connection $connection): void
+    public function addConnection(Connection $connection)
     {
         $client = new Client($connection);
         $this->clients->add($client);
@@ -87,7 +87,7 @@ class Server
     /**
      * The main loop
      */
-    public function heartbeat(): void
+    public function heartbeat()
     {
         foreach ($this->clients as $client) {
             /** @var Client $client */

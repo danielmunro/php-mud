@@ -91,7 +91,7 @@ class Client
     /**
      * @param string $buffer
      */
-    public function pushBuffer(string $buffer): void
+    public function pushBuffer(string $buffer)
     {
         $this->buffer[] = $buffer;
     }
@@ -99,7 +99,7 @@ class Client
     /**
      * @param string $output
      */
-    public function write(string $output): void
+    public function write(string $output)
     {
         $this->connection->write($output);
     }
@@ -107,7 +107,7 @@ class Client
     /**
      * The main application loop
      */
-    public function heartbeat(): void
+    public function heartbeat()
     {
         if ($this->canReadBuffer()) {
             $input = trim(array_shift($this->buffer));
@@ -130,7 +130,7 @@ class Client
     /**
      * Close the connection
      */
-    public function disconnect(): void
+    public function disconnect()
     {
         $this->connection->close();
     }
