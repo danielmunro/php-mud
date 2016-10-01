@@ -38,6 +38,9 @@ class Server
     /** @var ArrayCollection $clients */
     protected $clients;
 
+    /** @var LoopInterface $loop */
+    protected $loop;
+
     /** @var Room $startRoom */
     protected $startRoom;
 
@@ -45,24 +48,35 @@ class Server
     protected $em;
 
     /**
+     * @param LoopInterface $loop
      * @param EntityManager $em
      * @param Room $startRoom
      */
-    public function __construct(EntityManager $em, Room $startRoom)
-    {
+    public function __construct(
+        LoopInterface $loop,
+        EntityManager $em,
+        Room $startRoom
+    ) {
         $this->clients = new ArrayCollection();
         $this->em = $em;
         $this->startRoom = $startRoom;
+        $this->loop = $loop;
     }
 
     /**
-     * @param SocketServer $socket
      * @param int $port
      */
-    public function listen(SocketServer $socket, int $port)
+    public function listen(int $port)
     {
+        $socket = new \React\Socket\Server($this->loop);
         $socket->on(ServerEvent::CONNECTION, [$this, 'addConnection']);
         $socket->listen($port);
+
+        $this->loop->addPeriodicTimer(0, [$this, 'heartbeat']);
+        $this->loop->addPeriodicTimer(1, [$this, 'pulse']);
+        $this->tick();
+
+        $this->loop->run();
     }
 
     /**
@@ -96,7 +110,7 @@ class Server
     }
 
     /**
-     * Periodic updates
+     * Updates every second
      */
     public function pulse()
     {
@@ -104,15 +118,18 @@ class Server
     }
 
     /**
-     * @param LoopInterface $loop
+     * Updates in longer intervals
      */
-    public function tick(LoopInterface $loop)
+    public function tick()
     {
         $this->em->persist($this->startRoom);
         $this->em->flush();
 
-        $loop->addTimer(random_int(self::TICK_MIN_SECONDS, self::TICK_MAX_SECONDS), function() use ($loop) {
-            $this->tick($loop);
-        });
+        $this->loop->addTimer(
+            random_int(self::TICK_MIN_SECONDS, self::TICK_MAX_SECONDS),
+            function() {
+                $this->tick();
+            }
+        );
     }
 }

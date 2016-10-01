@@ -1,6 +1,6 @@
 #!/usr/bin/env php
-
 <?php
+declare(strict_types=1);
 
 require_once __DIR__.'/../bootstrap.php';
 
@@ -14,16 +14,8 @@ if (!$room) {
     $room = new \PhpMud\Entity\Room();
     $room->setTitle('title');
     $room->setDescription('foo');
-
-    $em->persist($room);
-    $em->flush();
 }
 
 $loop = React\EventLoop\Factory::create();
-$socket = new React\Socket\Server($loop);
-$server = new PhpMud\Server($em, $room);
-$server->listen($socket, 9000);
-$loop->addPeriodicTimer(0, [$server, 'heartbeat']);
-$loop->addPeriodicTimer(1, [$server, 'pulse']);
-$server->tick($loop);
-$loop->run();
+$server = new PhpMud\Server($loop, $em, $room);
+$server->listen(isset($argv[1]) ? (int) $argv[1] : 9000);
