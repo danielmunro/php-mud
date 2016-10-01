@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManager;
 use PhpMud\Command\Look;
 use PhpMud\Entity\Room;
 use PhpMud\Enum\ServerEvent;
@@ -40,12 +41,17 @@ class Server
     /** @var Room $startRoom */
     protected $startRoom;
 
+    /** @var EntityManager $em */
+    protected $em;
+
     /**
+     * @param EntityManager $em
      * @param Room $startRoom
      */
-    public function __construct(Room $startRoom)
+    public function __construct(EntityManager $em, Room $startRoom)
     {
         $this->clients = new ArrayCollection();
+        $this->em = $em;
         $this->startRoom = $startRoom;
     }
 
@@ -102,6 +108,9 @@ class Server
      */
     public function tick(LoopInterface $loop)
     {
+        $this->em->persist($this->startRoom);
+        $this->em->flush();
+
         $loop->addTimer(random_int(self::TICK_MIN_SECONDS, self::TICK_MAX_SECONDS), function() use ($loop) {
             $this->tick($loop);
         });

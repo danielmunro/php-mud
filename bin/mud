@@ -2,25 +2,26 @@
 
 <?php
 
-require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__.'/../bootstrap.php';
 
-$room = new \PhpMud\Entity\Room();
-$room->setTitle('title');
-$room->setDescription('foo');
+/** @var \Doctrine\ORM\EntityManager $em */
+$em = $container->get(\PhpMud\Enum\ContainerService::EM);
+$roomRepository = $em->getRepository(\PhpMud\Entity\Room::class);
+$room = $roomRepository->find(1);
 
-$secondRoom = new \PhpMud\Entity\Room();
-$secondRoom->setTitle('new title');
-$secondRoom->setDescription('foo 2');
+if (!$room) {
+    echo "creating new room\n";
+    $room = new \PhpMud\Entity\Room();
+    $room->setTitle('title');
+    $room->setDescription('foo');
 
-$direction = new \PhpMud\Entity\Direction($room, 'north', $secondRoom);
-$room->getDirections()->add($direction);
-
-$d2 = new \PhpMud\Entity\Direction($secondRoom, 'south', $room);
-$secondRoom->getDirections()->add($d2);
+    $em->persist($room);
+    $em->flush();
+}
 
 $loop = React\EventLoop\Factory::create();
 $socket = new React\Socket\Server($loop);
-$server = new PhpMud\Server($room);
+$server = new PhpMud\Server($em, $room);
 $server->listen($socket, 9000);
 $loop->addPeriodicTimer(0, [$server, 'heartbeat']);
 $loop->addPeriodicTimer(1, [$server, 'pulse']);

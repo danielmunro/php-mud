@@ -24,15 +24,15 @@ class Direction
     /** @ManyToOne(targetEntity="Room", inversedBy="directions") */
     protected $sourceRoom;
 
-    /** @ManyToOne(targetEntity="Room") */
+    /** @ManyToOne(targetEntity="Room", cascade={"persist"}) */
     protected $targetRoom;
 
     /** @Column(type="string") */
     protected $direction;
 
-    public function __construct(Room $sourceRoom, string $direction, Room $targetRoom)
+    public function __construct(Room $sourceRoom, \PhpMud\Enum\Direction $direction, Room $targetRoom)
     {
-        $this->direction = $direction;
+        $this->direction = $direction->getValue();
         $this->sourceRoom = $sourceRoom;
         $this->targetRoom = $targetRoom;
     }

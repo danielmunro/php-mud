@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace PhpMud;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use PhpMud\Entity\Mob;
 
 class Input
@@ -22,14 +23,14 @@ class Input
     protected $mob;
 
     /**
-     * @var array $args
+     * @var ArrayCollection $args
      */
     protected $args;
 
     public function __construct(Mob $mob, array $args = [])
     {
         $this->mob = $mob;
-        $this->args = $args;
+        $this->args = new ArrayCollection($args);
     }
 
     public function getMob(): Mob
@@ -37,7 +38,7 @@ class Input
         return $this->mob;
     }
 
-    public function getArgs(): array
+    public function getArgs(): ArrayCollection
     {
         return $this->args;
     }

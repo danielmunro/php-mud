@@ -10,15 +10,19 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace PhpMud\Entity;
+namespace PhpMud\Command;
 
-trait PrimaryKeyTrait
+use PhpMud\Command;
+use PhpMud\Enum\Direction;
+use PhpMud\Input;
+use PhpMud\Output;
+
+class East implements Command
 {
-    /** @Id @Column(type="integer") @GeneratedValue **/
-    protected $id;
+    use Move;
 
-    public function getId()
+    public function execute(Input $input): Output
     {
-        return $this->id;
+        return $this->move($input->getMob(), Direction::EAST());
     }
 }

@@ -12,17 +12,31 @@ declare(strict_types=1);
 
 namespace PhpMud\Command;
 
+use PhpMud\Client;
 use PhpMud\Command;
-use PhpMud\Enum\Direction;
 use PhpMud\Input;
 use PhpMud\Output;
 
-class South implements Command
+class Quit implements Command
 {
-    use Move;
+    /** @var Client $client */
+    protected $client;
 
+    /**
+     * @param Client $client
+     */
+    public function __construct(Client $client)
+    {
+        $this->client = $client;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function execute(Input $input): Output
     {
-        return $this->move($input->getMob(), Direction::SOUTH());
+        $this->client->disconnect();
+
+        return new Output('');
     }
 }

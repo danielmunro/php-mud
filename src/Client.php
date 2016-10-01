@@ -12,10 +12,17 @@ declare(strict_types=1);
 
 namespace PhpMud;
 
+use PhpMud\Command\Down;
+use PhpMud\Command\East;
 use PhpMud\Command\Huh;
 use PhpMud\Command\Look;
+use PhpMud\Command\NewRoom;
 use PhpMud\Command\North;
+use PhpMud\Command\Quit;
 use PhpMud\Command\South;
+use PhpMud\Command\Up;
+use PhpMud\Command\West;
+use PhpMud\Command\Wish;
 use PhpMud\Entity\Mob;
 use React\Socket\Connection;
 use function Functional\first;
@@ -56,7 +63,13 @@ class Client
     protected static $commands = [
         'look' => Look::class,
         'north' => North::class,
-        'south' => South::class
+        'south' => South::class,
+        'east' => East::class,
+        'west' => West::class,
+        'up' => Up::class,
+        'down' => Down::class,
+        'new room' => NewRoom::class,
+        'quit' => Quit::class
     ];
 
     /**
@@ -97,13 +110,12 @@ class Client
     public function heartbeat(): void
     {
         if ($this->canReadBuffer()) {
-            $args = explode(' ', trim(array_shift($this->buffer)));
-            $commandName = $args[0];
-            $className = static::parseCommand($commandName);
+            $input = trim(array_shift($this->buffer));
+            $className = static::parseCommand($input);
             /** @var Command $command */
             $command = new $className($this);
-            $output = $command->execute(new Input($this->user, $args));
-            $this->write($output->getOutput());
+            $output = $command->execute(new Input($this->user, explode(' ', $input)));
+            $this->write($output->getOutput()."\n--> ");
         }
     }
 
@@ -116,6 +128,14 @@ class Client
     }
 
     /**
+     * Close the connection
+     */
+    public function disconnect(): void
+    {
+        $this->connection->close();
+    }
+
+    /**
      * @param string $input
      *
      * @return string
@@ -123,7 +143,7 @@ class Client
     private static function parseCommand(string $input): string
     {
         $command = first(static::$commands, function($class, $command) use ($input) {
-            return strpos($command, $input) === 0;
+            return strpos($command, $input) === 0 || strpos($input, $command) === 0;
         });
 
         if ($command) {

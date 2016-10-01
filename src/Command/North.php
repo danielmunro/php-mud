@@ -13,22 +13,16 @@ declare(strict_types=1);
 namespace PhpMud\Command;
 
 use PhpMud\Command;
-use PhpMud\Entity\Direction;
+use PhpMud\Enum\Direction;
 use PhpMud\Input;
 use PhpMud\Output;
 
 class North implements Command
 {
+    use Move;
+
     public function execute(Input $input): Output
     {
-        $mob = $input->getMob();
-        $room = $mob->getRoom();
-        $room->getMobs()->removeElement($mob);
-        $mob->setRoom($room->getDirections()->filter(function(Direction $d) {
-            return strpos($d->getDirection(), 'n') === 0;
-        })->first()->getTargetRoom());
-        $mob->getRoom()->getMobs()->add($mob);
-
-        return new Output((string) $mob->getRoom());
+        return $this->move($input->getMob(), Direction::NORTH());
     }
 }

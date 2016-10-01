@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * Class Room
@@ -29,10 +30,10 @@ class Room
     /** @Column(type="text") */
     protected $description;
 
-    /** @OneToMany(targetEntity="Mob", mappedBy="room") */
+    /** @OneToMany(targetEntity="Mob", mappedBy="room", cascade={"persist"}) */
     protected $mobs;
 
-    /** @OneToMany(targetEntity="Direction", mappedBy="sourceRoom") */
+    /** @OneToMany(targetEntity="Direction", mappedBy="sourceRoom", cascade={"persist"}) */
     protected $directions;
 
     public function __construct()
@@ -43,22 +44,22 @@ class Room
         $this->description = '';
     }
 
-    public function setTitle(string $title): void
+    public function setTitle(string $title)
     {
         $this->title = $title;
     }
 
-    public function setDescription(string $description): void
+    public function setDescription(string $description)
     {
         $this->description = $description;
     }
 
-    public function getMobs(): ArrayCollection
+    public function getMobs(): Collection
     {
         return $this->mobs;
     }
 
-    public function getDirections(): ArrayCollection
+    public function getDirections(): Collection
     {
         return $this->directions;
     }
