@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace PhpMud;
 
+use League\Container\Container;
 use PhpMud\Command\Down;
 use PhpMud\Command\East;
 use PhpMud\Command\Huh;
@@ -74,14 +75,19 @@ class Client
         'room' => Room::class
     ];
 
+    /** @var Container $commandContainer */
+    protected $commandContainer;
+
     /**
      * Client constructor.
      *
      * @param Connection $connection
+     * @param Container $commandContainer
      */
-    public function __construct(Connection $connection)
+    public function __construct(Connection $connection, Container $commandContainer)
     {
         $this->connection = $connection;
+        $this->commandContainer = $commandContainer;
         $this->mob = new Mob('mymob');
     }
 
@@ -107,13 +113,28 @@ class Client
     public function heartbeat()
     {
         if ($this->canReadBuffer()) {
+
             $input = trim(array_shift($this->buffer));
-            $className = static::parseCommand($input);
-            /** @var Command $command */
-            $command = new $className($this);
-            $output = $command->execute(new Input($this->mob, explode(' ', $input)));
-            $this->write($output->getOutput()."\n--> ");
+
+            $this->write(
+                $this
+                    ->parseCommand($input)
+                    ->execute(new Input($this->mob, explode(' ', $input)))
+                    ->getOutput()."\n--> "
+            );
         }
+    }
+
+    public function pulse()
+    {
+        if ($this->delay > 0) {
+            $this->delay--;
+        }
+    }
+
+    public function tick()
+    {
+        $this->connection->write("\n-->");
     }
 
     /**
@@ -132,22 +153,31 @@ class Client
         $this->connection->close();
     }
 
+    public function ready()
+    {
+        $this->write(
+            (new Look())->execute(
+                new Input($this->mob)
+            )->getOutput()
+        );
+    }
+
     /**
      * @param string $input
      *
-     * @return string
+     * @return Command
      */
-    private static function parseCommand(string $input): string
+    protected function parseCommand(string $input): Command
     {
         $command = first(static::$commands, function ($class, $command) use ($input) {
             return strpos($command, $input) === 0 || strpos($input, $command) === 0;
         });
 
         if ($command) {
-            return $command;
+            return $this->commandContainer->get($command);
         }
 
-        return Huh::class;
+        return new Huh($this);
     }
 
     /**

@@ -17,12 +17,24 @@ use PhpMud\Entity\Direction;
 use PhpMud\Entity\Room;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
+use PhpMud\Service\Direction as DirectionService;
 
 /**
  * Create a new room
  */
 class NewRoom implements Command
 {
+    /** @var DirectionService $directionService */
+    protected $directionService;
+
+    /**
+     * @param DirectionService $directionService
+     */
+    public function __construct(DirectionService $directionService)
+    {
+        $this->directionService = $directionService;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -34,11 +46,13 @@ class NewRoom implements Command
         $newRoom = new Room();
         $newRoom->setTitle('A swirling mist');
         $newRoom->setDescription('You are engulfed by a mist.');
+
         try {
-            $dirEnum = new \PhpMud\Enum\Direction($dir);
+            $dirEnum = $this->directionService->matchPartialString($dir);
         } catch (\UnexpectedValueException $e) {
             return new Output('That direction does not exist');
         }
+
         $srcDirection = new Direction($srcRoom, $dirEnum, $newRoom);
         $srcRoom->getDirections()->add($srcDirection);
 

@@ -5,17 +5,17 @@ declare(strict_types=1);
 require_once __DIR__.'/../bootstrap.php';
 
 /** @var \Doctrine\ORM\EntityManager $em */
-$em = $container->get(\PhpMud\Enum\ContainerService::EM);
+$em = $container->get(\Doctrine\ORM\EntityManager::class);
 $roomRepository = $em->getRepository(\PhpMud\Entity\Room::class);
 $room = $roomRepository->find(1);
 
 if (!$room) {
     echo "creating new room\n";
     $room = new \PhpMud\Entity\Room();
-    $room->setTitle('title');
-    $room->setDescription('foo');
+    $room->setTitle('Midgaard Town Center');
+    $room->setDescription('Before you is the town center.');
 }
 
 $loop = React\EventLoop\Factory::create();
-$server = new PhpMud\Server($loop, $em, $room);
+$server = new PhpMud\Server($loop, $em, $container->get('commands'), $room);
 $server->listen(isset($argv[1]) ? (int) $argv[1] : 9000);

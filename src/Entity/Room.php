@@ -90,7 +90,7 @@ class Room
             'Exits ['.array_reduce(
                 $this->directions->toArray(),
                 function ($dirs, Direction $direction) {
-                    return $dirs . $direction->getDirection()[0];
+                    return $dirs . substr($direction->getDirection(), 0, 1);
                 }
             ).'] ';
     }

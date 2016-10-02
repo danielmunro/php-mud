@@ -32,11 +32,14 @@ class Room implements Command
         $property = $args[1];
         $setter = 'set'.ucfirst($property);
 
-        if (method_exists($room, $setter)) {
-            $value = implode(' ', array_slice($args->toArray(), 2));
-            $room->$setter($value);
-
-            return new Output("You change the room's ".$property." to ".$value);
+        if ($property === 'debug') {
+            return $this->debugInfo($room);
+        } else if (method_exists($room, $setter)) {
+            return $this->setRoomProperty(
+                $room,
+                $setter,
+                implode(' ', array_slice($args->toArray(), 2))
+            );
         }
 
         try {
@@ -50,5 +53,17 @@ class Room implements Command
 
         return new Output('Not implemented yet');
         //return new Output("That doesn't make any sense");
+    }
+
+    protected function debugInfo(\PhpMud\Entity\Room $room): Output
+    {
+        return new Output('Room ID: '.$room->getId());
+    }
+
+    protected function setRoomProperty(\PhpMud\Entity\Room $room, string $setter, string $value): Output
+    {
+        $room->$setter($value);
+
+        return new Output('Room updated');
     }
 }

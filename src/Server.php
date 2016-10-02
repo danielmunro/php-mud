@@ -14,10 +14,9 @@ namespace PhpMud;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
-use PhpMud\Command\Look;
+use League\Container\Container;
 use PhpMud\Entity\Room;
 use PhpMud\Enum\ServerEvent;
-use PhpMud\IO\Input;
 use React\EventLoop\LoopInterface;
 use React\Socket\Connection;
 
@@ -47,19 +46,25 @@ class Server
     /** @var EntityManager $em */
     protected $em;
 
+    /** @var Container $commandContainer */
+    protected $commandContainer;
+
     /**
      * @param LoopInterface $loop
      * @param EntityManager $em
+     * @param Container $commandContainer
      * @param Room $startRoom
      */
     public function __construct(
         LoopInterface $loop,
         EntityManager $em,
+        Container $commandContainer,
         Room $startRoom
     ) {
         $this->clients = new ArrayCollection();
         $this->loop = $loop;
         $this->em = $em;
+        $this->commandContainer = $commandContainer;
         $this->startRoom = $startRoom;
     }
 
@@ -84,11 +89,10 @@ class Server
      */
     public function addConnection(Connection $connection)
     {
-        $client = new Client($connection);
+        $client = new Client($connection, $this->commandContainer);
         $this->clients->add($client);
         $client->getMob()->setRoom($this->startRoom);
         $this->startRoom->getMobs()->add($client->getMob());
-        $client->write((new Look())->execute(new Input($client->getMob()))->getOutput());
 
         $connection->on(ServerEvent::CLOSE, function () use ($client) {
             $this->clients->removeElement($client);
@@ -96,6 +100,8 @@ class Server
         $connection->on(ServerEvent::DATA, function (string $input) use ($client) {
             $client->pushBuffer($input);
         });
+
+        $client->ready();
     }
 
     /**
@@ -114,7 +120,10 @@ class Server
      */
     public function pulse()
     {
-
+        foreach ($this->clients as $client) {
+            /** @var Client $client */
+            $client->pulse();
+        }
     }
 
     /**
@@ -124,6 +133,11 @@ class Server
     {
         $this->em->persist($this->startRoom);
         $this->em->flush();
+
+        foreach ($this->clients as $client) {
+            /** @var Client $client */
+            $client->tick();
+        }
 
         $this->loop->addTimer(
             random_int(self::TICK_MIN_SECONDS, self::TICK_MAX_SECONDS),

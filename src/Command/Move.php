@@ -16,9 +16,21 @@ use PhpMud\Entity\Mob;
 use PhpMud\Entity\Direction;
 use PhpMud\Enum\CommandResult;
 use PhpMud\IO\Output;
+use PhpMud\Service\Direction as DirectionService;
 
 trait Move
 {
+    /** @var DirectionService $directionService */
+    protected $directionService;
+
+    /**
+     * @param DirectionService $directionService
+     */
+    public function __construct(DirectionService $directionService)
+    {
+        $this->directionService = $directionService;
+    }
+
     protected function move(Mob $mob, \PhpMud\Enum\Direction $direction): Output
     {
         $sourceRoom = $mob->getRoom();
