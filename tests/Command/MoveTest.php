@@ -14,8 +14,11 @@ class MoveTest extends \PHPUnit_Framework_TestCase
      * @param \PhpMud\Command $commandLeave
      * @param \PhpMud\Command $commandReturn
      */
-    public function testMove(\PhpMud\Enum\Direction $direction, \PhpMud\Command $commandLeave, \PhpMud\Command $commandReturn)
-    {
+    public function testMove(
+        \PhpMud\Enum\Direction $direction,
+        \PhpMud\Command $commandLeave,
+        \PhpMud\Command $commandReturn
+    ) {
         $room1 = new \PhpMud\Entity\Room();
         $room2 = new \PhpMud\Entity\Room();
         $direction1 = new \PhpMud\Entity\Direction($room1, $direction, $room2);

@@ -31,6 +31,12 @@ trait Move
         $this->directionService = $directionService;
     }
 
+    /**
+     * @param Mob $mob
+     * @param \PhpMud\Enum\Direction $direction
+     *
+     * @return Output
+     */
     protected function move(Mob $mob, \PhpMud\Enum\Direction $direction): Output
     {
         $sourceRoom = $mob->getRoom();

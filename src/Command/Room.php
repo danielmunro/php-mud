@@ -34,7 +34,7 @@ class Room implements Command
 
         if ($property === 'debug') {
             return $this->debugInfo($room);
-        } else if (method_exists($room, $setter)) {
+        } elseif (method_exists($room, $setter)) {
             return $this->setRoomProperty(
                 $room,
                 $setter,
