@@ -15,20 +15,30 @@ namespace PhpMud\Command;
 use PhpMud\Command;
 use PhpMud\Entity\Direction;
 use PhpMud\Entity\Room;
-use PhpMud\Input;
-use PhpMud\Output;
+use PhpMud\IO\Input;
+use PhpMud\IO\Output;
 
+/**
+ * Create a new room
+ */
 class NewRoom implements Command
 {
+    /**
+     * {@inheritdoc}
+     */
     public function execute(Input $input): Output
     {
         $dir = $input->getArgs()->last();
         $mob = $input->getMob();
         $srcRoom = $mob->getRoom();
         $newRoom = new Room();
-        $newRoom->setTitle('foo');
-        $newRoom->setDescription('foo 2');
-        $dirEnum = new \PhpMud\Enum\Direction($dir);
+        $newRoom->setTitle('A swirling mist');
+        $newRoom->setDescription('You are engulfed by a mist.');
+        try {
+            $dirEnum = new \PhpMud\Enum\Direction($dir);
+        } catch (\UnexpectedValueException $e) {
+            return new Output('That direction does not exist');
+        }
         $srcDirection = new Direction($srcRoom, $dirEnum, $newRoom);
         $srcRoom->getDirections()->add($srcDirection);
 

@@ -14,8 +14,8 @@ namespace PhpMud\Command;
 
 use PhpMud\Command;
 use PhpMud\Enum\CommandResult;
-use PhpMud\Input;
-use PhpMud\Output;
+use PhpMud\IO\Input;
+use PhpMud\IO\Output;
 
 class Huh implements Command
 {

@@ -36,6 +36,9 @@ class Room
     /** @OneToMany(targetEntity="Direction", mappedBy="sourceRoom", cascade={"persist"}) */
     protected $directions;
 
+    /**
+     * Room constructor.
+     */
     public function __construct()
     {
         $this->mobs = new ArrayCollection();
@@ -44,30 +47,51 @@ class Room
         $this->description = '';
     }
 
+    /**
+     * @param string $title
+     */
     public function setTitle(string $title)
     {
         $this->title = $title;
     }
 
+    /**
+     * @param string $description
+     */
     public function setDescription(string $description)
     {
         $this->description = $description;
     }
 
+    /**
+     * @return Collection
+     */
     public function getMobs(): Collection
     {
         return $this->mobs;
     }
 
+    /**
+     * @return Collection
+     */
     public function getDirections(): Collection
     {
         return $this->directions;
     }
 
+    /**
+     * @return string
+     */
     public function __toString(): string
     {
-        return $this->title."\n".$this->description."\n".'Exits ['.array_reduce($this->directions->toArray(), function($dirs, Direction $d) {
-            return $dirs . substr($d->getDirection(), 0, 1);
-        }).'] ';
+        return
+            $this->title."\n".
+            $this->description."\n".
+            'Exits ['.array_reduce(
+                $this->directions->toArray(),
+                function($dirs, Direction $direction) {
+                    return $dirs . $direction->getDirection()[0];
+                }
+            ).'] ';
     }
 }

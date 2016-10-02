@@ -14,8 +14,8 @@ namespace PhpMud\Command;
 
 use PhpMud\Client;
 use PhpMud\Command;
-use PhpMud\Input;
-use PhpMud\Output;
+use PhpMud\IO\Input;
+use PhpMud\IO\Output;
 
 class Quit implements Command
 {

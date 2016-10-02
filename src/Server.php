@@ -17,9 +17,9 @@ use Doctrine\ORM\EntityManager;
 use PhpMud\Command\Look;
 use PhpMud\Entity\Room;
 use PhpMud\Enum\ServerEvent;
+use PhpMud\IO\Input;
 use React\EventLoop\LoopInterface;
 use React\Socket\Connection;
-use React\Socket\Server as SocketServer;
 
 /**
  * Mud server
@@ -58,9 +58,9 @@ class Server
         Room $startRoom
     ) {
         $this->clients = new ArrayCollection();
+        $this->loop = $loop;
         $this->em = $em;
         $this->startRoom = $startRoom;
-        $this->loop = $loop;
     }
 
     /**
@@ -86,9 +86,9 @@ class Server
     {
         $client = new Client($connection);
         $this->clients->add($client);
-        $client->getUser()->setRoom($this->startRoom);
-        $this->startRoom->getMobs()->add($client->getUser());
-        $client->write((new Look())->execute(new Input($client->getUser()))->getOutput());
+        $client->getMob()->setRoom($this->startRoom);
+        $this->startRoom->getMobs()->add($client->getMob());
+        $client->write((new Look())->execute(new Input($client->getMob()))->getOutput());
 
         $connection->on(ServerEvent::CLOSE, function() use ($client) {
             $this->clients->removeElement($client);

@@ -12,6 +12,9 @@ declare(strict_types=1);
 
 namespace PhpMud;
 
+use PhpMud\IO\Output;
+use PhpMud\IO\Input;
+
 /**
  * A command
  */

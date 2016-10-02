@@ -10,7 +10,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace PhpMud;
+namespace PhpMud\IO;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use PhpMud\Entity\Mob;

@@ -15,7 +15,7 @@ namespace PhpMud\Command;
 use PhpMud\Entity\Mob;
 use PhpMud\Entity\Direction;
 use PhpMud\Enum\CommandResult;
-use PhpMud\Output;
+use PhpMud\IO\Output;
 
 trait Move
 {

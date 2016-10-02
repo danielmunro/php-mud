@@ -22,14 +22,14 @@ class MoveTest extends PHPUnit_Framework_TestCase
         $mob = new \PhpMud\Entity\Mob('test mob');
         $room1->getMobs()->add($mob);
         $mob->setRoom($room1);
-        $input = new \PhpMud\Input($mob);
+        $input = new \PhpMud\IO\Input($mob);
 
         $output = $commandLeave->execute($input);
 
         static::assertEquals(\PhpMud\Enum\CommandResult::SUCCESS(), $output->getCommandResult());
         static::assertEquals($room2, $mob->getRoom());
 
-        $commandReturn->execute($input);
+        $output = $commandReturn->execute($input);
 
         static::assertEquals(\PhpMud\Enum\CommandResult::SUCCESS(), $output->getCommandResult());
         static::assertEquals($room1, $mob->getRoom());

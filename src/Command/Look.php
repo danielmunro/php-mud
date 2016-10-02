@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace PhpMud\Command;
 
 use PhpMud\Command;
-use PhpMud\Input;
-use PhpMud\Output;
+use PhpMud\IO\Input;
+use PhpMud\IO\Output;
 
 class Look implements Command
 {

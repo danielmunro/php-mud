@@ -19,10 +19,12 @@ use PhpMud\Command\Look;
 use PhpMud\Command\NewRoom;
 use PhpMud\Command\North;
 use PhpMud\Command\Quit;
+use PhpMud\Command\Room;
 use PhpMud\Command\South;
 use PhpMud\Command\Up;
 use PhpMud\Command\West;
 use PhpMud\Entity\Mob;
+use PhpMud\IO\Input;
 use React\Socket\Connection;
 use function Functional\first;
 
@@ -49,7 +51,7 @@ class Client
     /**
      * @var Mob
      */
-    protected $user;
+    protected $mob;
 
     /**
      * @var Login
@@ -68,7 +70,8 @@ class Client
         'up' => Up::class,
         'down' => Down::class,
         'new room' => NewRoom::class,
-        'quit' => Quit::class
+        'quit' => Quit::class,
+        'room' => Room::class
     ];
 
     /**
@@ -79,12 +82,7 @@ class Client
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
-        //$this->login = new Login();
-        //if (!$this->user) {
-            //$this->login
-
-        //}
-        $this->user = new Mob('mymob');
+        $this->mob = new Mob('mymob');
     }
 
     /**
@@ -113,7 +111,7 @@ class Client
             $className = static::parseCommand($input);
             /** @var Command $command */
             $command = new $className($this);
-            $output = $command->execute(new Input($this->user, explode(' ', $input)));
+            $output = $command->execute(new Input($this->mob, explode(' ', $input)));
             $this->write($output->getOutput()."\n--> ");
         }
     }
@@ -121,9 +119,9 @@ class Client
     /**
      * @return Mob
      */
-    public function getUser(): Mob
+    public function getMob(): Mob
     {
-        return $this->user;
+        return $this->mob;
     }
 
     /**
