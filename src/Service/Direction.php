@@ -20,7 +20,7 @@ class Direction
 {
     /**
      * @param string $input
-     * 
+     *
      * @return DirectionEnum
      */
     public function matchPartialString(string $input): DirectionEnum

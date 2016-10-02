@@ -113,7 +113,6 @@ class Client
     public function heartbeat()
     {
         if ($this->canReadBuffer()) {
-
             $input = trim(array_shift($this->buffer));
 
             $this->write(
