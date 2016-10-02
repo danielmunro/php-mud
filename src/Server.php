@@ -43,27 +43,27 @@ class Server
     /** @var Room $startRoom */
     protected $startRoom;
 
-    /** @var EntityManager $em */
-    protected $em;
+    /** @var EntityManager $entityManager */
+    protected $entityManager;
 
     /** @var Container $commandContainer */
     protected $commandContainer;
 
     /**
      * @param LoopInterface $loop
-     * @param EntityManager $em
+     * @param EntityManager $entityManager
      * @param Container $commandContainer
      * @param Room $startRoom
      */
     public function __construct(
         LoopInterface $loop,
-        EntityManager $em,
+        EntityManager $entityManager,
         Container $commandContainer,
         Room $startRoom
     ) {
         $this->clients = new ArrayCollection();
         $this->loop = $loop;
-        $this->em = $em;
+        $this->entityManager = $entityManager;
         $this->commandContainer = $commandContainer;
         $this->startRoom = $startRoom;
     }
@@ -131,8 +131,8 @@ class Server
      */
     public function tick()
     {
-        $this->em->persist($this->startRoom);
-        $this->em->flush();
+        $this->entityManager->persist($this->startRoom);
+        $this->entityManager->flush();
 
         foreach ($this->clients as $client) {
             /** @var Client $client */
