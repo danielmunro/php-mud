@@ -139,7 +139,7 @@ class Client
      */
     private static function parseCommand(string $input): string
     {
-        $command = first(static::$commands, function($class, $command) use ($input) {
+        $command = first(static::$commands, function ($class, $command) use ($input) {
             return strpos($command, $input) === 0 || strpos($input, $command) === 0;
         });
 

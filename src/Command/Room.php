@@ -40,7 +40,7 @@ class Room implements Command
         }
 
         try {
-            $direction = new Direction($property);
+            //$direction = new Direction($property);
 
 
 
@@ -48,6 +48,7 @@ class Room implements Command
         } catch (\UnexpectedValueException $e) {
         }
 
-        return new Output("That doesn't make any sense");
+        return new Output('Not implemented yet');
+        //return new Output("That doesn't make any sense");
     }
 }

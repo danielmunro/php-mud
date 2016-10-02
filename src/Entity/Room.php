@@ -89,7 +89,7 @@ class Room
             $this->description."\n".
             'Exits ['.array_reduce(
                 $this->directions->toArray(),
-                function($dirs, Direction $direction) {
+                function ($dirs, Direction $direction) {
                     return $dirs . $direction->getDirection()[0];
                 }
             ).'] ';

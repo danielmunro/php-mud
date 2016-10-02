@@ -23,7 +23,7 @@ trait Move
     {
         $sourceRoom = $mob->getRoom();
         $sourceRoom->getMobs()->removeElement($mob);
-        $targetDirection = $sourceRoom->getDirections()->filter(function(Direction $d) use ($direction) {
+        $targetDirection = $sourceRoom->getDirections()->filter(function (Direction $d) use ($direction) {
             return strpos($d->getDirection(), $direction->getValue()) === 0;
         })->first();
         if (!$targetDirection) {

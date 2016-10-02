@@ -90,10 +90,10 @@ class Server
         $this->startRoom->getMobs()->add($client->getMob());
         $client->write((new Look())->execute(new Input($client->getMob()))->getOutput());
 
-        $connection->on(ServerEvent::CLOSE, function() use ($client) {
+        $connection->on(ServerEvent::CLOSE, function () use ($client) {
             $this->clients->removeElement($client);
         });
-        $connection->on(ServerEvent::DATA, function(string $input) use ($client) {
+        $connection->on(ServerEvent::DATA, function (string $input) use ($client) {
             $client->pushBuffer($input);
         });
     }
@@ -127,7 +127,7 @@ class Server
 
         $this->loop->addTimer(
             random_int(self::TICK_MIN_SECONDS, self::TICK_MAX_SECONDS),
-            function() {
+            function () {
                 $this->tick();
             }
         );

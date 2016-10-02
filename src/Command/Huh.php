@@ -19,6 +19,10 @@ use PhpMud\IO\Output;
 
 class Huh implements Command
 {
+    /**
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+     * {@inheritdoc}
+     */
     public function execute(Input $input): Output
     {
         return new Output("What was that?", CommandResult::FAILURE());
