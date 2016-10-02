@@ -11,7 +11,7 @@ engines:
     enabled: true
     config:
       file_extensions: "php"
-      rulesets: "phpmd.xml"
+      rulesets: "unusedcode,codesize,cleancode,naming,design,controversial,phpmd.xml"
   phpcodesniffer:
     enabled: true
     config:
