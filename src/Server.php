@@ -91,8 +91,6 @@ class Server
     {
         $client = new Client($connection, $this->commandContainer);
         $this->clients->add($client);
-        $client->getMob()->setRoom($this->startRoom);
-        $this->startRoom->getMobs()->add($client->getMob());
 
         $connection->on(ServerEvent::CLOSE, function () use ($client) {
             $this->clients->removeElement($client);
@@ -101,7 +99,7 @@ class Server
             $client->pushBuffer($input);
         });
 
-        $client->ready();
+        $client->ready($this->startRoom);
     }
 
     /**

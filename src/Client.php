@@ -88,7 +88,6 @@ class Client
     {
         $this->connection = $connection;
         $this->commandContainer = $commandContainer;
-        $this->mob = new Mob('mymob');
     }
 
     /**
@@ -152,8 +151,15 @@ class Client
         $this->connection->close();
     }
 
-    public function ready()
+    /**
+     * @param Entity\Room $startRoom
+     */
+    public function ready(\PhpMud\Entity\Room $startRoom)
     {
+        $this->mob = new Mob('mymob');
+        $this->mob->setRoom($startRoom);
+        $startRoom->getMobs()->add($this->mob);
+
         $this->write(
             (new Look())->execute(
                 new Input($this->mob)
