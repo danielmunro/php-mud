@@ -8,6 +8,7 @@ require_once __DIR__.'/../bootstrap.php';
 $em = $container->get(\Doctrine\ORM\EntityManager::class);
 $roomRepository = $em->getRepository(\PhpMud\Entity\Room::class);
 $room = $roomRepository->find(1);
+$port = isset($argv[1]) ? (int) $argv[1] : 9000;
 
 if (!$room) {
     echo "creating new room\n";
@@ -17,5 +18,25 @@ if (!$room) {
 }
 
 $loop = React\EventLoop\Factory::create();
-$server = new PhpMud\Server($loop, $em, $container->get('commands'), $room);
-$server->listen(isset($argv[1]) ? (int) $argv[1] : 9000);
+$server = new PhpMud\Server($container->get('commands'), $room);
+
+$socket = new \React\Socket\Server($loop);
+$socket->on(
+    \PhpMud\Enum\ServerEvent::CONNECTION,
+    function (\React\Socket\Connection $connection) use ($server, $room) {
+        $client = $server->addConnection($connection);
+        $client->ready($room);
+    }
+);
+$socket->listen($port);
+
+$loop->addPeriodicTimer(0, [$server, 'heartbeat']);
+$loop->addPeriodicTimer(1, [$server, 'pulse']);
+$loop->addPeriodicTimer(30, function () use ($em, $server, $room) {
+    $em->persist($room);
+    $em->flush();
+
+    $server->tick();
+});
+
+$loop->run();

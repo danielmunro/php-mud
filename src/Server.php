@@ -37,69 +37,42 @@ class Server
     /** @var ArrayCollection $clients */
     protected $clients;
 
-    /** @var LoopInterface $loop */
-    protected $loop;
-
-    /** @var Room $startRoom */
-    protected $startRoom;
-
-    /** @var EntityManager $entityManager */
-    protected $entityManager;
-
     /** @var Container $commandContainer */
     protected $commandContainer;
 
     /**
-     * @param LoopInterface $loop
-     * @param EntityManager $entityManager
      * @param Container $commandContainer
-     * @param Room $startRoom
      */
-    public function __construct(
-        LoopInterface $loop,
-        EntityManager $entityManager,
-        Container $commandContainer,
-        Room $startRoom
-    ) {
+    public function __construct(Container $commandContainer) {
         $this->clients = new ArrayCollection();
-        $this->loop = $loop;
-        $this->entityManager = $entityManager;
         $this->commandContainer = $commandContainer;
-        $this->startRoom = $startRoom;
-    }
-
-    /**
-     * @param int $port
-     */
-    public function listen(int $port)
-    {
-        $socket = new \React\Socket\Server($this->loop);
-        $socket->on(ServerEvent::CONNECTION, [$this, 'addConnection']);
-        $socket->listen($port);
-
-        $this->loop->addPeriodicTimer(0, [$this, 'heartbeat']);
-        $this->loop->addPeriodicTimer(1, [$this, 'pulse']);
-        $this->tick();
-
-        $this->loop->run();
     }
 
     /**
      * @param Connection $connection
+     *
+     * @return Client
      */
-    public function addConnection(Connection $connection)
+    public function addConnection(Connection $connection): Client
     {
         $client = new Client($connection, $this->commandContainer);
         $this->clients->add($client);
 
-        $connection->on(ServerEvent::CLOSE, function () use ($client) {
-            $this->clients->removeElement($client);
-        });
-        $connection->on(ServerEvent::DATA, function (string $input) use ($client) {
-            $client->pushBuffer($input);
-        });
+        $connection->on(
+            ServerEvent::CLOSE,
+            function () use ($client) {
+                $this->clients->removeElement($client);
+            }
+        );
 
-        $client->ready($this->startRoom);
+        $connection->on(
+            ServerEvent::DATA,
+            function (string $input) use ($client) {
+                $client->pushBuffer($input);
+            }
+        );
+
+        return $client;
     }
 
     /**
@@ -107,10 +80,9 @@ class Server
      */
     public function heartbeat()
     {
-        foreach ($this->clients as $client) {
-            /** @var Client $client */
+        $this->clients->map(function(Client $client) {
             $client->heartbeat();
-        }
+        });
     }
 
     /**
@@ -118,10 +90,9 @@ class Server
      */
     public function pulse()
     {
-        foreach ($this->clients as $client) {
-            /** @var Client $client */
+        $this->clients->map(function(Client $client) {
             $client->pulse();
-        }
+        });
     }
 
     /**
@@ -129,19 +100,8 @@ class Server
      */
     public function tick()
     {
-        $this->entityManager->persist($this->startRoom);
-        $this->entityManager->flush();
-
-        foreach ($this->clients as $client) {
-            /** @var Client $client */
+        $this->clients->map(function(Client $client) {
             $client->tick();
-        }
-
-        $this->loop->addTimer(
-            random_int(self::TICK_MIN_SECONDS, self::TICK_MAX_SECONDS),
-            function () {
-                $this->tick();
-            }
-        );
+        });
     }
 }
