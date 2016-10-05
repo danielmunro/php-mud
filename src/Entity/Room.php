@@ -14,7 +14,6 @@ namespace PhpMud\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use PhpMud\Entity\Direction;
 use PhpMud\Enum\Direction as DirectionEnum;
 
 /**

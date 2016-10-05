@@ -12,18 +12,11 @@ declare(strict_types=1);
 
 namespace PhpMud\IO;
 
-use PhpMud\Enum\CommandResult;
-
 /**
  * Command output
  */
 class Output
 {
-    /**
-     * @var
-     */
-    protected $commandResult;
-
     /**
      * @var string
      */
@@ -31,12 +24,10 @@ class Output
 
     /**
      * @param string $output
-     * @param CommandResult|null $commandResult
      */
-    public function __construct(string $output, CommandResult $commandResult = null)
+    public function __construct(string $output)
     {
         $this->output = $output;
-        $this->commandResult = $commandResult ?: CommandResult::SUCCESS();
     }
 
     /**
@@ -45,13 +36,5 @@ class Output
     public function getOutput(): string
     {
         return $this->output;
-    }
-
-    /**
-     * @return CommandResult
-     */
-    public function getCommandResult(): CommandResult
-    {
-        return $this->commandResult;
     }
 }

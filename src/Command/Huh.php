@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace PhpMud\Command;
 
 use PhpMud\Command;
-use PhpMud\Enum\CommandResult;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 
@@ -25,6 +24,6 @@ class Huh implements Command
      */
     public function execute(Input $input): Output
     {
-        return new Output("What was that?", CommandResult::FAILURE());
+        return new Output('What was that?');
     }
 }

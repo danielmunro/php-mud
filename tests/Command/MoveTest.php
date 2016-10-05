@@ -12,7 +12,6 @@ use PhpMud\Command\Up;
 use PhpMud\Command\West;
 use PhpMud\Entity\Mob;
 use PhpMud\Entity\Room;
-use PhpMud\Enum\CommandResult;
 use PhpMud\Enum\Direction as DirectionEnum;
 use PhpMud\IO\Input;
 use PhpMud\Service\Direction;
@@ -40,20 +39,15 @@ class MoveTest extends \PHPUnit_Framework_TestCase
         $mob->setRoom($room1);
         $input1 = new Input($mob, explode(' ', $direction->getValue()));
 
-        $output = $commandLeave->execute($input1);
-
-        static::assertEquals(CommandResult::SUCCESS(), $output->getCommandResult());
+        $commandLeave->execute($input1);
         static::assertEquals($room2, $mob->getRoom());
 
         $input2 = new Input($mob, explode(' ', $direction->reverse()->getValue()));
-        $output = $commandReturn->execute($input2);
-
-        static::assertEquals(CommandResult::SUCCESS(), $output->getCommandResult());
+        $commandReturn->execute($input2);
         static::assertEquals($room1, $mob->getRoom());
 
-        $output = $commandReturn->execute($input2);
-
-        static::assertEquals(CommandResult::FAILURE(), $output->getCommandResult());
+        $commandReturn->execute($input2);
+        static::assertEquals($room1, $mob->getRoom());
     }
 
     public function moveDataProvider()
