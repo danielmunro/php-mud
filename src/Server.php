@@ -43,7 +43,8 @@ class Server
     /**
      * @param Container $commandContainer
      */
-    public function __construct(Container $commandContainer) {
+    public function __construct(Container $commandContainer)
+    {
         $this->clients = new ArrayCollection();
         $this->commandContainer = $commandContainer;
     }
@@ -80,7 +81,7 @@ class Server
      */
     public function heartbeat()
     {
-        $this->clients->map(function(Client $client) {
+        $this->clients->map(function (Client $client) {
             $client->heartbeat();
         });
     }
@@ -90,7 +91,7 @@ class Server
      */
     public function pulse()
     {
-        $this->clients->map(function(Client $client) {
+        $this->clients->map(function (Client $client) {
             $client->pulse();
         });
     }
@@ -100,7 +101,7 @@ class Server
      */
     public function tick()
     {
-        $this->clients->map(function(Client $client) {
+        $this->clients->map(function (Client $client) {
             $client->tick();
         });
     }
