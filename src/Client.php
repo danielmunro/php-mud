@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace PhpMud;
 
-use League\Container\Container;
+use Pimple\Container;
 use PhpMud\Command\Down;
 use PhpMud\Command\East;
 use PhpMud\Command\Huh;
@@ -179,7 +179,7 @@ class Client
         });
 
         if ($command) {
-            return $this->commandContainer->get($command);
+            return $this->commandContainer[$command]($this);
         }
 
         return new Huh($this);

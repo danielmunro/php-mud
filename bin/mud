@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once __DIR__.'/../bootstrap.php';
 
 /** @var \Doctrine\ORM\EntityManager $em */
-$em = $container->get(\Doctrine\ORM\EntityManager::class);
+$em = $container[\Doctrine\ORM\EntityManager::class];
 $roomRepository = $em->getRepository(\PhpMud\Entity\Room::class);
 $room = $roomRepository->find(1);
 $port = isset($argv[1]) ? (int) $argv[1] : 9000;
@@ -18,7 +18,7 @@ if (!$room) {
 }
 
 $loop = React\EventLoop\Factory::create();
-$server = new PhpMud\Server($container->get('commands'), $room);
+$server = new PhpMud\Server($container['commands'], $room);
 
 $socket = new \React\Socket\Server($loop);
 $socket->on(

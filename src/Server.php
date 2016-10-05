@@ -13,11 +13,8 @@ declare(strict_types=1);
 namespace PhpMud;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManager;
-use League\Container\Container;
-use PhpMud\Entity\Room;
+use Pimple\Container;
 use PhpMud\Enum\ServerEvent;
-use React\EventLoop\LoopInterface;
 use React\Socket\Connection;
 
 /**
