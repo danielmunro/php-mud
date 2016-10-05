@@ -14,6 +14,8 @@ namespace PhpMud\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use PhpMud\Entity\Direction;
+use PhpMud\Enum\Direction as DirectionEnum;
 
 /**
  * Class Room
@@ -77,6 +79,19 @@ class Room
     public function getDirections(): Collection
     {
         return $this->directions;
+    }
+
+    /**
+     * @param DirectionEnum $directionEnum
+     * @param Room $room
+     */
+    public function addRoomInDirection(DirectionEnum $directionEnum, Room $room)
+    {
+        $direction = new Direction($this, $directionEnum, $room);
+        $this->directions->add($direction);
+
+        $reverse = new Direction($room, $directionEnum->reverse(), $this);
+        $room->getDirections()->add($reverse);
     }
 
     /**

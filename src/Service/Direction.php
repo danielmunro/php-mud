@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace PhpMud\Service;
 
+use UnexpectedValueException;
 use MyCLabs\Enum\Enum;
 use PhpMud\Enum\Direction as DirectionEnum;
 use function Functional\first;
@@ -22,6 +23,8 @@ class Direction
      * @param string $input
      *
      * @return DirectionEnum
+     *
+     * @throws UnexpectedValueException
      */
     public function matchPartialString(string $input): DirectionEnum
     {
@@ -30,7 +33,7 @@ class Direction
         });
 
         if (!$direction) {
-            throw new \UnexpectedValueException();
+            throw new UnexpectedValueException();
         }
 
         return $direction;
