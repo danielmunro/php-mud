@@ -17,7 +17,7 @@ use PhpMud\Entity\Direction;
 use PhpMud\Entity\Room;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
-use PhpMud\Service\Direction as DirectionService;
+use PhpMud\Service\DirectionService as DirectionService;
 
 /**
  * Create a new room

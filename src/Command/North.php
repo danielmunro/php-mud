@@ -12,14 +12,6 @@ declare(strict_types=1);
 
 namespace PhpMud\Command;
 
-use PhpMud\Command;
-use PhpMud\IO\Input;
-use PhpMud\IO\Output;
-
-class North extends Move implements Command
+class North extends Move
 {
-    public function execute(Input $input): Output
-    {
-        return $this->move($input->getMob(), $this->directionService->matchPartialString($input->getArgs()[0]));
-    }
 }

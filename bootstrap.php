@@ -18,38 +18,38 @@ $container[\Doctrine\ORM\EntityManager::class] = function () {
     );
 };
 
-$container[\PhpMud\Service\Direction::class] = function () {
-    return new \PhpMud\Service\Direction();
+$container[\PhpMud\Service\DirectionService::class] = function () {
+    return new \PhpMud\Service\DirectionService();
 };
 
 $commands = new \Pimple\Container();
 
 $commands[\PhpMud\Command\North::class] = $commands->protect(function () use ($container) {
-        return new \PhpMud\Command\North($container[\PhpMud\Service\Direction::class]);
+        return new \PhpMud\Command\North($container[\PhpMud\Service\DirectionService::class]);
 });
 
 $commands[\PhpMud\Command\South::class] = $commands->protect(function () use ($container) {
-    return new \PhpMud\Command\South($container[\PhpMud\Service\Direction::class]);
+    return new \PhpMud\Command\South($container[\PhpMud\Service\DirectionService::class]);
 });
 
 $commands[\PhpMud\Command\East::class] = $commands->protect(function () use ($container) {
-    return new \PhpMud\Command\East($container[\PhpMud\Service\Direction::class]);
+    return new \PhpMud\Command\East($container[\PhpMud\Service\DirectionService::class]);
 });
 
 $commands[\PhpMud\Command\West::class] = $commands->protect(function () use ($container) {
-    return new \PhpMud\Command\West($container[\PhpMud\Service\Direction::class]);
+    return new \PhpMud\Command\West($container[\PhpMud\Service\DirectionService::class]);
 });
 
 $commands[\PhpMud\Command\Up::class] = $commands->protect(function () use ($container) {
-    return new \PhpMud\Command\Up($container[\PhpMud\Service\Direction::class]);
+    return new \PhpMud\Command\Up($container[\PhpMud\Service\DirectionService::class]);
 });
 
 $commands[\PhpMud\Command\Down::class] = $commands->protect(function () use ($container) {
-    return new \PhpMud\Command\Down($container[\PhpMud\Service\Direction::class]);
+    return new \PhpMud\Command\Down($container[\PhpMud\Service\DirectionService::class]);
 });
 
 $commands[\PhpMud\Command\NewRoom::class] = $commands->protect(function () use ($container) {
-    return new \PhpMud\Command\NewRoom($container[\PhpMud\Service\Direction::class]);
+    return new \PhpMud\Command\NewRoom($container[\PhpMud\Service\DirectionService::class]);
 });
 
 $commands[\PhpMud\Command\Look::class] = $commands->protect(function () {

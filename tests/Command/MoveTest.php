@@ -14,7 +14,7 @@ use PhpMud\Entity\Mob;
 use PhpMud\Entity\Room;
 use PhpMud\Enum\Direction as DirectionEnum;
 use PhpMud\IO\Input;
-use PhpMud\Service\Direction;
+use PhpMud\Service\DirectionService;
 
 class MoveTest extends \PHPUnit_Framework_TestCase
 {
@@ -30,7 +30,7 @@ class MoveTest extends \PHPUnit_Framework_TestCase
         string $command1,
         string $command2
     ) {
-        $directionService = new Direction();
+        $directionService = new DirectionService();
         /** @var Command $command */
         $command = new $command1($directionService);
 

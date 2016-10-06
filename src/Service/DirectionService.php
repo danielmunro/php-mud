@@ -12,12 +12,14 @@ declare(strict_types=1);
 
 namespace PhpMud\Service;
 
+use PhpMud\Entity\Mob;
+use PhpMud\IO\Output;
 use UnexpectedValueException;
 use MyCLabs\Enum\Enum;
 use PhpMud\Enum\Direction as DirectionEnum;
 use function Functional\first;
 
-class Direction
+class DirectionService
 {
     /**
      * @param string $input
@@ -37,5 +39,27 @@ class Direction
         }
 
         return $direction;
+    }
+
+    /**
+     * @param Mob $mob
+     * @param \PhpMud\Enum\Direction $direction
+     *
+     * @return Output
+     */
+    public function move(Mob $mob, \PhpMud\Enum\Direction $direction): Output
+    {
+        $sourceRoom = $mob->getRoom();
+        $sourceRoom->getMobs()->removeElement($mob);
+        $targetDirection = $sourceRoom->getDirections()->filter(function (\PhpMud\Entity\Direction $d) use ($direction) {
+            return strpos($d->getDirection(), $direction->getValue()) === 0;
+        })->first();
+        if (!$targetDirection) {
+            return new Output('Alas, that direction does not exist');
+        }
+        $mob->setRoom($targetDirection->getTargetRoom());
+        $mob->getRoom()->getMobs()->add($mob);
+
+        return new Output((string) $mob->getRoom());
     }
 }
