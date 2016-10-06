@@ -17,7 +17,7 @@ use PhpMud\Entity\Direction;
 use PhpMud\IO\Output;
 use PhpMud\Service\Direction as DirectionService;
 
-trait Move
+abstract class Move
 {
     /** @var DirectionService $directionService */
     protected $directionService;

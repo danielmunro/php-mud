@@ -22,14 +22,18 @@ class MoveTest extends \PHPUnit_Framework_TestCase
      * @dataProvider moveDataProvider
      *
      * @param DirectionEnum $direction
-     * @param Command $commandLeave
-     * @param Command $commandReturn
+     * @param string $command1
+     * @param string $command2
      */
     public function testMove(
         DirectionEnum $direction,
-        Command $commandLeave,
-        Command $commandReturn
+        string $command1,
+        string $command2
     ) {
+        $directionService = new Direction();
+        /** @var Command $command */
+        $command = new $command1($directionService);
+
         $room1 = new Room();
         $room2 = new Room();
         $room1->addRoomInDirection($direction, $room2);
@@ -39,50 +43,51 @@ class MoveTest extends \PHPUnit_Framework_TestCase
         $mob->setRoom($room1);
         $input1 = new Input($mob, explode(' ', $direction->getValue()));
 
-        $commandLeave->execute($input1);
+        $command->execute($input1);
         static::assertEquals($room2, $mob->getRoom());
 
+        $command = new $command2($directionService);
+
         $input2 = new Input($mob, explode(' ', $direction->reverse()->getValue()));
-        $commandReturn->execute($input2);
+        $command->execute($input2);
         static::assertEquals($room1, $mob->getRoom());
 
-        $commandReturn->execute($input2);
+        $command->execute($input2);
         static::assertEquals($room1, $mob->getRoom());
     }
 
     public function moveDataProvider()
     {
-        $directionService = new Direction();
         return [
             [
                 DirectionEnum::NORTH(),
-                new North($directionService),
-                new South($directionService)
+                North::class,
+                South::class
             ],
             [
                 DirectionEnum::SOUTH(),
-                new South($directionService),
-                new North($directionService)
+                South::class,
+                North::class
             ],
             [
                 DirectionEnum::EAST(),
-                new East($directionService),
-                new West($directionService)
+                East::class,
+                West::class
             ],
             [
                 DirectionEnum::WEST(),
-                new West($directionService),
-                new East($directionService)
+                West::class,
+                East::class
             ],
             [
                 DirectionEnum::UP(),
-                new Up($directionService),
-                new Down($directionService)
+                Up::class,
+                Down::class
             ],
             [
                 DirectionEnum::DOWN(),
-                new Down($directionService),
-                new Up($directionService)
+                Down::class,
+                Up::class
             ]
         ];
     }

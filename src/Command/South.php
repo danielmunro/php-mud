@@ -16,10 +16,8 @@ use PhpMud\Command;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 
-class South implements Command
+class South extends Move implements Command
 {
-    use Move;
-
     public function execute(Input $input): Output
     {
         return $this->move($input->getMob(), $this->directionService->matchPartialString($input->getArgs()[0]));
