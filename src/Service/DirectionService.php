@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace PhpMud\Service;
 
+use PhpMud\Entity\Direction;
 use PhpMud\Entity\Mob;
 use PhpMud\IO\Output;
 use UnexpectedValueException;
@@ -54,9 +55,11 @@ class DirectionService
     {
         $sourceRoom = $mob->getRoom();
         $sourceRoom->getMobs()->removeElement($mob);
-        $targetDirection = $sourceRoom->getDirections()->filter(function (\PhpMud\Entity\Direction $d) use ($direction) {
-            return strpos($d->getDirection(), $direction->getValue()) === 0;
-        })->first();
+        $targetDirection = $sourceRoom->getDirections()->filter(
+            function (Direction $d) use ($direction) {
+                return strpos($d->getDirection(), $direction->getValue()) === 0;
+            }
+        )->first();
         if (!$targetDirection) {
             return new Output('Alas, that direction does not exist');
         }

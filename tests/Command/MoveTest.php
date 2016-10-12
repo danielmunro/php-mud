@@ -16,7 +16,8 @@ class MoveTest extends \PHPUnit_Framework_TestCase
      *
      * @param DirectionEnum $direction
      */
-    public function testMove(DirectionEnum $direction) {
+    public function testMove(DirectionEnum $direction)
+    {
         /** @var Command $command */
         $command = new Command\Move($direction);
 
