@@ -15,24 +15,24 @@ namespace PhpMud\Command;
 use PhpMud\Command;
 use PhpMud\Entity\Direction;
 use PhpMud\Entity\Room;
+use PhpMud\Enum\Direction as DirectionEnum;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
-use PhpMud\Service\DirectionService as DirectionService;
 
 /**
  * Create a new room
  */
 class NewRoom implements Command
 {
-    /** @var DirectionService $directionService */
-    protected $directionService;
+    /** @var DirectionEnum $direction */
+    protected $direction;
 
     /**
-     * @param DirectionService $directionService
+     * @param DirectionEnum $direction
      */
-    public function __construct(DirectionService $directionService)
+    public function __construct(DirectionEnum $direction)
     {
-        $this->directionService = $directionService;
+        $this->direction = $direction;
     }
 
     /**
@@ -40,25 +40,18 @@ class NewRoom implements Command
      */
     public function execute(Input $input): Output
     {
-        $dir = $input->getArgs()->last();
         $mob = $input->getMob();
         $srcRoom = $mob->getRoom();
         $newRoom = new Room();
         $newRoom->setTitle('A swirling mist');
         $newRoom->setDescription('You are engulfed by a mist.');
 
-        try {
-            $dirEnum = $this->directionService->matchPartialString($dir);
-        } catch (\UnexpectedValueException $e) {
-            return new Output('That direction does not exist');
-        }
-
-        $srcDirection = new Direction($srcRoom, $dirEnum, $newRoom);
+        $srcDirection = new Direction($srcRoom, $this->direction, $newRoom);
         $srcRoom->getDirections()->add($srcDirection);
 
-        $newDirection = new Direction($newRoom, $dirEnum->reverse(), $srcRoom);
+        $newDirection = new Direction($newRoom, $this->direction->reverse(), $srcRoom);
         $newRoom->getDirections()->add($newDirection);
 
-        return new Output('You wish a room to the '.$dirEnum->getValue());
+        return new Output('A room appears to the '.$this->direction->getValue());
     }
 }

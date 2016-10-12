@@ -3,13 +3,31 @@ declare(strict_types=1);
 
 require_once __DIR__.'/vendor/autoload.php';
 
-$container = new \Pimple\Container();
+use PhpMud\ServiceProvider\Command\NorthCommand;
+use PhpMud\ServiceProvider\Command\SouthCommand;
+use PhpMud\ServiceProvider\Command\EastCommand;
+use PhpMud\ServiceProvider\Command\WestCommand;
+use PhpMud\ServiceProvider\Command\UpCommand;
+use PhpMud\ServiceProvider\Command\DownCommand;
+use PhpMud\ServiceProvider\Command\LookCommand;
+use PhpMud\ServiceProvider\Command\NewRoomCommand;
 
-$container[\Doctrine\ORM\EntityManager::class] = function () {
+use Pimple\Container;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Tools\Setup;
+
+$container = new Container();
+
+$container[EntityManager::class] = function () {
     $isDevMode = true;
-    $config = \Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration([__DIR__.'/src/Entity'], $isDevMode);
+    $config = Setup::createAnnotationMetadataConfiguration(
+        [
+            __DIR__.'/src/Entity'
+        ],
+        $isDevMode
+    );
 
-    return \Doctrine\ORM\EntityManager::create(
+    return EntityManager::create(
         [
             'driver' => 'pdo_sqlite',
             'path' => __DIR__ . '/db.sqlite'
@@ -18,46 +36,15 @@ $container[\Doctrine\ORM\EntityManager::class] = function () {
     );
 };
 
-$container[\PhpMud\Service\DirectionService::class] = function () {
-    return new \PhpMud\Service\DirectionService();
-};
+$commands = new Container();
 
-$commands = new \Pimple\Container();
-
-$commands[\PhpMud\Command\North::class] = $commands->protect(function () use ($container) {
-        return new \PhpMud\Command\North($container[\PhpMud\Service\DirectionService::class]);
-});
-
-$commands[\PhpMud\Command\South::class] = $commands->protect(function () use ($container) {
-    return new \PhpMud\Command\South($container[\PhpMud\Service\DirectionService::class]);
-});
-
-$commands[\PhpMud\Command\East::class] = $commands->protect(function () use ($container) {
-    return new \PhpMud\Command\East($container[\PhpMud\Service\DirectionService::class]);
-});
-
-$commands[\PhpMud\Command\West::class] = $commands->protect(function () use ($container) {
-    return new \PhpMud\Command\West($container[\PhpMud\Service\DirectionService::class]);
-});
-
-$commands[\PhpMud\Command\Up::class] = $commands->protect(function () use ($container) {
-    return new \PhpMud\Command\Up($container[\PhpMud\Service\DirectionService::class]);
-});
-
-$commands[\PhpMud\Command\Down::class] = $commands->protect(function () use ($container) {
-    return new \PhpMud\Command\Down($container[\PhpMud\Service\DirectionService::class]);
-});
-
-$commands[\PhpMud\Command\NewRoom::class] = $commands->protect(function () use ($container) {
-    return new \PhpMud\Command\NewRoom($container[\PhpMud\Service\DirectionService::class]);
-});
-
-$commands[\PhpMud\Command\Look::class] = $commands->protect(function () {
-    return new \PhpMud\Command\Look();
-});
-
-$commands[\PhpMud\Command\Quit::class] = $commands->protect(function (\PhpMud\Client $client) {
-    return new \PhpMud\Command\Quit($client);
-});
+$commands->register(new NorthCommand());
+$commands->register(new SouthCommand());
+$commands->register(new EastCommand());
+$commands->register(new WestCommand());
+$commands->register(new UpCommand());
+$commands->register(new DownCommand());
+$commands->register(new LookCommand());
+$commands->register(new NewRoomCommand());
 
 $container['commands'] = $commands;

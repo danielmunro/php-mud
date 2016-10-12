@@ -30,9 +30,12 @@ class DirectionService
      */
     public function matchPartialString(string $input): DirectionEnum
     {
-        $direction = first(DirectionEnum::values(), function (Enum $v) use ($input) {
-            return strpos($v->getValue(), $input) === 0;
-        });
+        $direction = first(
+            DirectionEnum::values(),
+            function (Enum $v) use ($input) {
+                return strpos($v->getValue(), $input) === 0;
+            }
+        );
 
         if (!$direction) {
             throw new UnexpectedValueException();

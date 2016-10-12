@@ -13,17 +13,8 @@ declare(strict_types=1);
 namespace PhpMud;
 
 use Pimple\Container;
-use PhpMud\Command\Down;
-use PhpMud\Command\East;
 use PhpMud\Command\Huh;
 use PhpMud\Command\Look;
-use PhpMud\Command\NewRoom;
-use PhpMud\Command\North;
-use PhpMud\Command\Quit;
-use PhpMud\Command\Room;
-use PhpMud\Command\South;
-use PhpMud\Command\Up;
-use PhpMud\Command\West;
 use PhpMud\Entity\Mob;
 use PhpMud\IO\Input;
 use React\Socket\Connection;
@@ -62,18 +53,7 @@ class Client
     /**
      * @var array
      */
-    protected static $commands = [
-        'look' => Look::class,
-        'north' => North::class,
-        'south' => South::class,
-        'east' => East::class,
-        'west' => West::class,
-        'up' => Up::class,
-        'down' => Down::class,
-        'new room' => NewRoom::class,
-        'quit' => Quit::class,
-        'room' => Room::class
-    ];
+    protected $args;
 
     /** @var Container $commandContainer */
     protected $commandContainer;
@@ -167,6 +147,11 @@ class Client
         );
     }
 
+    public function getArgs(): array
+    {
+        return $this->args;
+    }
+
     /**
      * @param string $input
      *
@@ -174,8 +159,12 @@ class Client
      */
     protected function parseCommand(string $input): Command
     {
-        $command = first(static::$commands, function ($class, $command) use ($input) {
-            return strpos($command, $input) === 0 || strpos($input, $command) === 0;
+        $args = explode(' ', $input);
+        $this->args = $args;
+        $commandName = $args[0];
+
+        $command = first($this->commandContainer->keys(), function ($key) use ($commandName) {
+            return strpos($key, $commandName) === 0;
         });
 
         if ($command) {

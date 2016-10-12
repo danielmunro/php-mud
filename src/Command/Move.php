@@ -13,21 +13,21 @@ declare(strict_types=1);
 namespace PhpMud\Command;
 
 use PhpMud\Command;
+use PhpMud\Enum\Direction;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
-use PhpMud\Service\DirectionService;
 
-abstract class Move implements Command
+class Move implements Command
 {
-    /** @var DirectionService $directionService */
-    protected $directionService;
+    /** @var Direction $direction */
+    protected $direction;
 
     /**
-     * @param DirectionService $directionService
+     * @param Direction $direction
      */
-    public function __construct(DirectionService $directionService)
+    public function __construct(Direction $direction)
     {
-        $this->directionService = $directionService;
+        $this->direction = $direction;
     }
 
     /**
@@ -35,9 +35,18 @@ abstract class Move implements Command
      */
     public function execute(Input $input): Output
     {
-        return $this->directionService->move(
-            $input->getMob(),
-            $this->directionService->matchPartialString($input->getArgs()[0])
-        );
+        $mob = $input->getMob();
+        $sourceRoom = $mob->getRoom();
+        $targetDirection = $sourceRoom->getDirections()->filter(function (\PhpMud\Entity\Direction $d) {
+            return strpos($d->getDirection(), $this->direction->getValue()) === 0;
+        })->first();
+        if (!$targetDirection) {
+            return new Output('Alas, that direction does not exist');
+        }
+        $sourceRoom->getMobs()->removeElement($mob);
+        $mob->setRoom($targetDirection->getTargetRoom());
+        $mob->getRoom()->getMobs()->add($mob);
+
+        return new Output((string) $mob->getRoom());
     }
 }

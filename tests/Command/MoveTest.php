@@ -4,17 +4,10 @@ declare(strict_types=1);
 namespace PhpMud\Tests;
 
 use PhpMud\Command;
-use PhpMud\Command\Down;
-use PhpMud\Command\East;
-use PhpMud\Command\North;
-use PhpMud\Command\South;
-use PhpMud\Command\Up;
-use PhpMud\Command\West;
 use PhpMud\Entity\Mob;
 use PhpMud\Entity\Room;
 use PhpMud\Enum\Direction as DirectionEnum;
 use PhpMud\IO\Input;
-use PhpMud\Service\DirectionService;
 
 class MoveTest extends \PHPUnit_Framework_TestCase
 {
@@ -22,17 +15,10 @@ class MoveTest extends \PHPUnit_Framework_TestCase
      * @dataProvider moveDataProvider
      *
      * @param DirectionEnum $direction
-     * @param string $command1
-     * @param string $command2
      */
-    public function testMove(
-        DirectionEnum $direction,
-        string $command1,
-        string $command2
-    ) {
-        $directionService = new DirectionService();
+    public function testMove(DirectionEnum $direction) {
         /** @var Command $command */
-        $command = new $command1($directionService);
+        $command = new Command\Move($direction);
 
         $room1 = new Room();
         $room2 = new Room();
@@ -46,7 +32,7 @@ class MoveTest extends \PHPUnit_Framework_TestCase
         $command->execute($input1);
         static::assertEquals($room2, $mob->getRoom());
 
-        $command = new $command2($directionService);
+        $command = new Command\Move($direction->reverse());
 
         $input2 = new Input($mob, explode(' ', $direction->reverse()->getValue()));
         $command->execute($input2);
@@ -60,34 +46,22 @@ class MoveTest extends \PHPUnit_Framework_TestCase
     {
         return [
             [
-                DirectionEnum::NORTH(),
-                North::class,
-                South::class
+                DirectionEnum::NORTH()
             ],
             [
-                DirectionEnum::SOUTH(),
-                South::class,
-                North::class
+                DirectionEnum::SOUTH()
             ],
             [
-                DirectionEnum::EAST(),
-                East::class,
-                West::class
+                DirectionEnum::EAST()
             ],
             [
-                DirectionEnum::WEST(),
-                West::class,
-                East::class
+                DirectionEnum::WEST()
             ],
             [
-                DirectionEnum::UP(),
-                Up::class,
-                Down::class
+                DirectionEnum::UP()
             ],
             [
-                DirectionEnum::DOWN(),
-                Down::class,
-                Up::class
+                DirectionEnum::DOWN()
             ]
         ];
     }
