@@ -29,7 +29,7 @@ class DirectionService
      *
      * @throws UnexpectedValueException
      */
-    public function matchPartialString(string $input): DirectionEnum
+    public static function matchPartialString(string $input): DirectionEnum
     {
         $direction = first(
             DirectionEnum::values(),
@@ -47,11 +47,11 @@ class DirectionService
 
     /**
      * @param Mob $mob
-     * @param \PhpMud\Enum\Direction $direction
+     * @param DirectionEnum $direction
      *
      * @return Output
      */
-    public function move(Mob $mob, \PhpMud\Enum\Direction $direction): Output
+    public function move(Mob $mob, DirectionEnum $direction): Output
     {
         $sourceRoom = $mob->getRoom();
         $sourceRoom->getMobs()->removeElement($mob);
