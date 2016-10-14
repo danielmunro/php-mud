@@ -8,7 +8,6 @@ require_once __DIR__.'/../bootstrap.php';
 $em = $container[\Doctrine\ORM\EntityManager::class];
 $roomRepository = $em->getRepository(\PhpMud\Entity\Room::class);
 $room = $roomRepository->find(1);
-$port = isset($argv[1]) ? (int) $argv[1] : 9000;
 
 if (!$room) {
     echo "creating new room\n";
@@ -28,7 +27,7 @@ $socket->on(
         $client->ready($room);
     }
 );
-$socket->listen($port);
+$socket->listen($config['port']);
 
 $loop->addPeriodicTimer(0, [$server, 'heartbeat']);
 $loop->addPeriodicTimer(1, [$server, 'pulse']);
