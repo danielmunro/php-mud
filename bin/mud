@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 require_once __DIR__.'/../bootstrap.php';
 
-/** @var \Doctrine\ORM\EntityManager $em */
-$em = $container[\Doctrine\ORM\EntityManager::class];
 $roomRepository = $em->getRepository(\PhpMud\Entity\Room::class);
 $room = $roomRepository->find(1);
 
@@ -16,26 +14,7 @@ if (!$room) {
     $room->setDescription('Before you is the town center.');
 }
 
-$loop = React\EventLoop\Factory::create();
-$server = new PhpMud\Server($container['commands'], $room);
-
-$socket = new \React\Socket\Server($loop);
-$socket->on(
-    \PhpMud\Enum\ServerEvent::CONNECTION,
-    function (\React\Socket\Connection $connection) use ($server, $room) {
-        $client = $server->addConnection($connection);
-        $client->ready($room);
-    }
-);
-$socket->listen($config['port']);
-
-$loop->addPeriodicTimer(0, [$server, 'heartbeat']);
-$loop->addPeriodicTimer(1, [$server, 'pulse']);
-$loop->addPeriodicTimer(30, function () use ($em, $server, $room) {
-    $em->persist($room);
-    $em->flush();
-
-    $server->tick();
-});
-
-$loop->run();
+(new PhpMud\Server(
+    $em,
+    $room
+))->listen($config['port']);

@@ -13,8 +13,10 @@ declare(strict_types=1);
 namespace PhpMud;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManager;
+use PhpMud\Entity\Room;
 use Pimple\Container;
-use PhpMud\Enum\ServerEvent;
+use React\EventLoop\Factory;
 use React\Socket\Connection;
 
 /**
@@ -31,19 +33,49 @@ class Server
      */
     const TICK_MAX_SECONDS = 50;
 
+    const EVENT_CLOSE = 'close';
+
+    const EVENT_DATA = 'data';
+
+    const EVENT_CONNECTION = 'connection';
+
     /** @var ArrayCollection $clients */
     protected $clients;
 
-    /** @var Container $commandContainer */
-    protected $commandContainer;
+    /** @var Room $startRoom */
+    protected $startRoom;
 
     /**
-     * @param Container $commandContainer
+     * @param EntityManager $em
+     * @param Room $startRoom
      */
-    public function __construct(Container $commandContainer)
+    public function __construct(EntityManager $em, Room $startRoom)
     {
+        $this->em = $em;
+        $this->startRoom = $startRoom;
         $this->clients = new ArrayCollection();
-        $this->commandContainer = $commandContainer;
+    }
+
+    /**
+     * @param int $port
+     */
+    public function listen(int $port)
+    {
+        $loop = Factory::create();
+        $socket = new \React\Socket\Server($loop);
+        $socket->on(static::EVENT_CONNECTION, [$this, 'addConnection']);
+        $socket->listen($port);
+
+        $loop->addPeriodicTimer(0, [$this, 'heartbeat']);
+        $loop->addPeriodicTimer(1, [$this, 'pulse']);
+        $loop->addPeriodicTimer(30, function () {
+            $this->em->persist($this->startRoom);
+            $this->em->flush();
+
+            $this->tick();
+        });
+
+        $loop->run();
     }
 
     /**
@@ -53,22 +85,24 @@ class Server
      */
     public function addConnection(Connection $connection): Client
     {
-        $client = new Client($connection, $this->commandContainer);
+        $client = new Client($connection);
         $this->clients->add($client);
 
         $connection->on(
-            ServerEvent::CLOSE,
+            static::EVENT_CLOSE,
             function () use ($client) {
                 $this->clients->removeElement($client);
             }
         );
 
         $connection->on(
-            ServerEvent::DATA,
+            static::EVENT_DATA,
             function (string $input) use ($client) {
                 $client->pushBuffer($input);
             }
         );
+
+        $client->ready($this->startRoom);
 
         return $client;
     }

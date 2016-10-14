@@ -12,6 +12,11 @@ declare(strict_types=1);
 
 namespace PhpMud;
 
+use PhpMud\Entity\Room;
+use PhpMud\ServiceProvider\Command\LookCommand;
+use PhpMud\ServiceProvider\Command\MoveCommand;
+use PhpMud\ServiceProvider\Command\NewRoomCommand;
+use PhpMud\ServiceProvider\Command\QuitCommand;
 use Pimple\Container;
 use PhpMud\Command\Huh;
 use PhpMud\Command\Look;
@@ -56,18 +61,22 @@ class Client
     protected $args;
 
     /** @var Container $commandContainer */
-    protected $commandContainer;
+    protected $commands;
 
     /**
      * Client constructor.
      *
      * @param Connection $connection
-     * @param Container $commandContainer
      */
-    public function __construct(Connection $connection, Container $commandContainer)
+    public function __construct(Connection $connection)
     {
         $this->connection = $connection;
-        $this->commandContainer = $commandContainer;
+
+        $this->commands = new Container();
+        $this->commands->register(new MoveCommand());
+        $this->commands->register(new LookCommand());
+        $this->commands->register(new NewRoomCommand());
+        $this->commands->register(new QuitCommand());
     }
 
     /**
@@ -132,9 +141,9 @@ class Client
     }
 
     /**
-     * @param Entity\Room $startRoom
+     * @param Room $startRoom
      */
-    public function ready(\PhpMud\Entity\Room $startRoom)
+    public function ready(Room $startRoom)
     {
         $this->mob = new Mob('mymob');
         $this->mob->setRoom($startRoom);
@@ -163,12 +172,12 @@ class Client
         $this->args = $args;
         $commandName = $args[0];
 
-        $command = first($this->commandContainer->keys(), function ($key) use ($commandName) {
+        $command = first($this->commands->keys(), function ($key) use ($commandName) {
             return strpos($key, $commandName) === 0;
         });
 
         if ($command) {
-            return $this->commandContainer[$command]($this);
+            return $this->commands[$command]($this);
         }
 
         return new Huh($this);
