@@ -3,11 +3,13 @@ declare(strict_types=1);
 
 namespace PhpMud\Tests;
 
+use PhpMud\Client;
 use PhpMud\Command;
 use PhpMud\Entity\Mob;
 use PhpMud\Entity\Room;
 use PhpMud\Enum\Direction as DirectionEnum;
 use PhpMud\IO\Input;
+use React\Socket\Connection;
 
 class MoveTest extends \PHPUnit_Framework_TestCase
 {
@@ -18,29 +20,31 @@ class MoveTest extends \PHPUnit_Framework_TestCase
      */
     public function testMove(DirectionEnum $direction)
     {
-        /** @var Command $command */
-        $command = new Command\Move($direction);
-
         $room1 = new Room();
         $room2 = new Room();
         $room1->addRoomInDirection($direction, $room2);
 
-        $mob = new Mob('test mob');
-        $room1->getMobs()->add($mob);
-        $mob->setRoom($room1);
-        $input1 = new Input($mob, explode(' ', $direction->getValue()));
+        $connection = $this
+            ->getMockBuilder(Connection::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $command->execute($input1);
-        static::assertEquals($room2, $mob->getRoom());
+        $client = new Client($connection);
+        $client->ready($room1);
 
-        $command = new Command\Move($direction->reverse());
+        $client->pushBuffer($direction->getValue());
+        $client->readBuffer();
 
-        $input2 = new Input($mob, explode(' ', $direction->reverse()->getValue()));
-        $command->execute($input2);
-        static::assertEquals($room1, $mob->getRoom());
+        static::assertEquals($room2, $client->getMob()->getRoom());
 
-        $command->execute($input2);
-        static::assertEquals($room1, $mob->getRoom());
+        $reverse = $direction->reverse();
+        $client->pushBuffer($reverse->getValue());
+        $client->readBuffer();
+        static::assertEquals($room1, $client->getMob()->getRoom());
+
+        $client->pushBuffer($reverse->getValue());
+        $client->readBuffer();
+        static::assertEquals($room1, $client->getMob()->getRoom());
     }
 
     public function moveDataProvider()

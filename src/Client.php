@@ -13,13 +13,12 @@ declare(strict_types=1);
 namespace PhpMud;
 
 use PhpMud\Entity\Room;
+use PhpMud\IO\Output;
 use PhpMud\ServiceProvider\Command\LookCommand;
 use PhpMud\ServiceProvider\Command\MoveCommand;
 use PhpMud\ServiceProvider\Command\NewRoomCommand;
 use PhpMud\ServiceProvider\Command\QuitCommand;
 use Pimple\Container;
-use PhpMud\Command\Huh;
-use PhpMud\Command\Look;
 use PhpMud\Entity\Mob;
 use PhpMud\IO\Input;
 use React\Socket\Connection;
@@ -88,6 +87,21 @@ class Client
     }
 
     /**
+     * Get the oldest command from the buffer and evaluate it.
+     */
+    public function readBuffer()
+    {
+        $input = trim(array_shift($this->buffer));
+
+        $this->write(
+            $this
+                ->parseCommand($input)
+                ->execute(new Input($this->mob, explode(' ', $input)))
+                ->getOutput()."\n--> "
+        );
+    }
+
+    /**
      * @param string $output
      */
     public function write(string $output)
@@ -101,14 +115,7 @@ class Client
     public function heartbeat()
     {
         if ($this->canReadBuffer()) {
-            $input = trim(array_shift($this->buffer));
-
-            $this->write(
-                $this
-                    ->parseCommand($input)
-                    ->execute(new Input($this->mob, explode(' ', $input)))
-                    ->getOutput()."\n--> "
-            );
+            $this->readBuffer();
         }
     }
 
@@ -150,7 +157,7 @@ class Client
         $startRoom->getMobs()->add($this->mob);
 
         $this->write(
-            (new Look())->execute(
+            ($this->commands['look']())->execute(
                 new Input($this->mob)
             )->getOutput()
         );
@@ -180,7 +187,16 @@ class Client
             return $this->commands[$command]($this);
         }
 
-        return new Huh($this);
+        return new class implements Command {
+            /**
+             * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+             * {@inheritdoc}
+             */
+            public function execute(Input $input): Output
+            {
+                return new Output('What was that?');
+            }
+        };
     }
 
     /**
