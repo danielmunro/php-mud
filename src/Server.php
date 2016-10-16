@@ -14,10 +14,11 @@ namespace PhpMud;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use PhpMud\Entity\Mob;
 use PhpMud\Entity\Room;
-use Pimple\Container;
 use React\EventLoop\Factory;
 use React\Socket\Connection;
+use function Functional\each;
 
 /**
  * Mud server
@@ -35,9 +36,11 @@ class Server
 
     const EVENT_CLOSE = 'close';
 
-    const EVENT_DATA = 'data';
-
     const EVENT_CONNECTION = 'connection';
+
+    const EVENT_GOSSIP = 'message';
+
+    const EVENT_LOGIN = 'login';
 
     /** @var ArrayCollection $clients */
     protected $clients;
@@ -89,6 +92,15 @@ class Server
         $this->clients->add($client);
 
         $connection->on(
+            static::EVENT_LOGIN,
+            function (Mob $mob) use ($client) {
+                $mob->setRoom($this->startRoom);
+                $this->startRoom->getMobs()->add($mob);
+                $client->pushBuffer('look');
+            }
+        );
+
+        $connection->on(
             static::EVENT_CLOSE,
             function () use ($client) {
                 $this->clients->removeElement($client);
@@ -96,13 +108,21 @@ class Server
         );
 
         $connection->on(
-            static::EVENT_DATA,
+            static::EVENT_GOSSIP,
             function (string $input) use ($client) {
-                $client->pushBuffer($input);
+                each($this->clients, function (Client $c) use ($client, $input) {
+                    if ($c === $client) {
+                        $client->write('You gossip, "'.$input.'"'."\n");
+                    } else {
+                        $c->write($client->getMob()->getName().' gossips, "'.$input.'"'."\n");
+                    }
+                });
             }
         );
 
-        $client->ready($this->startRoom);
+        $connection->write('By what name do you wish to be known? ');
+
+        //$client->ready($this->startRoom);
 
         return $client;
     }

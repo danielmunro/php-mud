@@ -17,7 +17,7 @@ class LookCommand implements ServiceProviderInterface
             return new class implements Command {
                 public function execute(Input $input): Output
                 {
-                    return new Output((string) $input->getMob()->getRoom());
+                    return new Output((string) $input->getRoom());
                 }
             };
         });
