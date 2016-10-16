@@ -12,37 +12,46 @@ declare(strict_types=1);
 
 namespace PhpMud;
 
-use PhpMud\Entity\Room;
-use PhpMud\Repository\Mob;
+use PhpMud\Entity\Mob;
+use PhpMud\IO\Input;
 
 /**
  *
  */
 class Login
 {
+    const STATE_NAME = 'name';
+
+    const STATE_COMPLETE = 'complete';
+
     /**
-     * @var
+     * @var int
      */
     protected $state;
 
     /**
-     * @var Room
-     */
-    protected $startRoom;
-
-    /**
      * @var Mob
      */
-    protected $mobRepository;
+    protected $mob;
 
-    /**
-     * Login constructor.
-     * @param Room $startRoom
-     * @param Mob $mobRepository
-     */
-    public function __construct(Room $startRoom, Mob $mobRepository)
+    public function __construct()
     {
-        $this->startRoom = $startRoom;
-        $this->mobRepository = $mobRepository;
+        $this->state = static::STATE_NAME;
+    }
+
+    public function next(Input $input)
+    {
+        $this->mob = new Mob($input->getInput());
+        $this->state = static::STATE_COMPLETE;
+    }
+
+    public function getState(): string
+    {
+        return $this->state;
+    }
+
+    public function getMob(): Mob
+    {
+        return $this->mob;
     }
 }

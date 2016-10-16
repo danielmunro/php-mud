@@ -13,23 +13,19 @@ declare(strict_types=1);
 namespace PhpMud;
 
 use PhpMud\Entity\Room;
-use PhpMud\IO\Output;
-use PhpMud\ServiceProvider\Command\GossipCommand;
-use PhpMud\ServiceProvider\Command\LookCommand;
-use PhpMud\ServiceProvider\Command\MoveCommand;
-use PhpMud\ServiceProvider\Command\NewRoomCommand;
-use PhpMud\ServiceProvider\Command\QuitCommand;
+use PhpMud\IO\Commands;
 use Pimple\Container;
 use PhpMud\Entity\Mob;
 use PhpMud\IO\Input;
 use React\Socket\Connection;
-use function Functional\first;
 
 /**
  * A client
  */
 class Client
 {
+    const EVENT_DATA = 'data';
+
     /**
      * @var Connection
      */
@@ -56,11 +52,8 @@ class Client
     protected $login;
 
     /**
-     * @var array
+     * @var Container
      */
-    protected $args;
-
-    /** @var Container $commandContainer */
     protected $commands;
 
     /**
@@ -71,13 +64,15 @@ class Client
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
+        $this->commands = new Commands();
+        $this->login = new Login();
 
-        $this->commands = new Container();
-        $this->commands->register(new MoveCommand());
-        $this->commands->register(new LookCommand());
-        $this->commands->register(new NewRoomCommand());
-        $this->commands->register(new QuitCommand());
-        $this->commands->register(new GossipCommand());
+        $connection->on(
+            static::EVENT_DATA,
+            function (string $input) {
+                $this->pushBuffer($input);
+            }
+        );
     }
 
     /**
@@ -93,12 +88,23 @@ class Client
      */
     public function readBuffer()
     {
-        $input = trim(array_shift($this->buffer));
+        $input = new Input($this, trim(array_shift($this->buffer)));
+
+        if ($this->login) {
+            $this->login->next($input);
+            if ($this->login->getState() === Login::STATE_COMPLETE) {
+                $this->mob = $this->login->getMob();
+                $this->login = null;
+                $this->connection->emit(Server::EVENT_LOGIN, ['mob' => $this->mob]);
+            }
+            return;
+        }
 
         $this->write(
             $this
-                ->parseCommand($input)
-                ->execute(new Input($this->mob, explode(' ', $input)))
+                ->commands
+                ->parse($input)($this)
+                ->execute($input)
                 ->getOutput()."\n--> "
         );
     }
@@ -152,58 +158,6 @@ class Client
     public function gossip(string $message)
     {
         $this->connection->emit(Server::EVENT_GOSSIP, ['message' => $message]);
-    }
-
-    /**
-     * @param Room $startRoom
-     */
-    public function ready(Room $startRoom)
-    {
-        $this->mob = new Mob('mymob');
-        $this->mob->setRoom($startRoom);
-        $startRoom->getMobs()->add($this->mob);
-
-        $this->write(
-            ($this->commands['look']())->execute(
-                new Input($this->mob)
-            )->getOutput()
-        );
-    }
-
-    public function getArgs(): array
-    {
-        return $this->args;
-    }
-
-    /**
-     * @param string $input
-     *
-     * @return Command
-     */
-    protected function parseCommand(string $input): Command
-    {
-        $args = explode(' ', $input);
-        $this->args = $args;
-        $commandName = $args[0];
-
-        $command = first($this->commands->keys(), function ($key) use ($commandName) {
-            return strpos($key, $commandName) === 0;
-        });
-
-        if ($command) {
-            return $this->commands[$command]($this);
-        }
-
-        return new class implements Command {
-            /**
-             * @SuppressWarnings(PHPMD.UnusedLocalVariable)
-             * {@inheritdoc}
-             */
-            public function execute(Input $input): Output
-            {
-                return new Output('What was that?');
-            }
-        };
     }
 
     /**

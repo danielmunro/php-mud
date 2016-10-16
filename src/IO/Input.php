@@ -12,34 +12,59 @@ declare(strict_types=1);
 
 namespace PhpMud\IO;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use PhpMud\Client;
 use PhpMud\Entity\Mob;
+use PhpMud\Entity\Room;
+use function Functional\tail;
 
 class Input
 {
     /**
-     * @var Mob $mob
+     * @var Client $client
      */
-    protected $mob;
+    protected $client;
 
     /**
-     * @var ArrayCollection $args
+     * @var array $args
      */
     protected $args;
 
-    public function __construct(Mob $mob, array $args = [])
+    /**
+     * @var string $command
+     */
+    protected $command;
+
+    public function __construct(Client $client, string $input)
     {
-        $this->mob = $mob;
-        $this->args = new ArrayCollection($args);
+        $this->client = $client;
+        $this->args = explode(' ', $input);
+        $this->command = $this->args[0];
+        $this->args = tail($this->args);
+        $this->input = $input;
     }
 
     public function getMob(): Mob
     {
-        return $this->mob;
+        return $this->client->getMob();
     }
 
-    public function getArgs(): ArrayCollection
+    public function getRoom(): Room
+    {
+        return $this->client->getMob()->getRoom();
+    }
+
+    public function getArgs(): array
     {
         return $this->args;
+    }
+
+    public function getInput(): string
+    {
+        return $this->input;
+    }
+
+    public function getCommand(): string
+    {
+        return $this->command;
     }
 }

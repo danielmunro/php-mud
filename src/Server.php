@@ -14,6 +14,7 @@ namespace PhpMud;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use PhpMud\Entity\Mob;
 use PhpMud\Entity\Room;
 use React\EventLoop\Factory;
 use React\Socket\Connection;
@@ -35,11 +36,11 @@ class Server
 
     const EVENT_CLOSE = 'close';
 
-    const EVENT_DATA = 'data';
-
     const EVENT_CONNECTION = 'connection';
 
     const EVENT_GOSSIP = 'message';
+
+    const EVENT_LOGIN = 'login';
 
     /** @var ArrayCollection $clients */
     protected $clients;
@@ -91,16 +92,18 @@ class Server
         $this->clients->add($client);
 
         $connection->on(
-            static::EVENT_CLOSE,
-            function () use ($client) {
-                $this->clients->removeElement($client);
+            static::EVENT_LOGIN,
+            function (Mob $mob) use ($client) {
+                $mob->setRoom($this->startRoom);
+                $this->startRoom->getMobs()->add($mob);
+                $client->pushBuffer('look');
             }
         );
 
         $connection->on(
-            static::EVENT_DATA,
-            function (string $input) use ($client) {
-                $client->pushBuffer($input);
+            static::EVENT_CLOSE,
+            function () use ($client) {
+                $this->clients->removeElement($client);
             }
         );
 
@@ -117,7 +120,9 @@ class Server
             }
         );
 
-        $client->ready($this->startRoom);
+        $connection->write('By what name do you wish to be known? ');
+
+        //$client->ready($this->startRoom);
 
         return $client;
     }

@@ -28,7 +28,7 @@ class GossipCommand implements ServiceProviderInterface
 
                 public function execute(Input $input): Output
                 {
-                    $this->client->gossip(implode(' ', tail($input->getArgs())));
+                    $this->client->gossip(implode(' ', $input->getArgs()));
                     return new Output('');
                     //$this->client->emit
                     /**
