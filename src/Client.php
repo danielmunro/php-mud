@@ -14,6 +14,7 @@ namespace PhpMud;
 
 use PhpMud\Entity\Room;
 use PhpMud\IO\Output;
+use PhpMud\ServiceProvider\Command\GossipCommand;
 use PhpMud\ServiceProvider\Command\LookCommand;
 use PhpMud\ServiceProvider\Command\MoveCommand;
 use PhpMud\ServiceProvider\Command\NewRoomCommand;
@@ -76,6 +77,7 @@ class Client
         $this->commands->register(new LookCommand());
         $this->commands->register(new NewRoomCommand());
         $this->commands->register(new QuitCommand());
+        $this->commands->register(new GossipCommand());
     }
 
     /**
@@ -145,6 +147,11 @@ class Client
     public function disconnect()
     {
         $this->connection->close();
+    }
+
+    public function gossip(string $message)
+    {
+        $this->connection->emit(Server::EVENT_GOSSIP, ['message' => $message]);
     }
 
     /**

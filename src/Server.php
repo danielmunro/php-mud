@@ -15,9 +15,9 @@ namespace PhpMud;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use PhpMud\Entity\Room;
-use Pimple\Container;
 use React\EventLoop\Factory;
 use React\Socket\Connection;
+use function Functional\each;
 
 /**
  * Mud server
@@ -38,6 +38,8 @@ class Server
     const EVENT_DATA = 'data';
 
     const EVENT_CONNECTION = 'connection';
+
+    const EVENT_GOSSIP = 'message';
 
     /** @var ArrayCollection $clients */
     protected $clients;
@@ -99,6 +101,19 @@ class Server
             static::EVENT_DATA,
             function (string $input) use ($client) {
                 $client->pushBuffer($input);
+            }
+        );
+
+        $connection->on(
+            static::EVENT_GOSSIP,
+            function (string $input) use ($client) {
+                each($this->clients, function (Client $c) use ($client, $input) {
+                    if ($c === $client) {
+                        $client->write('You gossip, "'.$input.'"'."\n");
+                    } else {
+                        $c->write($client->getMob()->getName().' gossips, "'.$input.'"'."\n");
+                    }
+                });
             }
         );
 
