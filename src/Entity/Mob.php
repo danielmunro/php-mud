@@ -19,6 +19,12 @@ namespace PhpMud\Entity;
  */
 class Mob
 {
+    const DEFAULT_HP = 20;
+
+    const DEFAULT_MP = 100;
+
+    const DEFAULT_MV = 100;
+
     use PrimaryKeyTrait;
 
     /** @Column(type="string") */
@@ -27,9 +33,21 @@ class Mob
     /** @ManyToOne(targetEntity="Room", inversedBy="mobs") */
     protected $room;
 
+    /** @Column(type="integer") */
+    protected $hp;
+
+    /** @Column(type="integer") */
+    protected $mp;
+
+    /** @Column(type="integer") */
+    protected $mv;
+
     public function __construct(string $name)
     {
         $this->name = $name;
+        $this->hp = static::DEFAULT_HP;
+        $this->mp = static::DEFAULT_MP;
+        $this->mv = static::DEFAULT_MV;
     }
 
     public function getName(): string
@@ -45,5 +63,20 @@ class Mob
     public function setRoom(Room $room)
     {
         $this->room = $room;
+    }
+
+    public function getHp(): int
+    {
+        return $this->hp;
+    }
+
+    public function getMp(): int
+    {
+        return $this->mp;
+    }
+
+    public function getMv(): int
+    {
+        return $this->mv;
     }
 }

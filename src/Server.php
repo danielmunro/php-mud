@@ -42,6 +42,8 @@ class Server
 
     const EVENT_LOGIN = 'login';
 
+    const EVENT_TICK = 'tick';
+
     /** @var ArrayCollection $clients */
     protected $clients;
 
@@ -71,12 +73,7 @@ class Server
 
         $loop->addPeriodicTimer(0, [$this, 'heartbeat']);
         $loop->addPeriodicTimer(1, [$this, 'pulse']);
-        $loop->addPeriodicTimer(30, function () {
-            $this->em->persist($this->startRoom);
-            $this->em->flush();
-
-            $this->tick();
-        });
+        $loop->addPeriodicTimer(30, [$this, 'tick']);
 
         $loop->run();
     }
@@ -122,8 +119,6 @@ class Server
 
         $connection->write('By what name do you wish to be known? ');
 
-        //$client->ready($this->startRoom);
-
         return $client;
     }
 
@@ -155,5 +150,8 @@ class Server
         $this->clients->map(function (Client $client) {
             $client->tick();
         });
+
+        $this->em->persist($this->startRoom);
+        $this->em->flush();
     }
 }

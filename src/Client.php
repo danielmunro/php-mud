@@ -67,12 +67,7 @@ class Client
         $this->commands = new Commands();
         $this->login = new Login();
 
-        $connection->on(
-            static::EVENT_DATA,
-            function (string $input) {
-                $this->pushBuffer($input);
-            }
-        );
+        $connection->on(static::EVENT_DATA, [$this, 'login']);
     }
 
     /**
@@ -83,22 +78,23 @@ class Client
         $this->buffer[] = $buffer;
     }
 
+    public function login(string $input)
+    {
+        if ($this->login->next(new Input($this, $input)) === Login::STATE_COMPLETE) {
+            $this->mob = $this->login->getMob();
+            $this->login = null;
+            $this->connection->emit(Server::EVENT_LOGIN, ['mob' => $this->mob]);
+            $this->connection->removeListener(static::EVENT_DATA, [$this, 'login']);
+            $this->connection->on(static::EVENT_DATA, [$this, 'pushBuffer']);
+        }
+    }
+
     /**
      * Get the oldest command from the buffer and evaluate it.
      */
     public function readBuffer()
     {
         $input = new Input($this, trim(array_shift($this->buffer)));
-
-        if ($this->login) {
-            $this->login->next($input);
-            if ($this->login->getState() === Login::STATE_COMPLETE) {
-                $this->mob = $this->login->getMob();
-                $this->login = null;
-                $this->connection->emit(Server::EVENT_LOGIN, ['mob' => $this->mob]);
-            }
-            return;
-        }
 
         $this->write(
             $this
@@ -136,7 +132,7 @@ class Client
 
     public function tick()
     {
-        $this->connection->write("\n-->");
+        $this->connection->write("\n--> ");
     }
 
     /**

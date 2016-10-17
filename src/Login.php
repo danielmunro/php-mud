@@ -39,10 +39,12 @@ class Login
         $this->state = static::STATE_NAME;
     }
 
-    public function next(Input $input)
+    public function next(Input $input): string
     {
         $this->mob = new Mob($input->getInput());
         $this->state = static::STATE_COMPLETE;
+
+        return $this->state;
     }
 
     public function getState(): string
