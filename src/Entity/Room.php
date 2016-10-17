@@ -37,6 +37,9 @@ class Room
     /** @OneToMany(targetEntity="Direction", mappedBy="sourceRoom", cascade={"persist"}) */
     protected $directions;
 
+    /** @OneToOne(targetEntity="Inventory") */
+    protected $inventory;
+
     /**
      * Room constructor.
      */

@@ -30,8 +30,7 @@ class MoveTest extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         $client = new Client($connection);
-        $client->pushBuffer('mobName');
-        $client->readBuffer();
+        $client->login('mobName');
 
         $room1->getMobs()->add($client->getMob());
         $client->getMob()->setRoom($room1);

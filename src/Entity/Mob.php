@@ -42,6 +42,9 @@ class Mob
     /** @Column(type="integer") */
     protected $mv;
 
+    /** @OneToOne(targetEntity="Inventory") */
+    protected $inventory;
+
     public function __construct(string $name)
     {
         $this->name = $name;
