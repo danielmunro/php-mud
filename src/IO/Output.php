@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 
 namespace PhpMud\IO;
+
 use PhpMud\Client;
 
 /**
@@ -57,6 +58,7 @@ class Output
             $client->write($this->response."\n ".$client->prompt());
         }
 
+        /**
         if ($this->roomMessage) {
             foreach ($client->getMob()->getRoom()->getMobs() as $m) {
                 if ($m !== $client->getMob()) {
@@ -64,5 +66,6 @@ class Output
                 }
             }
         }
+         */
     }
 }

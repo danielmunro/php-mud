@@ -112,13 +112,14 @@ class Room
             $this->title."\n".
             $this->description."\n".
             (string) $this->inventory."\n".
-            'Exits ['.array_reduce(
+            'Exits ['.
+            reduce_left(
                 $this->directions->toArray(),
-                function ($dirs, Direction $direction) {
-                    return $dirs . substr($direction->getDirection(), 0, 1);
+                function (Direction $direction, $index, $collection, $reduction) {
+                    return $reduction . substr($direction->getDirection(), 0, 1);
                 }
             ).
-            "] "
+            '] '
             .reduce_left($this->mobs->toArray(), function(Mob $mob, $index, $collection, $reduction) {
                 return $reduction."\n".$mob->getName();
             }, "\n");

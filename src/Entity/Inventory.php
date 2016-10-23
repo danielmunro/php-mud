@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 
 namespace PhpMud\Entity;
+
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use function Functional\reduce_left;
@@ -39,8 +40,10 @@ class Inventory
     {
         return reduce_left(
             $this->items->toArray(),
-            function(Item $item, $index, $collection, $reduction) {
+            function (Item $item, $index, $collection, $reduction) {
                 return $reduction . $item->getName() . " is here.\n";
-            }, "\n").'';
+            },
+            "\n"
+        ).'';
     }
 }

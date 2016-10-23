@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 
 namespace PhpMud\Entity;
+
 use PhpMud\Enum\Material;
 
 /**
