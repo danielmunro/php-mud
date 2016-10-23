@@ -16,7 +16,7 @@ if (!file_exists($configFile)) {
 $config = Yaml::parse(file_get_contents($configFile));
 
 $em = EntityManager::create(
-    $config['mysql'],
+    $config['persist'],
     Setup::createAnnotationMetadataConfiguration(
         [
             __DIR__.'/src/Entity'

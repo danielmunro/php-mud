@@ -1,8 +1,5 @@
 port: 9000
 debug: true
-mysql:
-  driver: pdo_mysql
-  host: localhost
-  user: root
-  password: ""
-  dbname: phpmud
+persist:
+  driver: pdo_sqlite
+  path: db.sqlite
