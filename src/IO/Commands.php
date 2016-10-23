@@ -54,7 +54,7 @@ class Commands
             return $this->commands[$command];
         }
 
-        return function() {
+        return function () {
             return new class implements Command {
                 /**
                  * @SuppressWarnings(PHPMD.UnusedLocalVariable)
