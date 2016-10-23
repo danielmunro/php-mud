@@ -15,7 +15,7 @@ class NewMobCommand implements ServiceProviderInterface
 {
     public function register(Container $pimple)
     {
-        $pimple['mobfact'] = $pimple->protect(function(Client $client) {
+        $pimple['mobfact'] = $pimple->protect(function (Client $client) {
             return new class implements Command
             {
                 /**
