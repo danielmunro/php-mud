@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 
 namespace PhpMud\IO;
+use PhpMud\Client;
 
 /**
  * Command output
@@ -20,21 +21,48 @@ class Output
     /**
      * @var string
      */
-    protected $output;
+    protected $response;
 
     /**
-     * @param string $output
+     * @var string
      */
-    public function __construct(string $output)
+    protected $roomMessage;
+
+    /**
+     * @param string $response
+     * @param string $roomMessage
+     */
+    public function __construct(string $response, string $roomMessage = '')
     {
-        $this->output = $output;
+        $this->response = $response;
+        $this->roomMessage = $roomMessage;
     }
 
     /**
      * @return string
      */
-    public function getOutput(): string
+    public function getResponse(): string
     {
-        return $this->output;
+        return $this->response;
+    }
+
+    public function getRoomMessage(): string
+    {
+        return $this->roomMessage;
+    }
+
+    public function writeResponse(Client $client)
+    {
+        if ($this->response) {
+            $client->write($this->response."\n ".$client->prompt());
+        }
+
+        if ($this->roomMessage) {
+            foreach ($client->getMob()->getRoom()->getMobs() as $m) {
+                if ($m !== $client->getMob()) {
+
+                }
+            }
+        }
     }
 }

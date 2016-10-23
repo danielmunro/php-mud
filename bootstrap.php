@@ -16,10 +16,7 @@ if (!file_exists($configFile)) {
 $config = Yaml::parse(file_get_contents($configFile));
 
 $em = EntityManager::create(
-    [
-        'driver' => 'pdo_sqlite',
-        'path' => __DIR__ . '/db.sqlite'
-    ],
+    $config['mysql'],
     Setup::createAnnotationMetadataConfiguration(
         [
             __DIR__.'/src/Entity'

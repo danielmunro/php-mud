@@ -27,6 +27,7 @@ class QuitCommand implements ServiceProviderInterface
                 public function execute(Input $input): Output
                 {
                     $this->client->disconnect();
+                    $input->getRoom()->getMobs()->removeElement($input->getMob());
 
                     return new Output('');
                 }

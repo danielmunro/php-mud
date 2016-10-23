@@ -8,13 +8,18 @@ $roomRepository = $em->getRepository(\PhpMud\Entity\Room::class);
 $room = $roomRepository->find(1);
 
 if (!$room) {
-    echo "creating new room\n";
+    echo "creating initial world fixtures\n";
     $room = new \PhpMud\Entity\Room();
     $room->setTitle('Midgaard Town Center');
     $room->setDescription('Before you is the town center.');
+    $item = new \PhpMud\Entity\Item('a copper teapot', \PhpMud\Enum\Material::COPPER());
+    $item->setInventory($room->getInventory());
+    $room->getInventory()->getItems()->add($item);
 }
 
-(new PhpMud\Server(
-    $em,
-    $room
-))->listen($config['port']);
+(
+    new PhpMud\Server(
+        $em,
+        $room
+    )
+)->listen($config['port']);

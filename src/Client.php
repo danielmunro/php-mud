@@ -95,14 +95,15 @@ class Client
     public function readBuffer()
     {
         $input = new Input($this, trim(array_shift($this->buffer)));
+        /** @var callable $command */
+        $command = $this->commands->parse($input);
+        $output = $command($this)->execute($input);
+        $output->writeResponse($this);
+    }
 
-        $this->write(
-            $this
-                ->commands
-                ->parse($input)($this)
-                ->execute($input)
-                ->getOutput()."\n--> "
-        );
+    public function prompt()
+    {
+        return "--> ";
     }
 
     /**
@@ -132,7 +133,7 @@ class Client
 
     public function tick()
     {
-        $this->connection->write("\n--> ");
+        $this->connection->write("\n ".$this->prompt());
     }
 
     /**

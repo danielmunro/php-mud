@@ -42,44 +42,74 @@ class Mob
     /** @Column(type="integer") */
     protected $mv;
 
-    /** @OneToOne(targetEntity="Inventory") */
+    /** @OneToOne(targetEntity="Inventory", cascade={"persist"}) */
     protected $inventory;
 
+    /**
+     * @param string $name
+     */
     public function __construct(string $name)
     {
+        $this->inventory = new Inventory();
         $this->name = $name;
         $this->hp = static::DEFAULT_HP;
         $this->mp = static::DEFAULT_MP;
         $this->mv = static::DEFAULT_MV;
     }
 
+    /**
+     * @return string
+     */
     public function getName(): string
     {
         return $this->name;
     }
 
+    /**
+     * @return Room
+     */
     public function getRoom(): Room
     {
         return $this->room;
     }
 
+    /**
+     * @param Room $room
+     */
     public function setRoom(Room $room)
     {
         $this->room = $room;
     }
 
+    /**
+     * @return int
+     */
     public function getHp(): int
     {
         return $this->hp;
     }
 
+    /**
+     * @return int
+     */
     public function getMp(): int
     {
         return $this->mp;
     }
 
+    /**
+     * @return int
+     */
     public function getMv(): int
     {
         return $this->mv;
+    }
+
+    /**
+     * @return Inventory
+     */
+    public function getInventory(): Inventory
+    {
+        return $this->inventory;
     }
 }

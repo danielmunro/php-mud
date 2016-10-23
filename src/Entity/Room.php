@@ -15,6 +15,7 @@ namespace PhpMud\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use PhpMud\Enum\Direction as DirectionEnum;
+use function Functional\reduce_left;
 
 /**
  * Class Room
@@ -37,7 +38,7 @@ class Room
     /** @OneToMany(targetEntity="Direction", mappedBy="sourceRoom", cascade={"persist"}) */
     protected $directions;
 
-    /** @OneToOne(targetEntity="Inventory") */
+    /** @OneToOne(targetEntity="Inventory", cascade={"persist"}) */
     protected $inventory;
 
     /**
@@ -47,6 +48,7 @@ class Room
     {
         $this->mobs = new ArrayCollection();
         $this->directions = new ArrayCollection();
+        $this->inventory = new Inventory();
         $this->title = '';
         $this->description = '';
     }
@@ -83,6 +85,11 @@ class Room
         return $this->directions;
     }
 
+    public function getInventory(): Inventory
+    {
+        return $this->inventory;
+    }
+
     /**
      * @param DirectionEnum $directionEnum
      * @param Room $room
@@ -104,11 +111,16 @@ class Room
         return
             $this->title."\n".
             $this->description."\n".
+            (string) $this->inventory."\n".
             'Exits ['.array_reduce(
                 $this->directions->toArray(),
                 function ($dirs, Direction $direction) {
                     return $dirs . substr($direction->getDirection(), 0, 1);
                 }
-            ).'] ';
+            ).
+            "] "
+            .reduce_left($this->mobs->toArray(), function(Mob $mob, $index, $collection, $reduction) {
+                return $reduction."\n".$mob->getName();
+            }, "\n");
     }
 }

@@ -19,7 +19,7 @@ class NewRoomCommand implements ServiceProviderInterface
 {
     public function register(Container $pimple)
     {
-        $pimple['new room'] = $pimple->protect(function () {
+        $pimple['roomfact'] = $pimple->protect(function () {
 
             return new class implements Command {
                 /**

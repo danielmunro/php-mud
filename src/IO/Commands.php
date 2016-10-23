@@ -16,6 +16,7 @@ use PhpMud\Command;
 use PhpMud\ServiceProvider\Command\GossipCommand;
 use PhpMud\ServiceProvider\Command\LookCommand;
 use PhpMud\ServiceProvider\Command\MoveCommand;
+use PhpMud\ServiceProvider\Command\NewMobCommand;
 use PhpMud\ServiceProvider\Command\NewRoomCommand;
 use PhpMud\ServiceProvider\Command\QuitCommand;
 use Pimple\Container;
@@ -32,6 +33,7 @@ class Commands
         $this->commands->register(new MoveCommand());
         $this->commands->register(new LookCommand());
         $this->commands->register(new NewRoomCommand());
+        $this->commands->register(new NewMobCommand());
         $this->commands->register(new QuitCommand());
         $this->commands->register(new GossipCommand());
     }
