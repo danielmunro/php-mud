@@ -51,4 +51,9 @@ class Direction
     {
         return $this->direction;
     }
+
+    public function setTargetRoom(Room $targetRoom)
+    {
+        $this->targetRoom = $targetRoom;
+    }
 }

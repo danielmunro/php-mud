@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace PhpMud\ServiceProvider\Command;
 
 use UnexpectedValueException;
-use PhpMud\Client;
 use PhpMud\Command;
 use PhpMud\Entity\Direction;
 use PhpMud\Entity\Room;
@@ -14,6 +13,7 @@ use PhpMud\Service\DirectionService;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use function Functional\last;
+use function Functional\first;
 
 class NewRoomCommand implements ServiceProviderInterface
 {
@@ -39,8 +39,37 @@ class NewRoomCommand implements ServiceProviderInterface
                         return new Output('That direction does not exist.');
                     }
 
-                    $srcDirection = new Direction($srcRoom, $direction, $newRoom);
-                    $srcRoom->getDirections()->add($srcDirection);
+                    /** @var Direction $existingDirection */
+                    $existingDirection = first(
+                        $srcRoom->getDirections()->toArray(),
+                        function (Direction $dir) use ($direction) {
+                            return $dir->getDirection() === $direction->getValue();
+                        }
+                    );
+
+                    if ($existingDirection) {
+                        $existingRoom = $existingDirection->getTargetRoom();
+                        $existingDirection->setTargetRoom($newRoom);
+                        $newRoom->getDirections()->add(
+                            new Direction(
+                                $newRoom,
+                                new \PhpMud\Enum\Direction($existingDirection->getDirection()),
+                                $existingRoom
+                            )
+                        );
+
+                        /** @var Direction $reverseDirection */
+                        $reverseDirection = first(
+                            $existingRoom->getDirections()->toArray(),
+                            function(Direction $dir) use ($existingDirection) {
+                                return $dir->getDirection() === (new \PhpMud\Enum\Direction($existingDirection->getDirection()))->reverse()->getValue();
+                            }
+                        );
+                        $reverseDirection->setTargetRoom($newRoom);
+                    } else {
+                        $srcDirection = new Direction($srcRoom, $direction, $newRoom);
+                        $srcRoom->getDirections()->add($srcDirection);
+                    }
 
                     $newDirection = new Direction($newRoom, $direction->reverse(), $srcRoom);
                     $newRoom->getDirections()->add($newDirection);

@@ -120,8 +120,12 @@ class Room
                 }
             ).
             '] '
-            .reduce_left($this->mobs->toArray(), function(Mob $mob, $index, $collection, $reduction) {
-                return $reduction."\n".$mob->getName();
-            }, "\n");
+            .reduce_left(
+                $this->mobs->toArray(),
+                function (Mob $mob, $index, $collection, $reduction) {
+                    return $reduction."\n".$mob->getName();
+                },
+                "\n"
+            );
     }
 }
