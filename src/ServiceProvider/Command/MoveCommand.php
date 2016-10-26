@@ -4,11 +4,13 @@ declare(strict_types=1);
 namespace PhpMud\ServiceProvider\Command;
 
 use PhpMud\Command;
+use PhpMud\Entity\Direction as DirectionEntity;
 use PhpMud\Enum\Direction;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
+use function Functional\first;
 
 class MoveCommand implements ServiceProviderInterface
 {
@@ -34,9 +36,12 @@ class MoveCommand implements ServiceProviderInterface
             {
                 $mob = $input->getMob();
                 $sourceRoom = $mob->getRoom();
-                $targetDirection = $sourceRoom->getDirections()->filter(function (\PhpMud\Entity\Direction $d) {
-                    return strpos($d->getDirection(), $this->direction->getValue()) === 0;
-                })->first();
+                $targetDirection = first(
+                    $sourceRoom->getDirections()->toArray(),
+                    function (DirectionEntity $d) {
+                        return $d->getDirection()->equals($this->direction);
+                    }
+                );
                 if (!$targetDirection) {
                     return new Output('Alas, that direction does not exist');
                 }

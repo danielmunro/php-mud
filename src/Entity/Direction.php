@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace PhpMud\Entity;
 
+use PhpMud\Enum\Direction as DirectionEnum;
+
 /**
  * Class Direction
  * @package PhpMud\Entity
@@ -47,9 +49,9 @@ class Direction
         return $this->targetRoom;
     }
 
-    public function getDirection(): string
+    public function getDirection(): DirectionEnum
     {
-        return $this->direction;
+        return new DirectionEnum($this->direction);
     }
 
     public function setTargetRoom(Room $targetRoom)

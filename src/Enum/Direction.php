@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace PhpMud\Enum;
 
+use UnexpectedValueException;
 use MyCLabs\Enum\Enum;
+use function Functional\first;
 
 /**
  * @method static NORTH()
@@ -30,6 +32,22 @@ class Direction extends Enum
     const WEST = 'west';
     const UP = 'up';
     const DOWN = 'down';
+
+    public static function matchPartialValue(string $value): Direction
+    {
+        $direction = first(
+            Direction::values(),
+            function (Enum $v) use ($value) {
+                return strpos($v->getValue(), $value) === 0;
+            }
+        );
+
+        if (!$direction) {
+            throw new UnexpectedValueException();
+        }
+
+        return $direction;
+    }
 
     public function reverse(): Direction
     {

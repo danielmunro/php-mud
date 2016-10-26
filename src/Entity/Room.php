@@ -116,7 +116,7 @@ class Room
             reduce_left(
                 $this->directions->toArray(),
                 function (Direction $direction, $index, $collection, $reduction) {
-                    return $reduction . substr($direction->getDirection(), 0, 1);
+                    return $reduction . substr($direction->getDirection()->getValue(), 0, 1);
                 }
             ).
             '] '
