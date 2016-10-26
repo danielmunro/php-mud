@@ -78,7 +78,11 @@ class Mob
      */
     public function setRoom(Room $room)
     {
+        if ($this->room) {
+            $this->room->getMobs()->removeElement($this);
+        }
         $this->room = $room;
+        $room->getMobs()->add($this);
     }
 
     /**

@@ -36,6 +36,17 @@ class Inventory
         return $this->items;
     }
 
+    public function add(Item $item)
+    {
+        $this->items->add($item);
+        $item->setInventory($this);
+    }
+
+    public function remove(Item $item)
+    {
+        $this->items->removeElement($item);
+    }
+
     public function __toString(): string
     {
         return reduce_left(

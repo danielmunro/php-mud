@@ -4,22 +4,20 @@ declare(strict_types=1);
 
 require_once __DIR__.'/../bootstrap.php';
 
-$roomRepository = $em->getRepository(\PhpMud\Entity\Room::class);
+use PhpMud\Entity\Room;
+use PhpMud\Entity\Item;
+use PhpMud\Enum\Material;
+use PhpMud\Server;
+
+$roomRepository = $em->getRepository(Room::class);
 $room = $roomRepository->find(1);
 
 if (!$room) {
     echo "creating initial world fixtures\n";
-    $room = new \PhpMud\Entity\Room();
+    $room = new Room();
     $room->setTitle('Midgaard Town Center');
     $room->setDescription('Before you is the town center.');
-    $item = new \PhpMud\Entity\Item('a copper teapot', \PhpMud\Enum\Material::COPPER());
-    $item->setInventory($room->getInventory());
-    $room->getInventory()->getItems()->add($item);
+    $room->getInventory()->add(new Item('a copper teapot', Material::COPPER()));
 }
 
-(
-    new PhpMud\Server(
-        $em,
-        $room
-    )
-)->listen($config['port']);
+(new Server($em, $room))->listen($config['port']);

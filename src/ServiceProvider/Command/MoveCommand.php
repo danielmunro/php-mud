@@ -35,9 +35,8 @@ class MoveCommand implements ServiceProviderInterface
             public function execute(Input $input): Output
             {
                 $mob = $input->getMob();
-                $sourceRoom = $mob->getRoom();
                 $targetDirection = first(
-                    $sourceRoom->getDirections()->toArray(),
+                    $mob->getRoom()->getDirections()->toArray(),
                     function (DirectionEntity $d) {
                         return $d->getDirection()->equals($this->direction);
                     }
@@ -45,9 +44,7 @@ class MoveCommand implements ServiceProviderInterface
                 if (!$targetDirection) {
                     return new Output('Alas, that direction does not exist');
                 }
-                $sourceRoom->getMobs()->removeElement($mob);
                 $mob->setRoom($targetDirection->getTargetRoom());
-                $mob->getRoom()->getMobs()->add($mob);
 
                 return new Output((string) $mob->getRoom());
             }
