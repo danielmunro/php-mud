@@ -1,5 +1,7 @@
 port: 9000
 debug: true
+logger:
+  name: phpmud
 persist:
   driver: pdo_sqlite
   path: db.sqlite

@@ -14,6 +14,7 @@ namespace PhpMud;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use Monolog\Logger;
 use PhpMud\Entity\Mob;
 use PhpMud\Entity\Room;
 use React\EventLoop\Factory;
@@ -50,14 +51,19 @@ class Server
     /** @var Room $startRoom */
     protected $startRoom;
 
+    /** @var Logger $logger */
+    protected $logger;
+
     /**
      * @param EntityManager $em
      * @param Room $startRoom
+     * @param Logger $logger
      */
-    public function __construct(EntityManager $em, Room $startRoom)
+    public function __construct(EntityManager $em, Room $startRoom, Logger $logger)
     {
         $this->em = $em;
         $this->startRoom = $startRoom;
+        $this->logger = $logger;
         $this->clients = new ArrayCollection();
     }
 
@@ -75,6 +81,10 @@ class Server
         $loop->addPeriodicTimer(1, [$this, 'pulse']);
         $loop->addPeriodicTimer(30, [$this, 'tick']);
 
+        $this->logger->debug('server listening', [
+            'port' => $port
+        ]);
+
         $loop->run();
     }
 
@@ -85,12 +95,19 @@ class Server
      */
     public function addConnection(Connection $connection): Client
     {
+        $this->logger->info('new remote connection', [
+            'remoteAddress' => $connection->getRemoteAddress()
+        ]);
         $client = new Client($connection);
         $this->clients->add($client);
 
         $connection->on(
             static::EVENT_LOGIN,
-            function (Mob $mob) use ($client) {
+            function (Mob $mob) use ($client, $connection) {
+                $this->logger->info('remote connection logged in', [
+                    'remoteAddress' => $connection->getRemoteAddress(),
+                    'mob' => $mob->getName()
+                ]);
                 $mob->setRoom($this->startRoom);
                 $this->startRoom->getMobs()->add($mob);
                 $client->pushBuffer('look');
@@ -99,7 +116,10 @@ class Server
 
         $connection->on(
             static::EVENT_CLOSE,
-            function () use ($client) {
+            function () use ($client, $connection) {
+                $this->logger->info('remote connection closed', [
+                    'remoteAddress' => $connection->getRemoteAddress()
+                ]);
                 $this->clients->removeElement($client);
             }
         );
@@ -147,6 +167,7 @@ class Server
      */
     public function tick()
     {
+        $this->logger->info('tick');
         $this->clients->map(function (Client $client) {
             $client->tick();
         });

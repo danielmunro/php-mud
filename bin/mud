@@ -13,11 +13,11 @@ $roomRepository = $em->getRepository(Room::class);
 $room = $roomRepository->find(1);
 
 if (!$room) {
-    echo "creating initial world fixtures\n";
+    $logger->debug('creating initial world fixtures');
     $room = new Room();
     $room->setTitle('Midgaard Town Center');
     $room->setDescription('Before you is the town center.');
     $room->getInventory()->add(new Item('a copper teapot', Material::COPPER()));
 }
 
-(new Server($em, $room))->listen($config['port']);
+(new Server($em, $room, $logger))->listen($config['port']);

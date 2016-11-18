@@ -6,6 +6,7 @@ require_once __DIR__.'/vendor/autoload.php';
 use Symfony\Component\Yaml\Yaml;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
+use Monolog\Logger;
 
 $configFile = __DIR__.'/config.yaml';
 
@@ -24,3 +25,5 @@ $em = EntityManager::create(
         $config['debug']
     )
 );
+
+$logger = new Logger($config['logger']['name']);
