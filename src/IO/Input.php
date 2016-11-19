@@ -67,4 +67,9 @@ class Input
     {
         return $this->command;
     }
+
+    public function getClient(): Client
+    {
+        return $this->client;
+    }
 }

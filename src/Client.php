@@ -22,7 +22,7 @@ use React\Socket\Connection;
 /**
  * A client
  */
-class Client
+class Client implements ChannelSubscriber
 {
     const EVENT_DATA = 'data';
 
@@ -30,6 +30,11 @@ class Client
      * @var Connection
      */
     protected $connection;
+
+    /**
+     * @var Channels $channels
+     */
+    protected $channels;
 
     /**
      * @var array
@@ -60,12 +65,14 @@ class Client
      * Client constructor.
      *
      * @param Connection $connection
+     * @param Channels $channels
      */
-    public function __construct(Connection $connection)
+    public function __construct(Connection $connection, Channels $channels)
     {
         $this->connection = $connection;
         $this->commands = new Commands();
         $this->login = new Login();
+        $this->channels = $channels;
 
         $connection->on(static::EVENT_DATA, [$this, 'login']);
     }
@@ -155,6 +162,11 @@ class Client
     public function gossip(string $message)
     {
         $this->connection->emit(Server::EVENT_GOSSIP, ['message' => $message]);
+    }
+
+    public function notify(string $message)
+    {
+        $this->connection->write($message);
     }
 
     /**

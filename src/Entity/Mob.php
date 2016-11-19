@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 
 namespace PhpMud\Entity;
+use PhpMud\Channels;
 
 /**
  * Class Mob
@@ -30,7 +31,10 @@ class Mob
     /** @Column(type="string") */
     protected $name;
 
-    /** @ManyToOne(targetEntity="Room", inversedBy="mobs") */
+    /**
+     * @ManyToOne(targetEntity="Room", inversedBy="mobs")
+     * @var Room $room
+     */
     protected $room;
 
     /** @Column(type="integer") */
@@ -45,6 +49,9 @@ class Mob
     /** @OneToOne(targetEntity="Inventory", cascade={"persist"}) */
     protected $inventory;
 
+    /** @var Channels $channels */
+    protected $channels;
+
     /**
      * @param string $name
      */
@@ -55,6 +62,11 @@ class Mob
         $this->hp = static::DEFAULT_HP;
         $this->mp = static::DEFAULT_MP;
         $this->mv = static::DEFAULT_MV;
+    }
+
+    public function setChannels(Channels $channels)
+    {
+        $this->channels = $channels;
     }
 
     /**

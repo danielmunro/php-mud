@@ -54,6 +54,9 @@ class Server
     /** @var Logger $logger */
     protected $logger;
 
+    /** @var Channels $channels */
+    protected $channels;
+
     /**
      * @param EntityManager $em
      * @param Room $startRoom
@@ -65,6 +68,7 @@ class Server
         $this->startRoom = $startRoom;
         $this->logger = $logger;
         $this->clients = new ArrayCollection();
+        $this->channels = new Channels();
     }
 
     /**
@@ -98,7 +102,7 @@ class Server
         $this->logger->info('new remote connection', [
             'remoteAddress' => $connection->getRemoteAddress()
         ]);
-        $client = new Client($connection);
+        $client = new Client($connection, $this->channels);
         $this->clients->add($client);
 
         $connection->on(
@@ -157,6 +161,7 @@ class Server
      */
     public function pulse()
     {
+        $this->
         $this->clients->map(function (Client $client) {
             $client->pulse();
         });
