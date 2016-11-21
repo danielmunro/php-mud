@@ -10,20 +10,21 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace PhpMud;
+namespace PhpMud\Channel;
 use Doctrine\Common\Collections\ArrayCollection;
+use PhpMud\Channel\Subscriber;
 use PhpMud\Enum\Channel;
 use function Functional\each;
 
 /**
  * Channels
  */
-class Channels
+class Publisher
 {
     /** @var array */
     protected $subscribers;
 
-    public function addSubscriber(Channel $channel, ChannelSubscriber $channelSubscriber)
+    public function addSubscriber(Channel $channel, Subscriber $channelSubscriber)
     {
         $channelValue = $channel->getValue();
         if (!isset($this->subscribers[$channelValue])) {
@@ -33,16 +34,16 @@ class Channels
         $this->subscribers[$channelValue]->add($channelSubscriber);
     }
 
-    public function removeSubscriber(Channel $channel, ChannelSubscriber $channelSubscriber)
+    public function removeSubscriber(Channel $channel, Subscriber $channelSubscriber)
     {
         $this->subscribers[$channel->getValue()]->removeElement($channelSubscriber);
     }
 
-    public function notify(Channel $channel, ChannelSubscriber $originator, string $message)
+    public function notify(Channel $channel, Subscriber $originator, string $message)
     {
         each(
             $this->subscribers[$channel->getValue()]->toArray(),
-            function (ChannelSubscriber $channelSubscriber) use ($originator, $message) {
+            function (Subscriber $channelSubscriber) use ($originator, $message) {
                 if ($channelSubscriber !== $originator) {
                     $channelSubscriber->notify($message);
                 }

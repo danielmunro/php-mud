@@ -11,7 +11,7 @@ declare(strict_types=1);
  */
 
 namespace PhpMud\Entity;
-use PhpMud\Channels;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class Mob
@@ -31,6 +31,9 @@ class Mob
     /** @Column(type="string") */
     protected $name;
 
+    /** @OneToMany(targetEntity="Channel", mappedBy="mob") */
+    protected $channels;
+
     /**
      * @ManyToOne(targetEntity="Room", inversedBy="mobs")
      * @var Room $room
@@ -49,24 +52,17 @@ class Mob
     /** @OneToOne(targetEntity="Inventory", cascade={"persist"}) */
     protected $inventory;
 
-    /** @var Channels $channels */
-    protected $channels;
-
     /**
      * @param string $name
      */
     public function __construct(string $name)
     {
         $this->inventory = new Inventory();
+        $this->channels = new ArrayCollection();
         $this->name = $name;
         $this->hp = static::DEFAULT_HP;
         $this->mp = static::DEFAULT_MP;
         $this->mv = static::DEFAULT_MV;
-    }
-
-    public function setChannels(Channels $channels)
-    {
-        $this->channels = $channels;
     }
 
     /**

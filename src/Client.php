@@ -12,7 +12,8 @@ declare(strict_types=1);
 
 namespace PhpMud;
 
-use PhpMud\Entity\Room;
+use PhpMud\Channel\Subscriber;
+use PhpMud\Channel\Publisher;
 use PhpMud\IO\Commands;
 use Pimple\Container;
 use PhpMud\Entity\Mob;
@@ -22,7 +23,7 @@ use React\Socket\Connection;
 /**
  * A client
  */
-class Client implements ChannelSubscriber
+class Client implements Subscriber
 {
     const EVENT_DATA = 'data';
 
@@ -32,9 +33,9 @@ class Client implements ChannelSubscriber
     protected $connection;
 
     /**
-     * @var Channels $channels
+     * @var Publisher $channelPublisher
      */
-    protected $channels;
+    protected $channelPublisher;
 
     /**
      * @var array
@@ -65,14 +66,14 @@ class Client implements ChannelSubscriber
      * Client constructor.
      *
      * @param Connection $connection
-     * @param Channels $channels
+     * @param Publisher $channelPublisher
      */
-    public function __construct(Connection $connection, Channels $channels)
+    public function __construct(Connection $connection, Publisher $channelPublisher)
     {
         $this->connection = $connection;
         $this->commands = new Commands();
         $this->login = new Login();
-        $this->channels = $channels;
+        $this->channelPublisher = $channelPublisher;
 
         $connection->on(static::EVENT_DATA, [$this, 'login']);
     }

@@ -16,7 +16,7 @@ use PhpMud\Entity\Mob;
 use PhpMud\IO\Input;
 
 /**
- *
+ * Handles login state
  */
 class Login
 {

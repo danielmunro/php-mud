@@ -15,6 +15,7 @@ namespace PhpMud;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
+use PhpMud\Channel\Publisher;
 use PhpMud\Entity\Mob;
 use PhpMud\Entity\Room;
 use React\EventLoop\Factory;
@@ -54,8 +55,8 @@ class Server
     /** @var Logger $logger */
     protected $logger;
 
-    /** @var Channels $channels */
-    protected $channels;
+    /** @var Publisher $channelPublisher */
+    protected $channelPublisher;
 
     /**
      * @param EntityManager $em
@@ -68,7 +69,7 @@ class Server
         $this->startRoom = $startRoom;
         $this->logger = $logger;
         $this->clients = new ArrayCollection();
-        $this->channels = new Channels();
+        $this->channelPublisher = new Publisher();
     }
 
     /**
@@ -102,7 +103,7 @@ class Server
         $this->logger->info('new remote connection', [
             'remoteAddress' => $connection->getRemoteAddress()
         ]);
-        $client = new Client($connection, $this->channels);
+        $client = new Client($connection, $this->channelPublisher);
         $this->clients->add($client);
 
         $connection->on(
@@ -161,7 +162,6 @@ class Server
      */
     public function pulse()
     {
-        $this->
         $this->clients->map(function (Client $client) {
             $client->pulse();
         });

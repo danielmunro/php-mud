@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace PhpMud\Tests;
 
+use PhpMud\Channel\Publisher;
 use PhpMud\Client;
 use PhpMud\Command;
 use PhpMud\Entity\Mob;
@@ -29,7 +30,7 @@ class MoveTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $client = new Client($connection);
+        $client = new Client($connection, new Publisher());
         $client->login('mobName');
 
         $room1->getMobs()->add($client->getMob());
