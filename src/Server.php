@@ -16,6 +16,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use PhpMud\Entity\Mob;
 use PhpMud\Entity\Room;
+use PhpMud\IO\Commands;
+use Pimple\Container;
 use React\EventLoop\Factory;
 use React\Socket\Connection;
 use function Functional\each;
@@ -38,8 +40,6 @@ class Server
 
     const EVENT_CONNECTION = 'connection';
 
-    const EVENT_GOSSIP = 'message';
-
     const EVENT_LOGIN = 'login';
 
     const EVENT_TICK = 'tick';
@@ -51,6 +51,11 @@ class Server
     protected $startRoom;
 
     /**
+     * @var Container
+     */
+    protected $commands;
+
+    /**
      * @param EntityManager $em
      * @param Room $startRoom
      */
@@ -59,6 +64,12 @@ class Server
         $this->em = $em;
         $this->startRoom = $startRoom;
         $this->clients = new ArrayCollection();
+        $this->commands = new Commands();
+    }
+
+    public function getClients(): ArrayCollection
+    {
+        return $this->clients;
     }
 
     /**
@@ -104,19 +115,6 @@ class Server
             }
         );
 
-        $connection->on(
-            static::EVENT_GOSSIP,
-            function (string $input) use ($client) {
-                each($this->clients, function (Client $c) use ($client, $input) {
-                    if ($c === $client) {
-                        $client->write('You gossip, "'.$input.'"'."\n");
-                    } else {
-                        $c->write($client->getMob()->getName().' gossips, "'.$input.'"'."\n");
-                    }
-                });
-            }
-        );
-
         $connection->write('By what name do you wish to be known? ');
 
         return $client;
@@ -128,7 +126,12 @@ class Server
     public function heartbeat()
     {
         $this->clients->map(function (Client $client) {
-            $client->heartbeat();
+            if ($client->canReadBuffer()) {
+                $input = $client->readBuffer();
+                ($this->commands->parse($input))()
+                    ->execute($this, $input)
+                    ->writeResponse($client);
+            }
         });
     }
 

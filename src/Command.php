@@ -21,8 +21,9 @@ use PhpMud\IO\Input;
 interface Command
 {
     /**
+     * @param Server $server
      * @param Input $input
      * @return Output
      */
-    public function execute(Input $input): Output;
+    public function execute(Server $server, Input $input): Output;
 }

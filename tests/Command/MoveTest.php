@@ -38,16 +38,16 @@ class MoveTest extends \PHPUnit_Framework_TestCase
         $client->pushBuffer($direction->getValue());
         $client->readBuffer();
 
-        static::assertEquals($room2, $client->getMob()->getRoom());
+        static::assertEquals($room2->getId(), $client->getMob()->getRoom()->getId());
 
         $reverse = $direction->reverse();
         $client->pushBuffer($reverse->getValue());
         $client->readBuffer();
-        static::assertEquals($room1, $client->getMob()->getRoom());
+        static::assertEquals($room1->getId(), $client->getMob()->getRoom()->getId());
 
         $client->pushBuffer($reverse->getValue());
         $client->readBuffer();
-        static::assertEquals($room1, $client->getMob()->getRoom());
+        static::assertEquals($room1->getId(), $client->getMob()->getRoom()->getId());
     }
 
     public function moveDataProvider()

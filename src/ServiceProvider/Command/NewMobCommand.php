@@ -8,6 +8,7 @@ use PhpMud\Command;
 use PhpMud\Entity\Mob;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
+use PhpMud\Server;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
@@ -15,13 +16,13 @@ class NewMobCommand implements ServiceProviderInterface
 {
     public function register(Container $pimple)
     {
-        $pimple['mobfact'] = $pimple->protect(function (Client $client) {
+        $pimple['mobfact'] = $pimple->protect(function () {
             return new class implements Command
             {
                 /**
                  * {@inheritdoc}
                  */
-                public function execute(Input $input): Output
+                public function execute(Server $server, Input $input): Output
                 {
                     $mob = new Mob('a fresh mob');
 

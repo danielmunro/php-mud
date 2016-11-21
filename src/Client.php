@@ -14,6 +14,7 @@ namespace PhpMud;
 
 use PhpMud\Entity\Room;
 use PhpMud\IO\Commands;
+use PhpMud\IO\Output;
 use Pimple\Container;
 use PhpMud\Entity\Mob;
 use PhpMud\IO\Input;
@@ -52,11 +53,6 @@ class Client
     protected $login;
 
     /**
-     * @var Container
-     */
-    protected $commands;
-
-    /**
      * Client constructor.
      *
      * @param Connection $connection
@@ -64,7 +60,6 @@ class Client
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
-        $this->commands = new Commands();
         $this->login = new Login();
 
         $connection->on(static::EVENT_DATA, [$this, 'login']);
@@ -92,18 +87,14 @@ class Client
     /**
      * Get the oldest command from the buffer and evaluate it.
      */
-    public function readBuffer()
+    public function readBuffer(): Input
     {
-        $input = new Input($this, trim(array_shift($this->buffer)));
-        /** @var callable $command */
-        $command = $this->commands->parse($input);
-        $output = $command($this)->execute($input);
-        $output->writeResponse($this);
+        return new Input($this, trim(array_shift($this->buffer)));
     }
 
     public function prompt()
     {
-        return "--> ";
+        return '--> ';
     }
 
     /**
@@ -114,14 +105,9 @@ class Client
         $this->connection->write($output);
     }
 
-    /**
-     * The main application loop
-     */
-    public function heartbeat()
+    public function close()
     {
-        if ($this->canReadBuffer()) {
-            $this->readBuffer();
-        }
+        $this->connection->close();
     }
 
     public function pulse()
@@ -145,22 +131,9 @@ class Client
     }
 
     /**
-     * Close the connection
-     */
-    public function disconnect()
-    {
-        $this->connection->close();
-    }
-
-    public function gossip(string $message)
-    {
-        $this->connection->emit(Server::EVENT_GOSSIP, ['message' => $message]);
-    }
-
-    /**
      * @return bool
      */
-    private function canReadBuffer(): bool
+    public function canReadBuffer(): bool
     {
         return !$this->delay && $this->buffer;
     }

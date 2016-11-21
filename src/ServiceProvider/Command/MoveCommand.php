@@ -8,6 +8,7 @@ use PhpMud\Entity\Direction as DirectionEntity;
 use PhpMud\Enum\Direction;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
+use PhpMud\Server;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use function Functional\first;
@@ -32,7 +33,7 @@ class MoveCommand implements ServiceProviderInterface
             /**
              * {@inheritdoc}
              */
-            public function execute(Input $input): Output
+            public function execute(Server $server, Input $input): Output
             {
                 $mob = $input->getMob();
                 $targetDirection = first(

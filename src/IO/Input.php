@@ -43,6 +43,11 @@ class Input
         $this->input = $input;
     }
 
+    public function getClient(): Client
+    {
+        return $this->client;
+    }
+
     public function getMob(): Mob
     {
         return $this->client->getMob();

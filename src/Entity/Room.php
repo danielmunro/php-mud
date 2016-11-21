@@ -119,13 +119,6 @@ class Room
                     return $reduction . substr($direction->getDirection()->getValue(), 0, 1);
                 }
             ).
-            '] '
-            .reduce_left(
-                $this->mobs->toArray(),
-                function (Mob $mob, $index, $collection, $reduction) {
-                    return $reduction."\n".$mob->getName();
-                },
-                "\n"
-            );
+            '] ';
     }
 }

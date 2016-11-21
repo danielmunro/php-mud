@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace PhpMud\ServiceProvider\Command;
 
+use PhpMud\Server;
 use UnexpectedValueException;
 use PhpMud\Command;
 use PhpMud\Entity\Direction;
@@ -25,7 +26,7 @@ class NewRoomCommand implements ServiceProviderInterface
                 /**
                  * {@inheritdoc}
                  */
-                public function execute(Input $input): Output
+                public function execute(Server $server, Input $input): Output
                 {
                     $mob = $input->getMob();
                     $srcRoom = $mob->getRoom();
