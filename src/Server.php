@@ -127,10 +127,7 @@ class Server
     {
         $this->clients->map(function (Client $client) {
             if ($client->canReadBuffer()) {
-                $input = $client->readBuffer();
-                ($this->commands->parse($input))()
-                    ->execute($this, $input)
-                    ->writeResponse($client);
+                $this->commands->execute($this, $client->readBuffer())->writeResponse($client);
             }
         });
     }

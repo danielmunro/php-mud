@@ -13,12 +13,15 @@ declare(strict_types=1);
 namespace PhpMud\IO;
 
 use PhpMud\Client;
+use PhpMud\Enum\OutputStatus;
 
 /**
  * Command output
  */
 class Output
 {
+
+
     /**
      * @var string
      */

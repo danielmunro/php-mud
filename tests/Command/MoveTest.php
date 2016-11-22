@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace PhpMud\Tests;
 
 use PhpMud\Client;
-use PhpMud\Command;
-use PhpMud\Entity\Mob;
 use PhpMud\Entity\Room;
 use PhpMud\Enum\Direction as DirectionEnum;
-use PhpMud\IO\Input;
+use PhpMud\IO\Commands;
+use PhpMud\Server;
+use PhpMud\ServiceProvider\Command\MoveCommand;
 use React\Socket\Connection;
 
 class MoveTest extends \PHPUnit_Framework_TestCase
@@ -20,34 +20,55 @@ class MoveTest extends \PHPUnit_Framework_TestCase
      */
     public function testMove(DirectionEnum $direction)
     {
+        /**
+         * Setup two rooms linked together by the direction passed in
+         */
         $room1 = new Room();
         $room2 = new Room();
         $room1->addRoomInDirection($direction, $room2);
 
-        $connection = $this
-            ->getMockBuilder(Connection::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $client = new Client($connection);
+        $client = $this->getMockClient();
         $client->login('mobName');
 
         $room1->getMobs()->add($client->getMob());
         $client->getMob()->setRoom($room1);
 
         $client->pushBuffer($direction->getValue());
-        $client->readBuffer();
+        $server = $this->getMockServer();
+        $commands = new Commands();
+        $commands->execute($server, $client->readBuffer());
 
-        static::assertEquals($room2->getId(), $client->getMob()->getRoom()->getId());
+        static::assertEquals($room2, $client->getMob()->getRoom());
 
         $reverse = $direction->reverse();
         $client->pushBuffer($reverse->getValue());
-        $client->readBuffer();
-        static::assertEquals($room1->getId(), $client->getMob()->getRoom()->getId());
+        $commands->execute($server, $client->readBuffer());
+
+        static::assertEquals($room1, $client->getMob()->getRoom());
 
         $client->pushBuffer($reverse->getValue());
-        $client->readBuffer();
-        static::assertEquals($room1->getId(), $client->getMob()->getRoom()->getId());
+        $output = $commands->execute($server, $client->readBuffer());
+
+        static::assertEquals($room1, $client->getMob()->getRoom());
+        static::assertEquals(MoveCommand::DIRECTION_NOT_FOUND, $output->getResponse());
+    }
+
+    private function getMockClient(): Client
+    {
+        return new Client(
+            $this
+                ->getMockBuilder(Connection::class)
+                ->disableOriginalConstructor()
+                ->getMock()
+        );
+    }
+
+    private function getMockServer(): Server
+    {
+        return $this
+            ->getMockBuilder(Server::class)
+            ->disableOriginalConstructor()
+            ->getMock();
     }
 
     public function moveDataProvider()

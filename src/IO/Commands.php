@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud\IO;
 
 use PhpMud\Command;
+use PhpMud\Server;
 use PhpMud\ServiceProvider\Command\GossipCommand;
 use PhpMud\ServiceProvider\Command\LookCommand;
 use PhpMud\ServiceProvider\Command\MoveCommand;
@@ -38,12 +39,17 @@ class Commands
         $this->commands->register(new GossipCommand());
     }
 
+    public function execute(Server $server, Input $input): Output
+    {
+        return $this->parse($input)->execute($server, $input);
+    }
+
     /**
      * @param Input $input
      *
-     * @return callable
+     * @return Command
      */
-    public function parse(Input $input): callable
+    private function parse(Input $input): Command
     {
         $commandName = $input->getCommand();
         $command = first($this->commands->keys(), function ($key) use ($commandName) {
@@ -51,20 +57,17 @@ class Commands
         });
 
         if ($command) {
-            return $this->commands[$command];
+            return $this->commands[$command]();
         }
 
-        return function () {
-            return new class implements Command {
-                /**
-                 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
-                 * {@inheritdoc}
-                 */
-                public function execute(Input $input): Output
-                {
-                    return new Output('What was that?');
-                }
-            };
+        return new class implements Command {
+            /**
+             * {@inheritdoc}
+             */
+            public function execute(Server $server, Input $input): Output
+            {
+                return new Output('What was that?');
+            }
         };
     }
 }

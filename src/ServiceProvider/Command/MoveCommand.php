@@ -15,6 +15,8 @@ use function Functional\first;
 
 class MoveCommand implements ServiceProviderInterface
 {
+    const DIRECTION_NOT_FOUND = 'Alas, that direction does not exist';
+
     protected static function svc(Direction $direction): Command
     {
         return new class($direction) implements Command
@@ -43,7 +45,7 @@ class MoveCommand implements ServiceProviderInterface
                     }
                 );
                 if (!$targetDirection) {
-                    return new Output('Alas, that direction does not exist');
+                    return new Output(MoveCommand::DIRECTION_NOT_FOUND);
                 }
                 $mob->setRoom($targetDirection->getTargetRoom());
 
