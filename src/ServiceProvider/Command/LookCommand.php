@@ -21,13 +21,12 @@ class LookCommand implements ServiceProviderInterface
                 public function execute(Server $server, Input $input): Output
                 {
                     return new Output((string) $input->getRoom().reduce_left(
-                            $input->getRoom()->getMobs()->toArray(),
-                            function (Mob $mob, $index, $collection, $reduction) use ($input) {
-                                return $mob === $input->getMob() ? '' : $reduction."\n".$mob->getName();
-                            },
-                            "\n"
-                        )
-                    );
+                        $input->getRoom()->getMobs()->toArray(),
+                        function (Mob $mob, $index, $collection, $reduction) use ($input) {
+                            return $mob === $input->getMob() ? '' : $reduction."\n".$mob->getName();
+                        },
+                        "\n"
+                    ));
                 }
             };
         });

@@ -40,8 +40,13 @@ class Item implements Noun
     /** @ManyToOne(targetEntity="Inventory", inversedBy="items") */
     protected $inventory;
 
-    public function __construct(string $name, Material $material, array $identifiers, float $weight = 0.0, float $value = 0.0)
-    {
+    public function __construct(
+        string $name,
+        Material $material,
+        array $identifiers,
+        float $weight = 0.0,
+        float $value = 0.0
+    ) {
         $this->name = $name;
         $this->material = $material;
         $this->identifiers = $identifiers;
