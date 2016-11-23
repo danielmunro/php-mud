@@ -75,6 +75,11 @@ class Client
         return $this->input(array_shift($this->buffer));
     }
 
+    public function getBuffer(): array
+    {
+        return $this->buffer;
+    }
+
     public function input(string $input): Input
     {
         return new Input($this, trim($input));

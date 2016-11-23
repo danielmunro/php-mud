@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace PhpMud\Tests;
 
@@ -18,7 +19,7 @@ abstract class CommandTest extends \PHPUnit_Framework_TestCase
                 ->getMock()
         );
 
-        $client->login('mob');
+        $client->login('test');
 
         return $client;
     }

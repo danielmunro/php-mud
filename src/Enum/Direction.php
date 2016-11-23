@@ -58,6 +58,8 @@ class Direction extends Enum
                 return static::DOWN();
             case static::DOWN():
                 return static::UP();
+            default:
+                throw new UnexpectedValueException($this->getValue());
         }
     }
 }

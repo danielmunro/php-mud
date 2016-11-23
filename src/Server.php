@@ -127,7 +127,7 @@ class Server
     {
         $this->clients->map(function (Client $client) {
             if ($client->canReadBuffer()) {
-                $this->commands->execute($this, $client->readBuffer())->writeResponse($client);
+                $this->commands->execute($client->readBuffer())->writeResponse($client);
             }
         });
     }

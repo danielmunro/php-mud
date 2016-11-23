@@ -63,7 +63,7 @@ class Input
     {
         return count($this->args) > 1 ? !empty(select(
             $noun->getIdentifiers(),
-            function(string $identifier) {
+            function (string $identifier) {
                 return strpos($identifier, $this->args[1]) === 0;
             }
         )) : false;
