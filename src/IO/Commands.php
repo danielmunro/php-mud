@@ -14,6 +14,8 @@ namespace PhpMud\IO;
 
 use PhpMud\Command;
 use PhpMud\Server;
+use PhpMud\ServiceProvider\Command\DropCommand;
+use PhpMud\ServiceProvider\Command\GetCommand;
 use PhpMud\ServiceProvider\Command\GossipCommand;
 use PhpMud\ServiceProvider\Command\LookCommand;
 use PhpMud\ServiceProvider\Command\MoveCommand;
@@ -37,6 +39,8 @@ class Commands
         $this->commands->register(new NewMobCommand());
         $this->commands->register(new QuitCommand());
         $this->commands->register(new GossipCommand());
+        $this->commands->register(new DropCommand());
+        $this->commands->register(new GetCommand());
     }
 
     public function execute(Server $server, Input $input): Output

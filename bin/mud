@@ -17,7 +17,7 @@ if (!$room) {
     $room = new Room();
     $room->setTitle('Midgaard Town Center');
     $room->setDescription('Before you is the town center.');
-    $room->getInventory()->add(new Item('a copper teapot', Material::COPPER()));
+    $room->getInventory()->add(new Item('a copper teapot', Material::COPPER(), ['copper', 'teapot']));
 }
 
 (new Server($em, $room))->listen($config['port']);

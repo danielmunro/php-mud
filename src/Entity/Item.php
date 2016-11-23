@@ -13,11 +13,12 @@ declare(strict_types=1);
 namespace PhpMud\Entity;
 
 use PhpMud\Enum\Material;
+use PhpMud\Noun;
 
 /**
  * @Entity
  */
-class Item
+class Item implements Noun
 {
     use PrimaryKeyTrait;
 
@@ -26,6 +27,9 @@ class Item
 
     /** @Column(type="string") */
     protected $material;
+
+    /** @Column(type="array") */
+    protected $identifiers;
 
     /** @Column(type="decimal") */
     protected $weight;
@@ -36,10 +40,11 @@ class Item
     /** @ManyToOne(targetEntity="Inventory", inversedBy="items") */
     protected $inventory;
 
-    public function __construct(string $name, Material $material, float $weight = 0.0, float $value = 0.0)
+    public function __construct(string $name, Material $material, array $identifiers, float $weight = 0.0, float $value = 0.0)
     {
         $this->name = $name;
         $this->material = $material;
+        $this->identifiers = $identifiers;
         $this->weight = $weight;
         $this->value = $value;
     }
@@ -52,5 +57,10 @@ class Item
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getIdentifiers(): array
+    {
+        return $this->identifiers;
     }
 }
