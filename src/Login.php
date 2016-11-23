@@ -41,7 +41,7 @@ class Login
 
     public function next(Input $input): string
     {
-        $this->mob = new Mob($input->getInput());
+        $this->mob = new Mob((string) $input);
         $this->state = static::STATE_COMPLETE;
 
         return $this->state;

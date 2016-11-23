@@ -60,23 +60,22 @@ class MoveTest extends \PHPUnit_Framework_TestCase
         $commands = new Commands();
         $room = new Room();
         $item = new Item('item', Material::COPPER(), ['item']);
-        $room->getInventory()->getItems()->add($item);
+        $room->getInventory()->add($item);
         $client = $this->getMockClient();
         $client->login('mobName');
         $room->getMobs()->add($client->getMob());
         $client->getMob()->setRoom($room);
-
-        static::assertEmpty($client->getMob()->getInventory()->getItems()->toArray());
+        static::assertEmpty($client->getMob()->getInventory()->getItems());
 
         $client->pushBuffer('get item');
         $commands->execute($server, $client->readBuffer());
-        static::assertContains($item, $client->getMob()->getInventory()->getItems()->toArray());
-        static::assertEmpty($room->getInventory()->getItems()->toArray());
+        static::assertContains($item, $client->getMob()->getInventory()->getItems());
+        static::assertEmpty($room->getInventory()->getItems());
 
         $client->pushBuffer('drop item');
         $commands->execute($server, $client->readBuffer());
-        static::assertContains($item, $room->getInventory()->getItems()->toArray());
-        static::assertEmpty($client->getMob()->getInventory()->getItems()->toArray());
+        static::assertContains($item, $room->getInventory()->getItems());
+        static::assertEmpty($client->getMob()->getInventory()->getItems());
     }
 
     private function getMockClient(): Client

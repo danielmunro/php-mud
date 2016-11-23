@@ -31,9 +31,9 @@ class Inventory
         $this->items = new ArrayCollection();
     }
 
-    public function getItems(): Collection
+    public function getItems(): array
     {
-        return $this->items;
+        return $this->items->toArray();
     }
 
     public function add(Item $item)

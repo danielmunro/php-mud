@@ -16,6 +16,8 @@ use PhpMud\Client;
 use PhpMud\Entity\Mob;
 use PhpMud\Entity\Room;
 use function Functional\tail;
+use function Functional\select;
+use PhpMud\Noun;
 
 class Input
 {
@@ -39,7 +41,6 @@ class Input
         $this->client = $client;
         $this->args = explode(' ', $input);
         $this->command = $this->args[0];
-        $this->args = tail($this->args);
         $this->input = $input;
     }
 
@@ -58,18 +59,28 @@ class Input
         return $this->client->getMob()->getRoom();
     }
 
+    public function isSubjectMatch(Noun $noun): bool
+    {
+        return count($this->args) > 1 ? !empty(select(
+            $noun->getIdentifiers(),
+            function(string $identifier) {
+                return strpos($identifier, $this->args[1]) === 0;
+            }
+        )) : false;
+    }
+
     public function getArgs(): array
     {
         return $this->args;
     }
 
-    public function getInput(): string
-    {
-        return $this->input;
-    }
-
     public function getCommand(): string
     {
         return $this->command;
+    }
+
+    public function __toString()
+    {
+        return $this->input;
     }
 }

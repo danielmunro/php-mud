@@ -21,23 +21,15 @@ class GetCommand implements ServiceProviderInterface
             {
                 public function execute(Server $server, Input $input): Output
                 {
-                    $itemToGet = $input->getArgs()[1];
-
                     $item = first(
-                        $input->getRoom()->getInventory()->getItems()->toArray(),
-                        function (Item $item) use ($itemToGet) {
-                            foreach ($item->getIdentifiers() as $identifier) {
-                                if (strpos($identifier, $itemToGet) === 0) {
-                                    return $item;
-                                }
-                            }
-
-                            return null;
+                        $input->getRoom()->getInventory()->getItems(),
+                        function (Item $item) use ($input) {
+                            return $input->isSubjectMatch($item);
                         }
                     );
 
                     if ($item) {
-                        $input->getMob()->getInventory()->getItems()->add($item);
+                        $input->getMob()->getInventory()->add($item);
                         $input->getRoom()->getInventory()->remove($item);
                         $item->setInventory($input->getMob()->getInventory());
 

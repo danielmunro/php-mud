@@ -21,23 +21,15 @@ class DropCommand implements ServiceProviderInterface
             {
                 public function execute(Server $server, Input $input): Output
                 {
-                    $itemToGet = $input->getArgs()[1];
-
                     $item = first(
-                        $input->getMob()->getInventory()->getItems()->toArray(),
-                        function (Item $item) use ($itemToGet) {
-                            foreach ($item->getIdentifiers() as $identifier) {
-                                if (strpos($identifier, $itemToGet) === 0) {
-                                    return $item;
-                                }
-                            }
-
-                            return null;
+                        $input->getMob()->getInventory()->getItems(),
+                        function (Item $item) use ($input) {
+                            return $input->isSubjectMatch($item);
                         }
                     );
 
                     if ($item) {
-                        $input->getMob()->getInventory()->getItems()->removeElement($item);
+                        $input->getMob()->getInventory()->remove($item);
                         $input->getRoom()->getInventory()->add($item);
                         $item->setInventory($input->getMob()->getInventory());
 

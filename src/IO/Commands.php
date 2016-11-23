@@ -55,9 +55,8 @@ class Commands
      */
     private function parse(Input $input): Command
     {
-        $commandName = $input->getCommand();
-        $command = first($this->commands->keys(), function ($key) use ($commandName) {
-            return strpos($key, $commandName) === 0;
+        $command = first($this->commands->keys(), function ($key) use ($input) {
+            return strpos($key, $input->getCommand()) === 0;
         });
 
         if ($command) {
