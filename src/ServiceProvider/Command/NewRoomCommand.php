@@ -34,9 +34,8 @@ class NewRoomCommand implements ServiceProviderInterface
                     $newRoom->setTitle('A swirling mist');
                     $newRoom->setDescription('You are engulfed by a mist.');
 
-                    try {
-                        $direction = DirectionEnum::matchPartialValue(last($input->getArgs()));
-                    } catch (UnexpectedValueException $e) {
+                    $direction = DirectionEnum::matchPartialValue(last($input->getArgs()));
+                    if (!$direction) {
                         return new Output('That direction does not exist.');
                     }
 

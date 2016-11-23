@@ -27,25 +27,30 @@ use function Functional\first;
 
 class Commands
 {
-    /** @var Container $commandContainer */
-    protected $commands;
+    /** @var Container $container */
+    protected $container;
 
-    public function __construct()
+    /** @var Server $server */
+    protected $server;
+
+    public function __construct(Server $server)
     {
-        $this->commands = new Container();
-        $this->commands->register(new MoveCommand());
-        $this->commands->register(new LookCommand());
-        $this->commands->register(new NewRoomCommand());
-        $this->commands->register(new NewMobCommand());
-        $this->commands->register(new QuitCommand());
-        $this->commands->register(new GossipCommand());
-        $this->commands->register(new DropCommand());
-        $this->commands->register(new GetCommand());
+        $this->server = $server;
+
+        $this->container = new Container();
+        $this->container->register(new MoveCommand());
+        $this->container->register(new LookCommand());
+        $this->container->register(new NewRoomCommand());
+        $this->container->register(new NewMobCommand());
+        $this->container->register(new QuitCommand());
+        $this->container->register(new GossipCommand());
+        $this->container->register(new DropCommand());
+        $this->container->register(new GetCommand());
     }
 
-    public function execute(Server $server, Input $input): Output
+    public function execute(Input $input): Output
     {
-        return $this->parse($input)->execute($server, $input);
+        return $this->parse($input)->execute($this->server, $input);
     }
 
     /**
@@ -55,12 +60,12 @@ class Commands
      */
     private function parse(Input $input): Command
     {
-        $command = first($this->commands->keys(), function ($key) use ($input) {
+        $command = first($this->container->keys(), function ($key) use ($input) {
             return strpos($key, $input->getCommand()) === 0;
         });
 
         if ($command) {
-            return $this->commands[$command]();
+            return $this->container[$command]();
         }
 
         return new class implements Command {

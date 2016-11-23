@@ -65,12 +65,19 @@ class Client
         $connection->on(static::EVENT_DATA, [$this, 'login']);
     }
 
-    /**
-     * @param string $buffer
-     */
     public function pushBuffer(string $buffer)
     {
         $this->buffer[] = $buffer;
+    }
+
+    public function readBuffer(): Input
+    {
+        return $this->input(array_shift($this->buffer));
+    }
+
+    public function input(string $input): Input
+    {
+        return new Input($this, trim($input));
     }
 
     public function login(string $input)
@@ -82,14 +89,6 @@ class Client
             $this->connection->removeListener(static::EVENT_DATA, [$this, 'login']);
             $this->connection->on(static::EVENT_DATA, [$this, 'pushBuffer']);
         }
-    }
-
-    /**
-     * Get the oldest command from the buffer and evaluate it.
-     */
-    public function readBuffer(): Input
-    {
-        return new Input($this, trim(array_shift($this->buffer)));
     }
 
     public function prompt()

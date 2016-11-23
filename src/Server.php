@@ -64,7 +64,7 @@ class Server
         $this->em = $em;
         $this->startRoom = $startRoom;
         $this->clients = new ArrayCollection();
-        $this->commands = new Commands();
+        $this->commands = new Commands($this);
     }
 
     public function getClients(): ArrayCollection

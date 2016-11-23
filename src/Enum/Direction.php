@@ -33,20 +33,14 @@ class Direction extends Enum
     const UP = 'up';
     const DOWN = 'down';
 
-    public static function matchPartialValue(string $value): Direction
+    public static function matchPartialValue(string $value)
     {
-        $direction = first(
+        return first(
             Direction::values(),
             function (Enum $v) use ($value) {
                 return strpos($v->getValue(), $value) === 0;
             }
         );
-
-        if (!$direction) {
-            throw new UnexpectedValueException();
-        }
-
-        return $direction;
     }
 
     public function reverse(): Direction
