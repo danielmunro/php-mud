@@ -4,8 +4,10 @@ declare(strict_types=1);
 namespace PhpMud\Tests;
 
 use PhpMud\Client;
+use PhpMud\Entity\Item;
 use PhpMud\Entity\Room;
 use PhpMud\Enum\Direction as DirectionEnum;
+use PhpMud\Enum\Material;
 use PhpMud\IO\Commands;
 use PhpMud\Server;
 use PhpMud\ServiceProvider\Command\MoveCommand;
@@ -29,7 +31,6 @@ class MoveTest extends \PHPUnit_Framework_TestCase
 
         $client = $this->getMockClient();
         $client->login('mobName');
-
         $room1->getMobs()->add($client->getMob());
         $client->getMob()->setRoom($room1);
 
@@ -51,6 +52,31 @@ class MoveTest extends \PHPUnit_Framework_TestCase
 
         static::assertEquals($room1, $client->getMob()->getRoom());
         static::assertEquals(MoveCommand::DIRECTION_NOT_FOUND, $output->getResponse());
+    }
+
+    public function testGetDrop()
+    {
+        $server = $this->getMockServer();
+        $commands = new Commands();
+        $room = new Room();
+        $item = new Item('item', Material::COPPER(), ['item']);
+        $room->getInventory()->getItems()->add($item);
+        $client = $this->getMockClient();
+        $client->login('mobName');
+        $room->getMobs()->add($client->getMob());
+        $client->getMob()->setRoom($room);
+
+        static::assertEmpty($client->getMob()->getInventory()->getItems()->toArray());
+
+        $client->pushBuffer('get item');
+        $commands->execute($server, $client->readBuffer());
+        static::assertContains($item, $client->getMob()->getInventory()->getItems()->toArray());
+        static::assertEmpty($room->getInventory()->getItems()->toArray());
+
+        $client->pushBuffer('drop item');
+        $commands->execute($server, $client->readBuffer());
+        static::assertContains($item, $room->getInventory()->getItems()->toArray());
+        static::assertEmpty($client->getMob()->getInventory()->getItems()->toArray());
     }
 
     private function getMockClient(): Client
