@@ -19,6 +19,7 @@ class ServerTest extends CommandTest
         $connection = $this->getMockBuilder(Connection::class)->disableOriginalConstructor()->getMock();
         $client = $server->addConnection($connection);
         $client->login('test');
+        $client->login('human');
         $client->getMob()->setRoom($room);
         $client->pushBuffer('look');
         static::assertNotEmpty($client->getBuffer());

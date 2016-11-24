@@ -119,6 +119,10 @@ class Client
         if ($this->delay > 0) {
             $this->delay--;
         }
+
+        if ($this->mob && $this->mob->getFight()) {
+            $this->mob->getFight()->turn();
+        }
     }
 
     public function tick()

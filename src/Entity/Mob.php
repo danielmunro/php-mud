@@ -11,50 +11,50 @@ declare(strict_types=1);
  */
 
 namespace PhpMud\Entity;
+use PhpMud\Enum\Race;
+use PhpMud\Fight;
+use PhpMud\Noun;
 
 /**
  * Class Mob
  * @package PhpMud\Entity
  * @Entity
  */
-class Mob
+class Mob implements Noun
 {
-    const DEFAULT_HP = 20;
-
-    const DEFAULT_MP = 100;
-
-    const DEFAULT_MV = 100;
-
     use PrimaryKeyTrait;
 
     /** @Column(type="string") */
     protected $name;
 
+    /** @Column(type="array") */
+    protected $identifiers;
+
     /** @ManyToOne(targetEntity="Room", inversedBy="mobs") */
     protected $room;
 
-    /** @Column(type="integer") */
-    protected $hp;
-
-    /** @Column(type="integer") */
-    protected $mp;
-
-    /** @Column(type="integer") */
-    protected $mv;
+    /** @OneToOne(targetEntity="Attributes")  */
+    protected $attributes;
 
     /** @OneToOne(targetEntity="Inventory", cascade={"persist"}) */
     protected $inventory;
 
+    /** @Column(type="string") */
+    protected $race;
+
+    /** @var Fight $fight */
+    protected $fight;
+
     /**
      * @param string $name
+     * @param Race $race
      */
-    public function __construct(string $name)
+    public function __construct(string $name, Race $race)
     {
-        $this->inventory = new Inventory();
         $this->name = $name;
-        $this->hp = static::DEFAULT_HP;
-        $this->mp = static::DEFAULT_MP;
-        $this->mv = static::DEFAULT_MV;
+        $this->race = $race->getValue();
+        $this->attributes = $race->getStartingAttributes();
+        $this->inventory = new Inventory();
     }
 
     /**
@@ -63,6 +63,14 @@ class Mob
     public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * @return Race
+     */
+    public function getRace(): Race
+    {
+        return new Race($this->race);
     }
 
     /**
@@ -86,27 +94,20 @@ class Mob
     }
 
     /**
+     * @param string $attribute
      * @return int
      */
-    public function getHp(): int
+    public function getAttribute(string $attribute): int
     {
-        return $this->hp;
+        return $this->attributes->getAttribute($attribute);
     }
 
     /**
-     * @return int
+     * @return Attributes
      */
-    public function getMp(): int
+    public function getAttributes(): Attributes
     {
-        return $this->mp;
-    }
-
-    /**
-     * @return int
-     */
-    public function getMv(): int
-    {
-        return $this->mv;
+        return $this->attributes;
     }
 
     /**
@@ -115,5 +116,29 @@ class Mob
     public function getInventory(): Inventory
     {
         return $this->inventory;
+    }
+
+    /**
+     * @return array
+     */
+    public function getIdentifiers(): array
+    {
+        return $this->identifiers ?? [$this->name];
+    }
+
+    /**
+     * @return Fight
+     */
+    public function getFight()
+    {
+        return $this->fight;
+    }
+
+    /**
+     * @param Fight $fight
+     */
+    public function setFight(Fight $fight)
+    {
+        $this->fight = $fight;
     }
 }
