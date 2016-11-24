@@ -142,4 +142,9 @@ class Mob implements Noun
     {
         $this->fight = $fight;
     }
+
+    public function resolveFight()
+    {
+        $this->fight = null;
+    }
 }

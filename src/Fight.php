@@ -34,18 +34,36 @@ class Fight
     public function turn()
     {
         if (!$this->isContinuing()) {
-            $this->attacker->setFight(null);
+            $this->resolve();
+
+            return;
         }
 
-        $this->target->getAttributes()->modifyAttribute('hp', $this->attacker->getAttribute('dam'));
+        $this->target->getAttributes()->modifyAttribute('hp', -$this->attacker->getAttribute('dam'));
 
-        if ($this->target->getAttribute('hp') > 0 && !$this->target->getFight()) {
-            $this->target->setFight(new Fight($this->target, $this->attacker));
+        if ($this->isContinuing() && $this->target->getFight() === $this) {
+            $this->attacker->getAttributes()->modifyAttribute('hp', -$this->target->getAttribute('dam'));
+        }
+
+        if (!$this->isContinuing()) {
+            $this->resolve();
+
+            return;
+        }
+
+        if (!$this->target->getFight()) {
+            $this->target->setFight($this);
         }
     }
 
     public function isContinuing(): bool
     {
         return $this->attacker->getAttribute('hp') > 0 && $this->target->getAttribute('hp') > 0;
+    }
+
+    protected function resolve()
+    {
+        $this->attacker->resolveFight();
+        $this->target->resolveFight();
     }
 }
