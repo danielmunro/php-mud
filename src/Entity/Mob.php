@@ -43,6 +43,9 @@ class Mob implements Noun
     /** @Column(type="string") */
     protected $race;
 
+    /** @OneToMany(targetEntity="Affect", mappedBy="mob") */
+    protected $affects;
+
     /** @var Fight $fight */
     protected $fight;
 
@@ -64,14 +67,6 @@ class Mob implements Noun
     public function getName(): string
     {
         return $this->name;
-    }
-
-    /**
-     * @return Race
-     */
-    public function getRace(): Race
-    {
-        return new Race($this->race);
     }
 
     /**
