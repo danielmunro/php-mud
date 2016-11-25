@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace PhpMud\Tests;
+namespace PhpMud\Tests\Command;
 
 use PhpMud\Entity\Item;
 use PhpMud\Entity\Room;

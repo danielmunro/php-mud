@@ -7,7 +7,7 @@ use PhpMud\Entity\Room;
 use PhpMud\Server;
 use React\Socket\Connection;
 
-class ServerTest extends CommandTest
+class ServerTest extends \PHPUnit_Framework_TestCase
 {
     public function testHeartbeat()
     {

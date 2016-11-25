@@ -93,14 +93,18 @@ class Room
     /**
      * @param DirectionEnum $directionEnum
      * @param Room $room
+     *
+     * @return Direction
      */
-    public function addRoomInDirection(DirectionEnum $directionEnum, Room $room)
+    public function addRoomInDirection(DirectionEnum $directionEnum, Room $room): Direction
     {
         $direction = new Direction($this, $directionEnum, $room);
         $this->directions->add($direction);
 
         $reverse = new Direction($room, $directionEnum->reverse(), $this);
         $room->getDirections()->add($reverse);
+
+        return $direction;
     }
 
     /**

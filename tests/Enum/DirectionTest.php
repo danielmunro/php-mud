@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace PhpMud\Tests;
+namespace PhpMud\Tests\Enum;
 
 use PhpMud\Enum\Direction;
 

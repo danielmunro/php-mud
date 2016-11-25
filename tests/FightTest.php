@@ -7,7 +7,7 @@ use PhpMud\Entity\Mob;
 use PhpMud\Enum\Race;
 use PhpMud\Fight;
 
-class FightTest extends CommandTest
+class FightTest extends \PHPUnit_Framework_TestCase
 {
     public function testFight()
     {
