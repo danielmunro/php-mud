@@ -41,7 +41,11 @@ class Race extends Enum
                     'con' => 15,
                     'cha' => 15,
                     'hit' => 1,
-                    'dam' => 1
+                    'dam' => 1,
+                    'acSlash' => 0,
+                    'acBash' => 0,
+                    'acPierce' => 0,
+                    'acMagic' => 0
                 ]);
             case self::ELF:
                 return new Attributes([
@@ -55,7 +59,11 @@ class Race extends Enum
                     'con' => 11,
                     'cha' => 17,
                     'hit' => 1,
-                    'dam' => 1
+                    'dam' => 1,
+                    'acSlash' => 0,
+                    'acBash' => 0,
+                    'acPierce' => 0,
+                    'acMagic' => 10
                 ]);
             case self::DWARF:
                 return new Attributes([
@@ -69,7 +77,11 @@ class Race extends Enum
                     'con' => 18,
                     'cha' => 13,
                     'hit' => 1,
-                    'dam' => 2
+                    'dam' => 2,
+                    'acSlash' => 0,
+                    'acBash' => 10,
+                    'acPierce' => 0,
+                    'acMagic' => 0
                 ]);
             default:
                 throw new \UnexpectedValueException($this->getValue());

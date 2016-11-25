@@ -17,6 +17,7 @@ use PhpMud\Server;
 use PhpMud\ServiceProvider\Command\DropCommand;
 use PhpMud\ServiceProvider\Command\GetCommand;
 use PhpMud\ServiceProvider\Command\GossipCommand;
+use PhpMud\ServiceProvider\Command\KillCommand;
 use PhpMud\ServiceProvider\Command\LookCommand;
 use PhpMud\ServiceProvider\Command\MoveCommand;
 use PhpMud\ServiceProvider\Command\NewMobCommand;
@@ -46,6 +47,7 @@ class Commands
         $this->container->register(new GossipCommand());
         $this->container->register(new DropCommand());
         $this->container->register(new GetCommand());
+        $this->container->register(new KillCommand());
     }
 
     public function execute(Input $input): Output

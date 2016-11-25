@@ -43,6 +43,14 @@ class Attributes
 
     protected $dam;
 
+    protected $acSlash;
+
+    protected $acBash;
+
+    protected $acPierce;
+
+    protected $acMagic;
+
     public function __construct(array $attributes = [])
     {
         if ($attributes) {

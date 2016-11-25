@@ -39,10 +39,23 @@ class Fight
             return;
         }
 
-        $this->target->getAttributes()->modifyAttribute('hp', -$this->attacker->getAttribute('dam'));
+        $hitRoll = Dice::d20();
+        if ($hitRoll === 1) {
+            return;
+        } else if ($hitRoll < 20) {
+            $hitRoll += $this->attacker->getAttribute('hit') + $this->attacker->getAttribute('str');
+
+            if ($hitRoll <= $this->target->getAttribute('acBash')) {
+                return;
+            }
+        }
+
+        $dam = Dice::dInt($this->attacker->getAttribute('dam'));
+        $this->target->getAttributes()->modifyAttribute('hp', -$dam);
 
         if ($this->isContinuing() && $this->target->getFight() === $this) {
-            $this->attacker->getAttributes()->modifyAttribute('hp', -$this->target->getAttribute('dam'));
+            $dam = Dice::dInt($this->attacker->getAttribute('dam'));
+            $this->attacker->getAttributes()->modifyAttribute('hp', -$dam);
         }
 
         if (!$this->isContinuing()) {

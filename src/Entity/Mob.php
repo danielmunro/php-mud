@@ -12,14 +12,14 @@ declare(strict_types=1);
 
 namespace PhpMud\Entity;
 
+use PhpMud\Enum\Disposition;
 use PhpMud\Enum\Race;
 use PhpMud\Fight;
 use PhpMud\Noun;
 
 /**
- * Class Mob
- * @package PhpMud\Entity
  * @Entity
+ * @HasLifecycleCallbacks
  */
 class Mob implements Noun
 {
@@ -28,13 +28,19 @@ class Mob implements Noun
     /** @Column(type="string") */
     protected $name;
 
+    /** @Column(type="string") */
+    protected $look;
+
+    /** @Column(type="string") */
+    protected $disposition;
+
     /** @Column(type="array") */
     protected $identifiers;
 
     /** @ManyToOne(targetEntity="Room", inversedBy="mobs") */
     protected $room;
 
-    /** @OneToOne(targetEntity="Attributes")  */
+    /** @OneToOne(targetEntity="Attributes", cascade={"persist"})  */
     protected $attributes;
 
     /** @OneToOne(targetEntity="Inventory", cascade={"persist"}) */
@@ -56,9 +62,15 @@ class Mob implements Noun
     public function __construct(string $name, Race $race)
     {
         $this->name = $name;
-        $this->race = $race->getValue();
+        $this->race = $race;
         $this->attributes = $race->getStartingAttributes();
         $this->inventory = new Inventory();
+        $this->disposition = Disposition::STANDING();
+    }
+
+    public function getLook(): string
+    {
+        return $this->look ?? 'is here.';
     }
 
     /**
@@ -141,5 +153,23 @@ class Mob implements Noun
     public function resolveFight()
     {
         $this->fight = null;
+    }
+
+    /**
+     * @PostLoad
+     */
+    public function postLoad()
+    {
+        $this->race = new Race($this->race);
+        $this->disposition = new Disposition($this->disposition);
+    }
+
+    /**
+     * @PrePersist
+     */
+    public function prePersist()
+    {
+        $this->race = (string) $this->race;
+        $this->disposition = (string) $this->disposition;
     }
 }

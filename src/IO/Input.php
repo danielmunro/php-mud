@@ -38,6 +38,7 @@ class Input
 
     public function __construct(Client $client, string $input)
     {
+        $input = trim($input);
         $this->client = $client;
         $this->args = explode(' ', $input);
         $this->command = $this->args[0];

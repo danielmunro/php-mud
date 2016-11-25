@@ -15,19 +15,20 @@ class FightTest extends \PHPUnit_Framework_TestCase
         $mob2 = new Mob('hoooman', Race::HUMAN());
 
         $fight = new Fight($mob1, $mob2);
+        $mob1->setFight($fight);
+        $mob2->setFight($fight);
 
         while ($fight->isContinuing()) {
+            static::assertNotNull($mob1->getFight());
+            static::assertNotNull($mob2->getFight());
             $fight->turn();
         }
 
         static::assertNull($mob1->getFight());
         static::assertNull($mob2->getFight());
-        static::assertGreaterThanOrEqual(0, $mob1->getAttribute('hp'));
-        static::assertLessThanOrEqual(0, $mob2->getAttribute('hp'));
 
         $hp = $mob2->getAttribute('hp');
         $fight->turn();
-
         static::assertEquals($hp, $mob2->getAttribute('hp'));
     }
 }

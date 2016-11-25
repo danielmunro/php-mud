@@ -10,11 +10,14 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace PhpMud;
+namespace PhpMud\ServiceProvider\Command;
 
+use PhpMud\Command;
 use PhpMud\Entity\Mob;
+use PhpMud\Fight;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
+use PhpMud\Server;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use function Functional\first;
