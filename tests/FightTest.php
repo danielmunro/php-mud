@@ -22,8 +22,12 @@ class FightTest extends \PHPUnit_Framework_TestCase
 
         static::assertNull($mob1->getFight());
         static::assertNull($mob2->getFight());
-
         static::assertGreaterThanOrEqual(0, $mob1->getAttribute('hp'));
         static::assertLessThanOrEqual(0, $mob2->getAttribute('hp'));
+
+        $hp = $mob2->getAttribute('hp');
+        $fight->turn();
+
+        static::assertEquals($hp, $mob2->getAttribute('hp'));
     }
 }
