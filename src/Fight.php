@@ -43,7 +43,7 @@ class Fight
         $hitRoll = Dice::d20();
         if ($hitRoll === 1) {
             return;
-        } else if ($hitRoll < 20) {
+        } elseif ($hitRoll < 20) {
             $hitRoll += $this->attacker->getAttribute('hit') + $this->attacker->getAttribute('str');
 
             if ($hitRoll <= $this->target->getAttribute('acBash')) {

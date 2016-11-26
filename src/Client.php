@@ -122,7 +122,6 @@ class Client
         }
 
         if ($this->mob && $this->mob->getFight()) {
-
             $this->mob->getFight()->turn();
 
             if ($this->mob->getFight()) {
