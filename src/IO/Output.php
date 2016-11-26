@@ -71,4 +71,9 @@ class Output
         }
          */
     }
+
+    public function __toString()
+    {
+        return $this->response;
+    }
 }

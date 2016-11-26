@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud;
 
 use PhpMud\Entity\Mob;
+use PhpMud\IO\Output;
 
 /**
  * A fight
@@ -51,11 +52,15 @@ class Fight
         }
 
         $dam = Dice::dInt($this->attacker->getAttribute('dam'));
-        $this->target->getAttributes()->modifyAttribute('hp', -$dam);
+        $this->target->modifyHp(-$dam);
+        $this->target->notify(new Output($this->attacker->getName()."'s clumsy punch hits you.\n"));
+        $this->attacker->notify(new Output('Your clumsy punch hits '.$this->target->getName().".\n"));
 
         if ($this->isContinuing() && $this->target->getFight() === $this) {
             $dam = Dice::dInt($this->attacker->getAttribute('dam'));
-            $this->attacker->getAttributes()->modifyAttribute('hp', -$dam);
+            $this->attacker->modifyHp(-$dam);
+            $this->attacker->notify(new Output($this->attacker->getName()."'s clumsy punch hits you.\n"));
+            $this->target->notify(new Output('Your clumsy punch hits '.$this->target->getName()."\n"));
         }
 
         if (!$this->isContinuing()) {
@@ -71,11 +76,24 @@ class Fight
 
     public function isContinuing(): bool
     {
-        return $this->attacker->getAttribute('hp') > 0 && $this->target->getAttribute('hp') > 0;
+        return $this->attacker->getHp() > 0 && $this->target->getHp() > 0;
+    }
+
+    public function getTarget(): Mob
+    {
+        return $this->target;
     }
 
     protected function resolve()
     {
+        if ($this->attacker->getHp() <= 0) {
+            $this->attacker->notify(new Output('You have been KILLED!'));
+            $this->target->notify(new Output('You killed '.$this->attacker->getName().'!'));
+        } elseif ($this->target->getHp() <= 0) {
+            $this->target->notify(new Output('You have been KILLED!'));
+            $this->attacker->notify(new Output('You killed '.$this->target->getName().'!'));
+        }
+
         $this->attacker->resolveFight();
         $this->target->resolveFight();
     }

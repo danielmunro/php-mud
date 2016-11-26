@@ -12,9 +12,11 @@ declare(strict_types=1);
 
 namespace PhpMud\Entity;
 
+use PhpMud\Client;
 use PhpMud\Enum\Disposition;
 use PhpMud\Enum\Race;
 use PhpMud\Fight;
+use PhpMud\IO\Output;
 use PhpMud\Noun;
 
 /**
@@ -28,7 +30,7 @@ class Mob implements Noun
     /** @Column(type="string") */
     protected $name;
 
-    /** @Column(type="string") */
+    /** @Column(type="string", nullable=true) */
     protected $look;
 
     /** @Column(type="string") */
@@ -52,8 +54,20 @@ class Mob implements Noun
     /** @OneToMany(targetEntity="Affect", mappedBy="mob") */
     protected $affects;
 
+    /** @Column(type="integer") */
+    protected $hp;
+
+    /** @Column(type="integer") */
+    protected $mana;
+
+    /** @Column(type="integer") */
+    protected $mv;
+
     /** @var Fight $fight */
     protected $fight;
+
+    /** @var Client $client */
+    protected $client;
 
     /**
      * @param string $name
@@ -64,6 +78,9 @@ class Mob implements Noun
         $this->name = $name;
         $this->race = $race;
         $this->attributes = $race->getStartingAttributes();
+        $this->hp = $this->attributes->getAttribute('hp');
+        $this->mana = $this->attributes->getAttribute('mana');
+        $this->mv = $this->attributes->getAttribute('mv');
         $this->inventory = new Inventory();
         $this->disposition = Disposition::STANDING();
     }
@@ -153,6 +170,48 @@ class Mob implements Noun
     public function resolveFight()
     {
         $this->fight = null;
+    }
+
+    public function setClient(Client $client)
+    {
+        $this->client = $client;
+    }
+
+    public function notify(Output $output)
+    {
+        if ($this->client) {
+            $this->client->write((string) $output);
+        }
+    }
+
+    public function getHp(): int
+    {
+        return $this->hp;
+    }
+
+    public function getMana(): int
+    {
+        return $this->mana;
+    }
+
+    public function getMv(): int
+    {
+        return $this->mv;
+    }
+
+    public function modifyHp(int $amount)
+    {
+        $this->hp += $amount;
+    }
+
+    public function modifyMana(int $amount)
+    {
+        $this->mana += $amount;
+    }
+
+    public function modifyMv(int $amount)
+    {
+        $this->mv += $amount;
     }
 
     /**

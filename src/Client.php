@@ -89,6 +89,7 @@ class Client
     {
         if ($this->login->next(new Input($this, $input)) === Login::STATE_COMPLETE) {
             $this->mob = $this->login->getMob();
+            $this->mob->setClient($this);
             $this->login = null;
             $this->connection->emit(Server::EVENT_LOGIN, ['mob' => $this->mob]);
             $this->connection->removeListener(static::EVENT_DATA, [$this, 'login']);
@@ -121,7 +122,13 @@ class Client
         }
 
         if ($this->mob && $this->mob->getFight()) {
+
             $this->mob->getFight()->turn();
+
+            if ($this->mob->getFight()) {
+                $target = $this->mob->getFight()->getTarget();
+                $this->write($target->getName() . ' ' . static::getCondition($target) . "\n");
+            }
         }
     }
 
@@ -144,5 +151,23 @@ class Client
     public function canReadBuffer(): bool
     {
         return !$this->delay && $this->buffer;
+    }
+
+    private static function getCondition(Mob $mob): string
+    {
+        $hpPercent = $mob->getCurrentAttribute('hp') / $mob->getAttribute('hp');
+
+        switch ($hpPercent) {
+            case $hpPercent === 1:
+                return 'is in excellent condition';
+            case $hpPercent > .9:
+                return 'feels great';
+            case $hpPercent > .5:
+                return 'has quite a few wounds';
+            case $hpPercent > .25:
+                return 'has serious wounds';
+            default:
+                return 'is in awful condition';
+        }
     }
 }

@@ -16,9 +16,6 @@ use PhpMud\Entity\Mob;
 use PhpMud\Enum\Race;
 use PhpMud\IO\Input;
 
-/**
- *
- */
 class Login
 {
     const STATE_NAME = 'name';
