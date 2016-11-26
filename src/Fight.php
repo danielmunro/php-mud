@@ -40,27 +40,24 @@ class Fight
             return;
         }
 
-        $hitRoll = Dice::d20();
-        if ($hitRoll === 1) {
-            return;
-        } elseif ($hitRoll < 20) {
-            $hitRoll += $this->attacker->getAttribute('hit') + $this->attacker->getAttribute('str');
-
-            if ($hitRoll <= $this->target->getAttribute('acBash')) {
-                return;
-            }
+        if ($this->attacker->attackRoll($this->target)) {
+            $this->target->modifyHp(-Dice::dInt($this->attacker->getAttribute('dam')));
+            $this->target->notify(new Output($this->attacker->getName() . "'s clumsy punch hits you.\n"));
+            $this->attacker->notify(new Output('Your clumsy punch hits ' . $this->target->getName() . ".\n"));
+        } else {
+            $this->target->notify(new Output($this->attacker->getName() . "'s clumsy punch misses you.\n"));
+            $this->attacker->notify(new Output('Your clumsy punch misses ' . $this->target->getName() . ".\n"));
         }
 
-        $dam = Dice::dInt($this->attacker->getAttribute('dam'));
-        $this->target->modifyHp(-$dam);
-        $this->target->notify(new Output($this->attacker->getName()."'s clumsy punch hits you.\n"));
-        $this->attacker->notify(new Output('Your clumsy punch hits '.$this->target->getName().".\n"));
-
         if ($this->isContinuing() && $this->target->getFight() === $this) {
-            $dam = Dice::dInt($this->attacker->getAttribute('dam'));
-            $this->attacker->modifyHp(-$dam);
-            $this->attacker->notify(new Output($this->attacker->getName()."'s clumsy punch hits you.\n"));
-            $this->target->notify(new Output('Your clumsy punch hits '.$this->target->getName()."\n"));
+            if ($this->target->attackRoll($this->attacker)) {
+                $this->attacker->modifyHp(-Dice::dInt($this->attacker->getAttribute('dam')));
+                $this->attacker->notify(new Output($this->target->getName() . "'s clumsy punch hits you.\n"));
+                $this->target->notify(new Output('Your clumsy punch hits ' . $this->target->getName() . "\n"));
+            } else {
+                $this->attacker->notify(new Output($this->target->getName() . "'s clumsy punch misses you.\n"));
+                $this->target->notify(new Output('Your clumsy punch misses ' . $this->attacker->getName() . ".\n"));
+            }
         }
 
         if (!$this->isContinuing()) {

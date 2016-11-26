@@ -99,7 +99,7 @@ class Client
 
     public function prompt()
     {
-        return '--> ';
+        return sprintf('%dhp %dmana %dmv> ', $this->mob->getHp(), $this->mob->getMana(), $this->mob->getMv());
     }
 
     /**
@@ -126,13 +126,16 @@ class Client
 
             if ($this->mob->getFight()) {
                 $target = $this->mob->getFight()->getTarget();
-                $this->write($target->getName() . ' ' . static::getCondition($target) . "\n");
+                $this->write($target->getName() . ' ' . static::getCondition($target) . ".\n");
             }
+
+            $this->connection->write("\n ".$this->prompt());
         }
     }
 
     public function tick()
     {
+
         $this->connection->write("\n ".$this->prompt());
     }
 
@@ -154,7 +157,7 @@ class Client
 
     private static function getCondition(Mob $mob): string
     {
-        $hpPercent = $mob->getCurrentAttribute('hp') / $mob->getAttribute('hp');
+        $hpPercent = $mob->getHp() / $mob->getAttribute('hp');
 
         switch ($hpPercent) {
             case $hpPercent === 1:

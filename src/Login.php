@@ -49,11 +49,18 @@ class Login
         switch ($this->state) {
             case static::STATE_NAME:
                 $this->mobName = (string) $input;
+                $input->getClient()->write('Ok. Pick a race > ');
                 $this->state = static::STATE_RACE;
                 break;
             case static::STATE_RACE:
-                $this->mob = new Mob($this->mobName, new Race((string) $input));
-                $this->state = static::STATE_COMPLETE;
+                try {
+                    $this->mob = new Mob($this->mobName, new Race((string)$input));
+                    $input->getClient()->write("Done.\n");
+                    $this->state = static::STATE_COMPLETE;
+                } catch (\UnexpectedValueException $e) {
+                    $input->getClient()->write("That's not a valid race. Try again > ");
+                }
+
                 break;
         }
 

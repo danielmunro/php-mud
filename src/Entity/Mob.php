@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud\Entity;
 
 use PhpMud\Client;
+use PhpMud\Dice;
 use PhpMud\Enum\Disposition;
 use PhpMud\Enum\Race;
 use PhpMud\Fight;
@@ -76,6 +77,7 @@ class Mob implements Noun
     public function __construct(string $name, Race $race)
     {
         $this->name = $name;
+        $this->identifiers = explode(' ', $name);
         $this->race = $race;
         $this->attributes = $race->getStartingAttributes();
         $this->hp = $this->attributes->getAttribute('hp');
@@ -83,6 +85,22 @@ class Mob implements Noun
         $this->mv = $this->attributes->getAttribute('mv');
         $this->inventory = new Inventory();
         $this->disposition = Disposition::STANDING();
+    }
+
+    public function attackRoll(Mob $target): bool
+    {
+        $hitRoll = Dice::d20();
+        if ($hitRoll === 1) {
+            return false;
+        } elseif ($hitRoll < 20) {
+            $hitRoll += $this->attributes->getAttribute('hit') + $this->attributes->getAttribute('str');
+
+            if ($hitRoll <= $target->getAttribute('acBash')) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function getLook(): string
