@@ -67,11 +67,6 @@ class Server
         $this->commands = new Commands($this);
     }
 
-    public function getClients(): ArrayCollection
-    {
-        return $this->clients;
-    }
-
     /**
      * @param int $port
      */
@@ -153,5 +148,10 @@ class Server
 
         $this->em->persist($this->startRoom);
         $this->em->flush();
+    }
+
+    public function getStartRoom(): Room
+    {
+        return $this->startRoom;
     }
 }

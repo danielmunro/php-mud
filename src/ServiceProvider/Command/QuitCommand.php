@@ -19,7 +19,6 @@ class QuitCommand implements ServiceProviderInterface
             return new class() implements Command {
                 public function execute(Server $server, Input $input): Output
                 {
-                    $server->getClients()->removeElement($input->getClient());
                     $input->getClient()->close();
                     $input->getRoom()->getMobs()->removeElement($input->getMob());
 

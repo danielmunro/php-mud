@@ -25,6 +25,7 @@ class GossipCommand implements ServiceProviderInterface
                         return $index > 0 ? $value : '';
                     });
                     $message = $input->getMob()->getName().' gossips "'.$reduce.'"';
+                    /**
                     each(
                         $server->getClients()->toArray(),
                         function (Client $client) use ($input, $message, $reduce) {
@@ -35,6 +36,7 @@ class GossipCommand implements ServiceProviderInterface
                             }
                         }
                     );
+                     */
                 }
             };
         });

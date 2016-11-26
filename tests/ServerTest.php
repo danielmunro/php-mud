@@ -5,25 +5,32 @@ namespace PhpMud\Tests;
 
 use PhpMud\Entity\Room;
 use PhpMud\Server;
+use PhpMud\Tests\Command\CommandTest;
 use React\Socket\Connection;
 
-class ServerTest extends \PHPUnit_Framework_TestCase
+class ServerTest extends \PHPUnit_Framework_TestCase 
 {
     public function testHeartbeat()
+    {
+        $server = $this->getMockServer();
+        $connection = $this->getMockBuilder(Connection::class)->disableOriginalConstructor()->getMock();
+        $client = $server->addConnection($connection);
+        $client->login('test');
+        $client->login('human');
+        $client->getMob()->setRoom($server->getStartRoom());
+        $client->pushBuffer('look');
+        static::assertNotEmpty($client->getBuffer());
+        $server->heartbeat();
+        static::assertEmpty($client->getBuffer());
+    }
+
+    protected function getMockServer(): Server
     {
         global $em;
 
         $room = new Room();
         $room->setTitle('Test room');
-        $server = new Server($em, $room);
-        $connection = $this->getMockBuilder(Connection::class)->disableOriginalConstructor()->getMock();
-        $client = $server->addConnection($connection);
-        $client->login('test');
-        $client->login('human');
-        $client->getMob()->setRoom($room);
-        $client->pushBuffer('look');
-        static::assertNotEmpty($client->getBuffer());
-        $server->heartbeat();
-        static::assertEmpty($client->getBuffer());
+
+        return new Server($em, $room);
     }
 }

@@ -17,6 +17,7 @@
         </whitelist>
         <blacklist>
             <directory>vendor</directory>
+            <file>src/Entity/PrimaryKeyTrait.php</file>
         </blacklist>
     </filter>
     <logging>
