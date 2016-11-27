@@ -17,16 +17,23 @@ use MyCLabs\Enum\Enum;
 /**
  * @method static STANDING()
  * @method static FIGHTING()
+ * @method static SLEEPING()
  */
 class Disposition extends Enum
 {
     const STANDING = 'standing';
     const FIGHTING = 'fighting';
+    const SLEEPING = 'sleeping';
 
-    /**
-    public function isStanding()
+    public function getRegenRate(): float
     {
-        return $this->getValue() === self::STANDING;
+        switch ($this->value) {
+            case self::STANDING:
+                return 0.05;
+            case self::FIGHTING:
+                return 0.0;
+            case self::SLEEPING:
+                return 0.25;
+        }
     }
-     */
 }

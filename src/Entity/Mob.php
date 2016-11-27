@@ -40,7 +40,10 @@ class Mob implements Noun
     /** @Column(type="array") */
     protected $identifiers;
 
-    /** @ManyToOne(targetEntity="Room", inversedBy="mobs") */
+    /**
+     * @ManyToOne(targetEntity="Room", inversedBy="mobs")
+     * @var Room $room
+     */
     protected $room;
 
     /** @OneToOne(targetEntity="Attributes", cascade={"persist"})  */
@@ -114,6 +117,16 @@ class Mob implements Noun
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getDisposition(): Disposition
+    {
+        return $this->disposition;
+    }
+
+    public function setDisposition(Disposition $disposition)
+    {
+        $this->disposition = $disposition;
     }
 
     /**
@@ -220,16 +233,37 @@ class Mob implements Noun
     public function modifyHp(int $amount)
     {
         $this->hp += $amount;
+
+        if ($this->hp > $this->attributes->getAttribute('hp')) {
+            $this->hp = $this->attributes->getAttribute('hp');
+        }
     }
 
     public function modifyMana(int $amount)
     {
         $this->mana += $amount;
+
+        if ($this->mana > $this->attributes->getAttribute('mana')) {
+            $this->mana = $this->attributes->getAttribute('mana');
+        }
     }
 
     public function modifyMv(int $amount)
     {
         $this->mv += $amount;
+
+        if ($this->mv > $this->attributes->getAttribute('mv')) {
+            $this->mv = $this->attributes->getAttribute('mv');
+        }
+    }
+
+    public function regen()
+    {
+        $regenBase = $this->room->getRegenRate();
+
+        $this->modifyHp((int) floor($this->attributes->getAttribute('hp') * $regenBase));
+        $this->modifyMana((int) floor($this->attributes->getAttribute('mana') * $regenBase));
+        $this->modifyMv((int) floor($this->attributes->getAttribute('mv') * $regenBase));
     }
 
     /**

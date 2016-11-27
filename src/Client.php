@@ -135,7 +135,7 @@ class Client
 
     public function tick()
     {
-
+        $this->mob->regen();
         $this->connection->write("\n ".$this->prompt());
     }
 

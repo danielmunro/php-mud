@@ -6,6 +6,7 @@ namespace PhpMud\ServiceProvider\Command;
 use PhpMud\Command;
 use PhpMud\Entity\Direction as DirectionEntity;
 use PhpMud\Enum\Direction;
+use PhpMud\Enum\Disposition;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Server;
@@ -44,9 +45,15 @@ class MoveCommand implements ServiceProviderInterface
                         return $d->getDirection()->equals($this->direction);
                     }
                 );
+
                 if (!$targetDirection) {
                     return new Output(MoveCommand::DIRECTION_NOT_FOUND);
                 }
+
+                if (!$mob->getDisposition()->equals(Disposition::STANDING())) {
+                    return new Output('No way! You are '.$mob->getDisposition()->getValue().'.');
+                }
+
                 $mob->setRoom($targetDirection->getTargetRoom());
 
                 return new Output((string) $mob->getRoom());

@@ -5,10 +5,9 @@ namespace PhpMud\Tests;
 
 use PhpMud\Entity\Room;
 use PhpMud\Server;
-use PhpMud\Tests\Command\CommandTest;
 use React\Socket\Connection;
 
-class ServerTest extends \PHPUnit_Framework_TestCase 
+class ServerTest extends \PHPUnit_Framework_TestCase
 {
     public function testHeartbeat()
     {

@@ -24,6 +24,8 @@ use function Functional\reduce_left;
  */
 class Room
 {
+    const REGEN_DEFAULT = 0.1;
+
     use PrimaryKeyTrait;
 
     /** @Column(type="string") */
@@ -41,6 +43,9 @@ class Room
     /** @OneToOne(targetEntity="Inventory", cascade={"persist"}) */
     protected $inventory;
 
+    /** @Column(type="float") */
+    protected $regenRate;
+
     /**
      * Room constructor.
      */
@@ -51,6 +56,7 @@ class Room
         $this->inventory = new Inventory();
         $this->title = '';
         $this->description = '';
+        $this->regenRate = self::REGEN_DEFAULT;
     }
 
     /**
@@ -88,6 +94,11 @@ class Room
     public function getInventory(): Inventory
     {
         return $this->inventory;
+    }
+
+    public function getRegenRate(): float
+    {
+        return $this->regenRate;
     }
 
     /**

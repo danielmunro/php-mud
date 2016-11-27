@@ -23,6 +23,8 @@ use PhpMud\ServiceProvider\Command\MoveCommand;
 use PhpMud\ServiceProvider\Command\NewMobCommand;
 use PhpMud\ServiceProvider\Command\NewRoomCommand;
 use PhpMud\ServiceProvider\Command\QuitCommand;
+use PhpMud\ServiceProvider\Command\SleepCommand;
+use PhpMud\ServiceProvider\Command\WakeCommand;
 use Pimple\Container;
 use function Functional\first;
 
@@ -48,6 +50,8 @@ class Commands
         $this->container->register(new DropCommand());
         $this->container->register(new GetCommand());
         $this->container->register(new KillCommand());
+        $this->container->register(new SleepCommand());
+        $this->container->register(new WakeCommand());
     }
 
     public function execute(Input $input): Output

@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace PhpMud\Tests\Command;
 
 use PhpMud\Client;
-use PhpMud\Entity\Room;
 use PhpMud\IO\Commands;
 use PhpMud\Server;
 use React\Socket\Connection;
