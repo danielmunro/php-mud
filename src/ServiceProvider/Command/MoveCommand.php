@@ -38,6 +38,10 @@ class MoveCommand implements ServiceProviderInterface
              */
             public function execute(Server $server, Input $input): Output
             {
+                if (!$input->getMob()->getDisposition()->canInteract()) {
+                    return $input->getClient()->getDispositionCheckFail();
+                }
+
                 $mob = $input->getMob();
                 $targetDirection = first(
                     $mob->getRoom()->getDirections()->toArray(),
@@ -51,7 +55,7 @@ class MoveCommand implements ServiceProviderInterface
                 }
 
                 if (!$mob->getDisposition()->equals(Disposition::STANDING())) {
-                    return new Output('No way! You are '.$mob->getDisposition()->getValue().'.');
+                    return new Output(sprintf('No way! You are %s.', $mob->getDisposition()->getValue()));
                 }
 
                 $mob->setRoom($targetDirection->getTargetRoom());

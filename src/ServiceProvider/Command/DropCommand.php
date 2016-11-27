@@ -5,6 +5,7 @@ namespace PhpMud\ServiceProvider\Command;
 
 use PhpMud\Command;
 use PhpMud\Entity\Item;
+use PhpMud\Enum\Disposition;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Server;
@@ -21,6 +22,10 @@ class DropCommand implements ServiceProviderInterface
             {
                 public function execute(Server $server, Input $input): Output
                 {
+                    if (!$input->getMob()->getDisposition()->canInteract()) {
+                        return $input->getClient()->getDispositionCheckFail();
+                    }
+
                     $item = first(
                         $input->getMob()->getInventory()->getItems(),
                         function (Item $item) use ($input) {
@@ -33,7 +38,7 @@ class DropCommand implements ServiceProviderInterface
                         $input->getRoom()->getInventory()->add($item);
                         $item->setInventory($input->getMob()->getInventory());
 
-                        return new Output('you drop '.$item->getName().'.');
+                        return new Output(sprintf('you drop %s.', $item->getName()));
                     }
 
                     return new Output("you can't find it.");

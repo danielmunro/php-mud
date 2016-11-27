@@ -155,6 +155,11 @@ class Client
         return !$this->delay && $this->buffer;
     }
 
+    public function getDispositionCheckFail(): Output
+    {
+        return new Output('No way! You are still ' . $this->mob->getDisposition()->getValue());
+    }
+
     private static function getCondition(Mob $mob): string
     {
         $hpPercent = $mob->getHp() / $mob->getAttribute('hp');

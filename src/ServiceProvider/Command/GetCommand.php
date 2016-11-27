@@ -21,6 +21,10 @@ class GetCommand implements ServiceProviderInterface
             {
                 public function execute(Server $server, Input $input): Output
                 {
+                    if (!$input->getMob()->getDisposition()->canInteract()) {
+                        return $input->getClient()->getDispositionCheckFail();
+                    }
+
                     $item = first(
                         $input->getRoom()->getInventory()->getItems(),
                         function (Item $item) use ($input) {
@@ -33,7 +37,7 @@ class GetCommand implements ServiceProviderInterface
                         $input->getRoom()->getInventory()->remove($item);
                         $item->setInventory($input->getMob()->getInventory());
 
-                        return new Output('you get '.$item->getName().' off the ground.');
+                        return new Output(sprintf('you pick up %s off the ground.', $item->getName()));
                     }
 
                     return new Output("you can't find it.");

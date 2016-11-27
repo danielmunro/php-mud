@@ -40,6 +40,10 @@ class KillCommand implements ServiceProviderInterface
                         return new Output("No way! You're already fighting.");
                     }
 
+                    if (!$input->getMob()->getDisposition()->canInteract()) {
+                        return $input->getClient()->getDispositionCheckFail();
+                    }
+
                     $target = first(
                         $input->getRoom()->getMobs()->toArray(),
                         function (Mob $mob) use ($input) {

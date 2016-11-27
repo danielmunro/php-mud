@@ -28,6 +28,10 @@ class NewRoomCommand implements ServiceProviderInterface
                  */
                 public function execute(Server $server, Input $input): Output
                 {
+                    if (!$input->getMob()->getDisposition()->canInteract()) {
+                        return $input->getClient()->getDispositionCheckFail();
+                    }
+
                     $mob = $input->getMob();
                     $srcRoom = $mob->getRoom();
                     $newRoom = new Room();
@@ -74,7 +78,7 @@ class NewRoomCommand implements ServiceProviderInterface
                     $newDirection = new Direction($newRoom, $direction->reverse(), $srcRoom);
                     $newRoom->getDirections()->add($newDirection);
 
-                    return new Output('A room appears '.$direction->getValue());
+                    return new Output(sprintf('A room appears %s', $direction->getValue()));
                 }
             };
         });

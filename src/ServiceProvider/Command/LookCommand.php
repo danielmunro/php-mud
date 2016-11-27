@@ -20,6 +20,10 @@ class LookCommand implements ServiceProviderInterface
             return new class implements Command {
                 public function execute(Server $server, Input $input): Output
                 {
+                    if (!$input->getMob()->getDisposition()->canInteract()) {
+                        return $input->getClient()->getDispositionCheckFail();
+                    }
+
                     return new Output((string) $input->getRoom().reduce_left(
                         $input->getRoom()->getMobs()->toArray(),
                         function (Mob $mob, $index, $collection, $reduction) use ($input) {

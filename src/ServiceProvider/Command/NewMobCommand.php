@@ -6,6 +6,7 @@ namespace PhpMud\ServiceProvider\Command;
 use PhpMud\Client;
 use PhpMud\Command;
 use PhpMud\Entity\Mob;
+use PhpMud\Enum\Race;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Server;
@@ -24,7 +25,11 @@ class NewMobCommand implements ServiceProviderInterface
                  */
                 public function execute(Server $server, Input $input): Output
                 {
-                    $mob = new Mob('a fresh mob');
+                    if (!$input->getMob()->getDisposition()->canInteract()) {
+                        return $input->getClient()->getDispositionCheckFail();
+                    }
+
+                    $mob = new Mob('a fresh mob', Race::HUMAN());
 
                     $input->getRoom()->getMobs()->add($mob);
                     $mob->setRoom($input->getRoom());
