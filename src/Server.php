@@ -50,10 +50,11 @@ class Server
     /** @var Room $startRoom */
     protected $startRoom;
 
-    /**
-     * @var Container
-     */
+    /** @var Container $commands */
     protected $commands;
+
+    /** @var int $time */
+    protected $time;
 
     /**
      * @param EntityManager $em
@@ -65,6 +66,7 @@ class Server
         $this->startRoom = $startRoom;
         $this->clients = new ArrayCollection();
         $this->commands = new Commands($this);
+        $this->time = 0;
     }
 
     /**
@@ -142,6 +144,8 @@ class Server
      */
     public function tick()
     {
+        $this->time++;
+
         $this->clients->map(function (Client $client) {
             $client->tick();
         });
@@ -153,5 +157,10 @@ class Server
     public function getStartRoom(): Room
     {
         return $this->startRoom;
+    }
+
+    public function getTime(): int
+    {
+        return $this->time;
     }
 }

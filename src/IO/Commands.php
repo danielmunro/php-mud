@@ -25,6 +25,7 @@ use PhpMud\ServiceProvider\Command\NewRoomCommand;
 use PhpMud\ServiceProvider\Command\QuitCommand;
 use PhpMud\ServiceProvider\Command\SitCommand;
 use PhpMud\ServiceProvider\Command\SleepCommand;
+use PhpMud\ServiceProvider\Command\TimeCommand;
 use PhpMud\ServiceProvider\Command\WakeCommand;
 use Pimple\Container;
 use function Functional\first;
@@ -54,6 +55,7 @@ class Commands
         $this->container->register(new SleepCommand());
         $this->container->register(new WakeCommand());
         $this->container->register(new SitCommand());
+        $this->container->register(new TimeCommand());
     }
 
     public function execute(Input $input): Output

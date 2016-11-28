@@ -65,18 +65,21 @@ class Login
                 }
                 break;
             case static::STATE_GENDER:
-                $gender = Gender::partialSearch((string) $input);
+                if ($input->getCommand()) {
+                    $gender = Gender::partialSearch((string)$input);
+                    if ($gender) {
+                        $this->mob->setGender($gender);
+                        $input->getClient()->write("Done.\n");
+                        $this->state = static::STATE_COMPLETE;
+                        break;
+                    }
 
-                if ($gender) {
-                    $this->mob->setGender($gender);
-                    $input->getClient()->write("Done.\n");
-                    $this->state = static::STATE_COMPLETE;
-                } elseif ($input->getCommand()) {
                     $input->getClient()->write('Not understood, try again (female/male/neutral) > ');
-                } else {
-                    $input->getClient()->write("Done.\n");
-                    $this->state = static::STATE_COMPLETE;
+                    break;
                 }
+
+                $input->getClient()->write("Done.\n");
+                $this->state = static::STATE_COMPLETE;
                 break;
         }
 
