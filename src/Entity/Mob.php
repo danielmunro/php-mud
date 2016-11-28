@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace PhpMud\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use PhpMud\Client;
 use PhpMud\Dice;
 use PhpMud\Enum\Disposition;
@@ -69,6 +70,9 @@ class Mob implements Noun
 
     /** @Column(type="boolean") */
     protected $isPlayer;
+
+    /** @OneToMany(targetEntity="Skill") */
+    protected $skills;
 
     /** @var Fight $fight */
     protected $fight;
@@ -274,6 +278,11 @@ class Mob implements Noun
     public function isPlayer(): bool
     {
         return $this->isPlayer;
+    }
+
+    public function getSkills(): Collection
+    {
+        return $this->skills;
     }
 
     /**
