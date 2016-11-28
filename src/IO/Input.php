@@ -17,6 +17,7 @@ use PhpMud\Entity\Mob;
 use PhpMud\Entity\Room;
 use function Functional\tail;
 use function Functional\select;
+use PhpMud\Enum\Disposition;
 use PhpMud\Noun;
 
 class Input
@@ -53,6 +54,11 @@ class Input
     public function getMob(): Mob
     {
         return $this->client->getMob();
+    }
+
+    public function getDisposition(): Disposition
+    {
+        return $this->client->getMob()->getDisposition();
     }
 
     public function getRoom(): Room

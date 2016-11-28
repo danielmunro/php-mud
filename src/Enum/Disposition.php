@@ -16,6 +16,7 @@ use MyCLabs\Enum\Enum;
 use PhpMud\IO\Output;
 
 /**
+ * @method static SITTING()
  * @method static STANDING()
  * @method static FIGHTING()
  * @method static SLEEPING()
@@ -24,6 +25,7 @@ use PhpMud\IO\Output;
  */
 class Disposition extends Enum
 {
+    const SITTING = 'sitting';
     const STANDING = 'standing';
     const FLAT_FOOTED = 'flat-footed';
     const FIGHTING = 'fighting';
@@ -34,11 +36,13 @@ class Disposition extends Enum
     public function getRegenRate(): float
     {
         switch ($this->value) {
-            case self::STANDING:
-                return 0.05;
             case self::FIGHTING:
             case self::FLAT_FOOTED:
                 return 0.0;
+            case self::STANDING:
+                return 0.05;
+            case self::SITTING:
+                return 0.15;
             case self::SLEEPING:
                 return 0.25;
         }
@@ -48,7 +52,8 @@ class Disposition extends Enum
 
     public function canInteract(): bool
     {
-        return $this->value === self::STANDING
+        return $this->value === self::SITTING
+            || $this->value === self::STANDING
             || $this->value === self::FLAT_FOOTED
             || $this->value === self::FIGHTING;
     }

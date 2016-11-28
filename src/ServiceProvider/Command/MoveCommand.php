@@ -38,7 +38,10 @@ class MoveCommand implements ServiceProviderInterface
              */
             public function execute(Server $server, Input $input): Output
             {
-                if (!$input->getMob()->getDisposition()->canInteract()) {
+                if (
+                    !$input->getDisposition()->canInteract()
+                    || $input->getDisposition()->equals(Disposition::SITTING())
+                ) {
                     return $input->getClient()->getDispositionCheckFail();
                 }
 

@@ -21,7 +21,7 @@ class GetCommand implements ServiceProviderInterface
             {
                 public function execute(Server $server, Input $input): Output
                 {
-                    if (!$input->getMob()->getDisposition()->canInteract()) {
+                    if (!$input->getDisposition()->canInteract()) {
                         return $input->getClient()->getDispositionCheckFail();
                     }
 

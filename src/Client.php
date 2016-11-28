@@ -157,7 +157,7 @@ class Client
 
     public function getDispositionCheckFail(): Output
     {
-        return new Output('No way! You are still ' . $this->mob->getDisposition()->getValue());
+        return new Output(sprintf('No way! You are %s.', $this->mob->getDisposition()->getValue()));
     }
 
     private static function getCondition(Mob $mob): string

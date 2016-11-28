@@ -20,17 +20,13 @@ class WakeCommand implements ServiceProviderInterface
             {
                 public function execute(Server $server, Input $input): Output
                 {
-                    $disposition = $input->getMob()->getDisposition();
-                    if (
-                        !$disposition->equals(Disposition::STANDING()) &&
-                        !$disposition->equals(Disposition::FIGHTING())
-                    ) {
+                    if ($input->getDisposition()->equals(Disposition::STANDING())) {
                         return new Output('You are already standing.');
                     }
 
                     $input->getMob()->setDisposition(Disposition::STANDING());
 
-                    return new Output('You wake up and stand up.');
+                    return new Output('You stand up.');
                 }
             };
         });

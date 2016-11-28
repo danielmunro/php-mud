@@ -19,16 +19,18 @@ use PhpMud\Entity\Attributes;
  * @method static HUMAN()
  * @method static ELF()
  * @method static DWARF()
+ * @method static OGRE()
  */
 class Race extends Enum
 {
     const HUMAN = 'human';
     const ELF = 'elf';
     const DWARF = 'dwarf';
+    const OGRE = 'ogre';
 
     public function getStartingAttributes(): Attributes
     {
-        switch ($this->getValue()) {
+        switch ($this->value) {
             case self::HUMAN:
                 return new Attributes([
                     'hp' => 20,
@@ -83,8 +85,42 @@ class Race extends Enum
                     'acPierce' => 0,
                     'acMagic' => 0
                 ]);
+            case self::OGRE:
+                return new Attributes([
+                    'hp' => 20,
+                    'mana' => 100,
+                    'mv' => 100,
+                    'str' => 19,
+                    'int' => 11,
+                    'wis' => 12,
+                    'dex' => 12,
+                    'con' => 19,
+                    'cha' => 11,
+                    'hit' => 1,
+                    'dam' => 2,
+                    'acSlash' => 0,
+                    'acBash' => 10,
+                    'acPierce' => 0,
+                    'acMagic' => -10
+                ]);
             default:
-                throw new \UnexpectedValueException($this->getValue());
+                throw new \UnexpectedValueException($this->value);
+        }
+    }
+
+    public function getSize(): Size
+    {
+        switch ($this->value) {
+            case self::HUMAN:
+                return Size::MEDIUM();
+            case self::ELF:
+                return Size::SMALL();
+            case self::DWARF:
+                return Size::SMALL();
+            case self::OGRE:
+                return Size::LARGE();
+            default:
+                throw new \UnexpectedValueException($this->value);
         }
     }
 }

@@ -20,11 +20,11 @@ class SleepCommand implements ServiceProviderInterface
             {
                 public function execute(Server $server, Input $input): Output
                 {
-                    if (!$input->getMob()->getDisposition()->equals(Disposition::FIGHTING())) {
-                        return new Output('No way! You are still fighting.');
+                    if ($input->getDisposition()->equals(Disposition::FIGHTING())) {
+                        return $input->getClient()->getDispositionCheckFail();
                     }
 
-                    if (!$input->getMob()->getDisposition()->equals(Disposition::SLEEPING())) {
+                    if ($input->getDisposition()->equals(Disposition::SLEEPING())) {
                         return new Output('You are already sleeping.');
                     }
 
