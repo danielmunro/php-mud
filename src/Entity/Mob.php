@@ -67,6 +67,9 @@ class Mob implements Noun
     /** @Column(type="integer") */
     protected $mv;
 
+    /** @Column(type="boolean") */
+    protected $isPlayer;
+
     /** @var Fight $fight */
     protected $fight;
 
@@ -88,6 +91,7 @@ class Mob implements Noun
         $this->mv = $this->attributes->getAttribute('mv');
         $this->inventory = new Inventory();
         $this->disposition = Disposition::STANDING();
+        $this->isPlayer = false;
     }
 
     public function attackRoll(Mob $target): bool
@@ -206,6 +210,7 @@ class Mob implements Noun
     public function setClient(Client $client)
     {
         $this->client = $client;
+        $this->isPlayer = true;
     }
 
     public function notify(Output $output)
@@ -264,6 +269,11 @@ class Mob implements Noun
         $this->modifyHp((int) floor($this->attributes->getAttribute('hp') * $regenBase));
         $this->modifyMana((int) floor($this->attributes->getAttribute('mana') * $regenBase));
         $this->modifyMv((int) floor($this->attributes->getAttribute('mv') * $regenBase));
+    }
+
+    public function isPlayer(): bool
+    {
+        return $this->isPlayer;
     }
 
     /**

@@ -19,8 +19,8 @@ use function Functional\reduce_left;
 
 /**
  * Class Room
- * @package PhpMud\Entity
  * @Entity
+ * @HasLifecycleCallbacks
  */
 class Room
 {
@@ -116,6 +116,16 @@ class Room
         $room->getDirections()->add($reverse);
 
         return $direction;
+    }
+
+    /**
+     * @PostLoad
+     */
+    public function postLoad()
+    {
+        $this->mobs = $this->mobs->filter(function (Mob $mob) {
+            return !$mob->isPlayer();
+        });
     }
 
     /**
