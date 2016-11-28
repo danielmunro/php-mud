@@ -16,6 +16,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $client = $server->addConnection($connection);
         $client->login('test');
         $client->login('human');
+        $client->login('n');
         $client->getMob()->setRoom($server->getStartRoom());
         $client->pushBuffer('look');
         static::assertNotEmpty($client->getBuffer());

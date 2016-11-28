@@ -21,6 +21,7 @@ abstract class CommandTest extends \PHPUnit_Framework_TestCase
 
         $client->login('test');
         $client->login('human');
+        $client->login('n');
 
         return $client;
     }

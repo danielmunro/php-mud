@@ -5,7 +5,6 @@ namespace PhpMud\ServiceProvider\Command;
 
 use PhpMud\Command;
 use PhpMud\Entity\Item;
-use PhpMud\Enum\Disposition;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Server;

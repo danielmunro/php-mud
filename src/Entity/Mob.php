@@ -15,6 +15,7 @@ namespace PhpMud\Entity;
 use PhpMud\Client;
 use PhpMud\Dice;
 use PhpMud\Enum\Disposition;
+use PhpMud\Enum\Gender;
 use PhpMud\Enum\Race;
 use PhpMud\Fight;
 use PhpMud\IO\Output;
@@ -70,6 +71,9 @@ class Mob implements Noun
     /** @Column(type="boolean") */
     protected $isPlayer;
 
+    /** @Column(type="string", nullable=true) */
+    protected $gender;
+
     /** @var Fight $fight */
     protected $fight;
 
@@ -92,6 +96,7 @@ class Mob implements Noun
         $this->inventory = new Inventory();
         $this->disposition = Disposition::STANDING();
         $this->isPlayer = false;
+        $this->gender = Gender::NEUTRAL();
     }
 
     public function attackRoll(Mob $target): bool
@@ -274,6 +279,16 @@ class Mob implements Noun
     public function isPlayer(): bool
     {
         return $this->isPlayer;
+    }
+
+    public function getGender(): Gender
+    {
+        return $this->gender;
+    }
+
+    public function setGender(Gender $gender)
+    {
+        $this->gender = $gender;
     }
 
     /**
