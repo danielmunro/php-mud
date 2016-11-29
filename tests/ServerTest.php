@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace PhpMud\Tests;
 
+use PhpMud\Entity\Area;
 use PhpMud\Entity\Room;
 use PhpMud\Server;
 use React\Socket\Connection;
@@ -28,8 +29,10 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     {
         global $em;
 
+        $area = new Area('test');
         $room = new Room();
         $room->setTitle('Test room');
+        $area->addRoom($room);
 
         return new Server($em, $room);
     }

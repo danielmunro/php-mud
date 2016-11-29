@@ -25,7 +25,7 @@ use function Functional\reduce_left;
 class Room
 {
     const REGEN_DEFAULT = 0.1;
-    const VISIBILTY_DEFAULT = 10;
+    const VISIBILITY_DEFAULT = 0;
 
     use PrimaryKeyTrait;
 
@@ -53,6 +53,9 @@ class Room
     /** @Column(type="integer") */
     protected $visibility;
 
+    /** @ManyToOne(targetEntity="Area", inversedBy="rooms") */
+    protected $area;
+
     /**
      * Room constructor.
      */
@@ -65,7 +68,7 @@ class Room
         $this->description = '';
         $this->regenRate = self::REGEN_DEFAULT;
         $this->isOutside = true;
-        $this->visibility = self::VISIBILTY_DEFAULT;
+        $this->visibility = self::VISIBILITY_DEFAULT;
     }
 
     /**
@@ -129,6 +132,16 @@ class Room
     public function getVisibility(): int
     {
         return $this->visibility;
+    }
+
+    public function setArea(Area $area)
+    {
+        $this->area = $area;
+    }
+
+    public function getArea(): Area
+    {
+        return $this->area;
     }
 
     /**

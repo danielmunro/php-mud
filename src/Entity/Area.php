@@ -1,0 +1,59 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * This file is part of the PhpMud package.
+ *
+ * (c) Dan Munro <dan@danmunro.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace PhpMud\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
+use PhpMud\Enum\Weather;
+
+/**
+ * @Entity
+ * @HasLifecycleCallbacks
+ */
+class Area
+{
+    use PrimaryKeyTrait;
+
+    /** @Column(type="string") */
+    protected $name;
+
+    /** @OneToMany(targetEntity="Room", mappedBy="area") */
+    protected $rooms;
+
+    /** @var Weather $weather */
+    protected $weather;
+
+    public function __construct(string $name)
+    {
+        $this->name = $name;
+        $this->weather = Weather::values()[array_rand(Weather::values())];
+        $this->rooms = new ArrayCollection();
+    }
+
+    public function addRoom(Room $room)
+    {
+        $this->rooms->add($room);
+        $room->setArea($this);
+    }
+
+    public function getWeather(): Weather
+    {
+        return $this->weather;
+    }
+
+    /**
+     * @PostLoad
+     */
+    public function postLoad()
+    {
+        $this->weather = array_rand(Weather::values());
+    }
+}

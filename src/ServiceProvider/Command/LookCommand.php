@@ -24,6 +24,15 @@ class LookCommand implements ServiceProviderInterface
                         return $input->getClient()->getDispositionCheckFail();
                     }
 
+                    if (
+                        $server->getTime()->getVisibility() +
+                        $input->getRoom()->getArea()->getWeather()->getVisibility() +
+                        $input->getRoom()->getVisibility() <=
+                        $input->getMob()->getRace()->getVisibilityDeficit()
+                    ) {
+                        return new Output("You can't see a thing!");
+                    }
+
                     return new Output((string) $input->getRoom().reduce_left(
                         $input->getRoom()->getMobs()->toArray(),
                         function (Mob $mob, $index, $collection, $reduction) use ($input) {

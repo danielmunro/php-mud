@@ -22,11 +22,16 @@ class WeatherCommand implements ServiceProviderInterface
                     if (!$input->getRoom()->isOutside()) {
                         return new Output("You are indoors and can't see the weather.");
                     }
-                    
+
+                    $weather = $input->getRoom()->getArea()->getWeather();
+
                     return new Output(
                         sprintf(
-                            'Weather is static, visibility is %s.',
-                            $server->getTime()->getVisibility() + $input->getRoom()->getVisibility() <=
+                            'Weather is %s, visibility is %s.',
+                            (string)$weather,
+                            $server->getTime()->getVisibility() +
+                            $weather->getVisibility() +
+                            $input->getRoom()->getVisibility() <=
                                 $input->getMob()->getRace()->getVisibilityDeficit() ? 'low' : 'adequate'
                         )
                     );

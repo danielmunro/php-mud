@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 require_once __DIR__.'/../bootstrap.php';
 
+use PhpMud\Entity\Area;
 use PhpMud\Entity\Room;
 use PhpMud\Entity\Item;
 use PhpMud\Entity\Mob;
@@ -16,12 +17,14 @@ $room = $roomRepository->find(1);
 
 if (!$room) {
     echo "creating initial world fixtures\n";
+    $area = new Area('Midgaard');
     $room = new Room();
     $room->setTitle('Midgaard Town Center');
     $room->setDescription('Before you is the town center.');
     $room->getInventory()->add(new Item('a copper teapot', Material::COPPER(), ['copper', 'teapot']));
     $mob = new Mob('a janitor', Race::HUMAN());
     $mob->setRoom($room);
+    $area->addRoom($room);
 }
 
 (new Server($em, $room))->listen($config['port']);
