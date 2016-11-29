@@ -61,8 +61,7 @@ class Time
     {
         if ($this->hour < self::MORNING_HOUR || $this->hour > self::TWILIGHT_HOUR) {
             return self::VISIBILITY_LOW;
-        } elseif (
-            ($this->hour >= self::MORNING_HOUR && $this->hour <= self::MORNING_HOUR + 1)
+        } elseif (($this->hour >= self::MORNING_HOUR && $this->hour <= self::MORNING_HOUR + 1)
             || $this->hour === self::TWILIGHT_HOUR) {
             return self::VISIBILITY_MEDIUM;
         }

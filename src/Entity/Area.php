@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 
 namespace PhpMud\Entity;
+
 use Doctrine\Common\Collections\ArrayCollection;
 use PhpMud\Enum\Weather;
 
