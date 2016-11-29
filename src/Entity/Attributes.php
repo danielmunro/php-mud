@@ -21,49 +21,49 @@ class Attributes
 {
     use PrimaryKeyTrait;
 
-    /** @ORM\Column(type="integer") */
+    /** @Column(type="integer") */
     protected $hp;
 
-    /** @ORM\Column(type="integer") */
+    /** @Column(type="integer") */
     protected $mana;
 
-    /** @ORM\Column(type="integer") */
+    /** @Column(type="integer") */
     protected $mv;
 
-    /** @ORM\Column(type="integer") */
+    /** @Column(type="integer") */
     protected $str;
 
-    /** @ORM\Column(type="integer") */
+    /** @Column(type="integer") */
     protected $int;
 
-    /** @ORM\Column(type="integer") */
+    /** @Column(type="integer") */
     protected $wis;
 
-    /** @ORM\Column(type="integer") */
+    /** @Column(type="integer") */
     protected $dex;
 
-    /** @ORM\Column(type="integer") */
+    /** @Column(type="integer") */
     protected $con;
 
-    /** @ORM\Column(type="integer") */
+    /** @Column(type="integer") */
     protected $cha;
 
-    /** @ORM\Column(type="integer") */
+    /** @Column(type="integer") */
     protected $hit;
 
-    /** @ORM\Column(type="integer") */
+    /** @Column(type="integer") */
     protected $dam;
 
-    /** @ORM\Column(type="integer") */
+    /** @Column(type="integer") */
     protected $acSlash;
 
-    /** @ORM\Column(type="integer") */
+    /** @Column(type="integer") */
     protected $acBash;
 
-    /** @ORM\Column(type="integer") */
+    /** @Column(type="integer") */
     protected $acPierce;
 
-    /** @ORM\Column(type="integer") */
+    /** @Column(type="integer") */
     protected $acMagic;
 
     public function __construct(array $attributes = [])

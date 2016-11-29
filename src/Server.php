@@ -53,7 +53,7 @@ class Server
     /** @var Container $commands */
     protected $commands;
 
-    /** @var int $time */
+    /** @var Time $time */
     protected $time;
 
     /**
@@ -66,7 +66,7 @@ class Server
         $this->startRoom = $startRoom;
         $this->clients = new ArrayCollection();
         $this->commands = new Commands($this);
-        $this->time = 0;
+        $this->time = new Time();
     }
 
     /**
@@ -144,7 +144,7 @@ class Server
      */
     public function tick()
     {
-        $this->time++;
+        $this->time->incrementTime();
 
         $this->clients->map(function (Client $client) {
             $client->tick();
@@ -159,7 +159,7 @@ class Server
         return $this->startRoom;
     }
 
-    public function getTime(): int
+    public function getTime(): Time
     {
         return $this->time;
     }

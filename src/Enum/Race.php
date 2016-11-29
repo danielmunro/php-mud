@@ -108,6 +108,22 @@ class Race extends Enum
         }
     }
 
+    public function getVisibilityDeficit(): int
+    {
+        switch ($this->value) {
+            case self::HUMAN:
+                return 60;
+            case self::ELF:
+                return 50;
+            case self::DWARF:
+                return 35;
+            case self::OGRE:
+                return 70;
+            default:
+                throw new \UnexpectedValueException($this->value);
+        }
+    }
+
     public function getSize(): Size
     {
         switch ($this->value) {

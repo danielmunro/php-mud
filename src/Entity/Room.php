@@ -25,6 +25,7 @@ use function Functional\reduce_left;
 class Room
 {
     const REGEN_DEFAULT = 0.1;
+    const VISIBILTY_DEFAULT = 10;
 
     use PrimaryKeyTrait;
 
@@ -46,6 +47,12 @@ class Room
     /** @Column(type="float") */
     protected $regenRate;
 
+    /** @Column(type="boolean") */
+    protected $isOutside;
+
+    /** @Column(type="integer") */
+    protected $visibility;
+
     /**
      * Room constructor.
      */
@@ -57,6 +64,8 @@ class Room
         $this->title = '';
         $this->description = '';
         $this->regenRate = self::REGEN_DEFAULT;
+        $this->isOutside = true;
+        $this->visibility = self::VISIBILTY_DEFAULT;
     }
 
     /**
@@ -101,12 +110,6 @@ class Room
         return $this->regenRate;
     }
 
-    /**
-     * @param DirectionEnum $directionEnum
-     * @param Room $room
-     *
-     * @return Direction
-     */
     public function addRoomInDirection(DirectionEnum $directionEnum, Room $room): Direction
     {
         $direction = new Direction($this, $directionEnum, $room);
@@ -116,6 +119,16 @@ class Room
         $room->getDirections()->add($reverse);
 
         return $direction;
+    }
+
+    public function isOutside(): bool
+    {
+        return $this->isOutside;
+    }
+
+    public function getVisibility(): int
+    {
+        return $this->visibility;
     }
 
     /**

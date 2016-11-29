@@ -291,6 +291,11 @@ class Mob implements Noun
         $this->gender = $gender;
     }
 
+    public function getRace(): Race
+    {
+        return $this->race;
+    }
+
     /**
      * @PostLoad
      */
