@@ -53,7 +53,7 @@ class Room
     /** @Column(type="integer") */
     protected $visibility;
 
-    /** @ManyToOne(targetEntity="Area", inversedBy="rooms") */
+    /** @ManyToOne(targetEntity="Area", inversedBy="rooms", cascade={"persist"}) */
     protected $area;
 
     /**

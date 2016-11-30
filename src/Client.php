@@ -133,12 +133,6 @@ class Client
         }
     }
 
-    public function tick()
-    {
-        $this->mob->regen();
-        $this->connection->write("\n ".$this->prompt());
-    }
-
     /**
      * @return Mob
      */
@@ -165,16 +159,22 @@ class Client
         $hpPercent = $mob->getHp() / $mob->getAttribute('hp');
 
         switch ($hpPercent) {
-            case $hpPercent === 1:
+            case $hpPercent >= 1.0:
                 return 'is in excellent condition';
-            case $hpPercent > .9:
-                return 'feels great';
-            case $hpPercent > .5:
+            case $hpPercent > 0.9:
+                return 'has a few scratches';
+            case $hpPercent > 0.75:
+                return 'has some small wounds and bruises';
+            case $hpPercent > 0.5:
                 return 'has quite a few wounds';
-            case $hpPercent > .25:
-                return 'has serious wounds';
-            default:
+            case $hpPercent > 0.3:
+                return 'has some big nasty wounds and scratches';
+            case $hpPercent > 0.15:
+                return 'looks pretty hurt';
+            case $hpPercent >= 0.0:
                 return 'is in awful condition';
+            default:
+                return 'is bleeding to death.';
         }
     }
 }

@@ -41,6 +41,13 @@ class Weather extends Enum
                 return 0;
             case self::STORMING:
                 return -5;
+            default:
+                return 0;
         }
+    }
+
+    public static function getRandom(): Weather
+    {
+        return Weather::values()[array_rand(Weather::values())];
     }
 }

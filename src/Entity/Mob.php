@@ -16,10 +16,10 @@ use PhpMud\Client;
 use PhpMud\Dice;
 use PhpMud\Enum\Disposition;
 use PhpMud\Enum\Gender;
-use PhpMud\Enum\Race;
 use PhpMud\Fight;
 use PhpMud\IO\Output;
 use PhpMud\Noun;
+use PhpMud\Race\Race;
 
 /**
  * @Entity
@@ -298,10 +298,11 @@ class Mob implements Noun
 
     /**
      * @PostLoad
+     * @PostPersist
      */
     public function postLoad()
     {
-        $this->race = new Race($this->race);
+        $this->race = Race::fromValue((string)$this->race);
         $this->disposition = new Disposition($this->disposition);
     }
 

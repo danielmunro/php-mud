@@ -32,8 +32,7 @@ class NewRoomCommand implements ServiceProviderInterface
                         return $input->getClient()->getDispositionCheckFail();
                     }
 
-                    $mob = $input->getMob();
-                    $srcRoom = $mob->getRoom();
+                    $srcRoom = $input->getRoom();
                     $newRoom = new Room();
                     $newRoom->setTitle('A swirling mist');
                     $newRoom->setDescription('You are engulfed by a mist.');
@@ -77,6 +76,7 @@ class NewRoomCommand implements ServiceProviderInterface
 
                     $newDirection = new Direction($newRoom, $direction->reverse(), $srcRoom);
                     $newRoom->getDirections()->add($newDirection);
+                    $srcRoom->getArea()->addRoom($newRoom);
 
                     return new Output(sprintf('A room appears %s', $direction->getValue()));
                 }

@@ -9,6 +9,7 @@ use PhpMud\Entity\Mob;
 use PhpMud\Enum\Race;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
+use PhpMud\Race\Human;
 use PhpMud\Server;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
@@ -29,7 +30,7 @@ class NewMobCommand implements ServiceProviderInterface
                         return $input->getClient()->getDispositionCheckFail();
                     }
 
-                    $mob = new Mob('a fresh mob', Race::HUMAN());
+                    $mob = new Mob('a fresh mob', new Human());
 
                     $input->getRoom()->getMobs()->add($mob);
                     $mob->setRoom($input->getRoom());

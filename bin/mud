@@ -9,7 +9,7 @@ use PhpMud\Entity\Room;
 use PhpMud\Entity\Item;
 use PhpMud\Entity\Mob;
 use PhpMud\Enum\Material;
-use PhpMud\Enum\Race;
+use PhpMud\Race\Human;
 use PhpMud\Server;
 
 $roomRepository = $em->getRepository(Room::class);
@@ -22,7 +22,7 @@ if (!$room) {
     $room->setTitle('Midgaard Town Center');
     $room->setDescription('Before you is the town center.');
     $room->getInventory()->add(new Item('a copper teapot', Material::COPPER(), ['copper', 'teapot']));
-    $mob = new Mob('a janitor', Race::HUMAN());
+    $mob = new Mob('a janitor', new Human());
     $mob->setRoom($room);
     $area->addRoom($room);
 }

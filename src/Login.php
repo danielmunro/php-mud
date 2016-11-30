@@ -14,8 +14,8 @@ namespace PhpMud;
 
 use PhpMud\Entity\Mob;
 use PhpMud\Enum\Gender;
-use PhpMud\Enum\Race;
 use PhpMud\IO\Input;
+use PhpMud\Race\Race;
 
 class Login
 {
@@ -57,7 +57,7 @@ class Login
                 break;
             case static::STATE_RACE:
                 try {
-                    $this->mob = new Mob($this->mobName, new Race((string)$input));
+                    $this->mob = new Mob($this->mobName, Race::fromValue((string)$input));
                     $input->getClient()->write('Ok. Optionally, pick a gender (female/male/neutral) > ');
                     $this->state = static::STATE_GENDER;
                 } catch (\UnexpectedValueException $e) {

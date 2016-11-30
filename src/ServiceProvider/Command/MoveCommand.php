@@ -38,8 +38,7 @@ class MoveCommand implements ServiceProviderInterface
              */
             public function execute(Server $server, Input $input): Output
             {
-                if (
-                    !$input->getDisposition()->canInteract()
+                if (!$input->getDisposition()->canInteract()
                     || $input->getDisposition()->equals(Disposition::SITTING())
                 ) {
                     return $input->getClient()->getDispositionCheckFail();
@@ -63,7 +62,7 @@ class MoveCommand implements ServiceProviderInterface
 
                 $mob->setRoom($targetDirection->getTargetRoom());
 
-                return new Output((string) $mob->getRoom());
+                return $server->getCommands()->execute(new Input($input->getClient(), 'look'));
             }
         };
     }
@@ -73,31 +72,25 @@ class MoveCommand implements ServiceProviderInterface
         $pimple['down'] = $pimple->protect(function () {
             return static::svc(Direction::DOWN());
         });
-        $pimple['d'] = $pimple['down'];
 
         $pimple['up'] = $pimple->protect(function () {
             return static::svc(Direction::UP());
         });
-        $pimple['u'] = $pimple['up'];
 
         $pimple['north'] = $pimple->protect(function () {
             return static::svc(Direction::NORTH());
         });
-        $pimple['n'] = $pimple['north'];
 
         $pimple['south'] = $pimple->protect(function () {
             return static::svc(Direction::SOUTH());
         });
-        $pimple['s'] = $pimple['south'];
 
         $pimple['east'] = $pimple->protect(function () {
             return static::svc(Direction::EAST());
         });
-        $pimple['e'] = $pimple['east'];
 
         $pimple['west'] = $pimple->protect(function () {
             return static::svc(Direction::WEST());
         });
-        $pimple['w'] = $pimple['west'];
     }
 }

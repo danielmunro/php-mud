@@ -14,6 +14,7 @@ namespace PhpMud;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use PhpMud\Entity\Area;
 use PhpMud\Entity\Mob;
 use PhpMud\Entity\Room;
 use PhpMud\IO\Commands;
@@ -147,11 +148,21 @@ class Server
         $this->time->incrementTime();
 
         $this->clients->map(function (Client $client) {
-            $client->tick();
+            $client->getMob()->regen();
+            $client->write("\n".$client->prompt());
         });
 
         $this->em->persist($this->startRoom);
         $this->em->flush();
+
+        each(
+            $this->em->getRepository(Area::class)->findAll(),
+            function (Area $area) {
+                if (random_int(1, 4) === 1) {
+                    $area->setRandomWeather();
+                }
+            }
+        );
     }
 
     public function getStartRoom(): Room
@@ -162,5 +173,10 @@ class Server
     public function getTime(): Time
     {
         return $this->time;
+    }
+
+    public function getCommands(): Commands
+    {
+        return $this->commands;
     }
 }

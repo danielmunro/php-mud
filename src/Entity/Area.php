@@ -35,7 +35,7 @@ class Area
     public function __construct(string $name)
     {
         $this->name = $name;
-        $this->weather = Weather::values()[array_rand(Weather::values())];
+        $this->weather = Weather::getRandom();
         $this->rooms = new ArrayCollection();
     }
 
@@ -53,8 +53,8 @@ class Area
     /**
      * @PostLoad
      */
-    public function postLoad()
+    public function setRandomWeather()
     {
-        $this->weather = array_rand(Weather::values());
+        $this->weather = Weather::getRandom();
     }
 }

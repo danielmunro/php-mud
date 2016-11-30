@@ -4,15 +4,16 @@ declare(strict_types=1);
 namespace PhpMud\Tests;
 
 use PhpMud\Entity\Mob;
-use PhpMud\Enum\Race;
 use PhpMud\Fight;
+use PhpMud\Race\Dwarf;
+use PhpMud\Race\Human;
 
 class FightTest extends \PHPUnit_Framework_TestCase
 {
     public function testFight()
     {
-        $mob1 = new Mob('dwarvie', Race::DWARF());
-        $mob2 = new Mob('hoooman', Race::HUMAN());
+        $mob1 = new Mob('dwarvie', new Dwarf());
+        $mob2 = new Mob('hoooman', new Human());
 
         $fight = new Fight($mob1, $mob2);
         $mob1->setFight($fight);
