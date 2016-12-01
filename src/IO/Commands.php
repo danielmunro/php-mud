@@ -15,18 +15,22 @@ namespace PhpMud\IO;
 use PhpMud\Command;
 use PhpMud\Server;
 use PhpMud\ServiceProvider\Command\DropCommand;
+use PhpMud\ServiceProvider\Command\EquippedCommand;
 use PhpMud\ServiceProvider\Command\GetCommand;
 use PhpMud\ServiceProvider\Command\GossipCommand;
+use PhpMud\ServiceProvider\Command\InventoryCommand;
 use PhpMud\ServiceProvider\Command\KillCommand;
 use PhpMud\ServiceProvider\Command\LookCommand;
 use PhpMud\ServiceProvider\Command\MoveCommand;
 use PhpMud\ServiceProvider\Command\NewMobCommand;
 use PhpMud\ServiceProvider\Command\NewRoomCommand;
 use PhpMud\ServiceProvider\Command\QuitCommand;
+use PhpMud\ServiceProvider\Command\RemoveCommand;
 use PhpMud\ServiceProvider\Command\SitCommand;
 use PhpMud\ServiceProvider\Command\SleepCommand;
 use PhpMud\ServiceProvider\Command\TimeCommand;
 use PhpMud\ServiceProvider\Command\WakeCommand;
+use PhpMud\ServiceProvider\Command\WearCommand;
 use PhpMud\ServiceProvider\Command\WeatherCommand;
 use Pimple\Container;
 use function Functional\first;
@@ -58,6 +62,10 @@ class Commands
         $this->container->register(new SitCommand());
         $this->container->register(new TimeCommand());
         $this->container->register(new WeatherCommand());
+        $this->container->register(new WearCommand());
+        $this->container->register(new RemoveCommand());
+        $this->container->register(new EquippedCommand());
+        $this->container->register(new InventoryCommand());
     }
 
     public function execute(Input $input): Output

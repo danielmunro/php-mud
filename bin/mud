@@ -22,6 +22,12 @@ if (!$room) {
     $room->setTitle('Midgaard Town Center');
     $room->setDescription('Before you is the town center.');
     $room->getInventory()->add(new Item('a copper teapot', Material::COPPER(), ['copper', 'teapot']));
+    $item = new Item('a wooden sword', Material::WOOD(), ['wooden', 'sword']);
+    $item->setPosition(\PhpMud\Enum\Position::WIELDED());
+    $room->getInventory()->add($item);
+    $item = new Item('a wooden mace', Material::WOOD(), ['wooden', 'mace']);
+    $item->setPosition(\PhpMud\Enum\Position::WIELDED());
+    $room->getInventory()->add($item);
     $mob = new Mob('a janitor', new Human());
     $mob->setRoom($room);
     $area->addRoom($room);

@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud\Entity;
 
 use PhpMud\Enum\Material;
+use PhpMud\Enum\Position;
 use PhpMud\Noun;
 
 /**
@@ -39,6 +40,9 @@ class Item implements Noun
 
     /** @ManyToOne(targetEntity="Inventory", inversedBy="items") */
     protected $inventory;
+
+    /** @Column(type="string", nullable=true) */
+    protected $position;
 
     public function __construct(
         string $name,
@@ -67,5 +71,34 @@ class Item implements Noun
     public function getIdentifiers(): array
     {
         return $this->identifiers;
+    }
+
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
+    public function setPosition(Position $position)
+    {
+        $this->position = $position;
+    }
+
+    /**
+     * @PostLoad
+     * @PostPersist
+     */
+    public function postLoad()
+    {
+        if ($this->position) {
+            $this->position = new Position($this->position);
+        }
+    }
+
+    /**
+     * @PrePersist
+     */
+    public function prePersist()
+    {
+        $this->position = (string) $this->position;
     }
 }

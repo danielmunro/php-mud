@@ -41,10 +41,7 @@ class Mob implements Noun
     /** @Column(type="array") */
     protected $identifiers;
 
-    /**
-     * @ManyToOne(targetEntity="Room", inversedBy="mobs")
-     * @var Room $room
-     */
+    /** @ManyToOne(targetEntity="Room", inversedBy="mobs") */
     protected $room;
 
     /** @OneToOne(targetEntity="Attributes", cascade={"persist"})  */
@@ -52,6 +49,9 @@ class Mob implements Noun
 
     /** @OneToOne(targetEntity="Inventory", cascade={"persist"}) */
     protected $inventory;
+
+    /** @OneToOne(targetEntity="Inventory", cascade={"persist"}) */
+    protected $equipped;
 
     /** @Column(type="string") */
     protected $race;
@@ -94,6 +94,7 @@ class Mob implements Noun
         $this->mana = $this->attributes->getAttribute('mana');
         $this->mv = $this->attributes->getAttribute('mv');
         $this->inventory = new Inventory();
+        $this->equipped = new Inventory();
         $this->disposition = Disposition::STANDING();
         $this->isPlayer = false;
         $this->gender = Gender::NEUTRAL();
@@ -181,6 +182,11 @@ class Mob implements Noun
     public function getInventory(): Inventory
     {
         return $this->inventory;
+    }
+
+    public function getEquipped(): Inventory
+    {
+        return $this->equipped;
     }
 
     /**

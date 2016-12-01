@@ -10,16 +10,15 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace PhpMud\Enum;
-
-use MyCLabs\Enum\Enum;
+namespace PhpMud\Entity;
 
 /**
- * @method static COPPER()
- * @method static WOOD()
+ * @Entity
  */
-class Material extends Enum
+class Equipment extends Item
 {
-    const COPPER = 'copper';
-    const WOOD = 'wood';
+    use PrimaryKeyTrait;
+
+    /** @Column(type="string") */
+    protected $position;
 }
