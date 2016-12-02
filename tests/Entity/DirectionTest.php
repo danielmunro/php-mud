@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace PhpMud\Tests\Entity;
 
+use PhpMud\Direction\West;
 use PhpMud\Entity\Room;
 use PhpMud\Enum\Direction;
 
@@ -14,7 +15,7 @@ class DirectionTest extends \PHPUnit_Framework_TestCase
         $room2 = new Room();
         $room3 = new Room();
 
-        $room1Direction = $room1->addRoomInDirection(Direction::WEST(), $room2);
+        $room1Direction = $room1->addRoomInDirection(new West(), $room2);
 
         static::assertEquals($room1, $room1Direction->getSourceRoom());
         static::assertEquals($room2, $room1Direction->getTargetRoom());

@@ -3,40 +3,53 @@ declare(strict_types=1);
 
 namespace PhpMud\Tests\Enum;
 
-use PhpMud\Enum\Direction;
+use PhpMud\Direction\Direction;
+use PhpMud\Direction\Down;
+use PhpMud\Direction\East;
+use PhpMud\Direction\North;
+use PhpMud\Direction\South;
+use PhpMud\Direction\Up;
+use PhpMud\Direction\West;
 
 class DirectionTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider goodDirectionMatchPartialValueDataProvider
      *
-     * @param string $direction
+     * @param string $directionValue
+     * @param Direction $direction
      */
-    public function testDirectionMatchPartialValue(string $direction)
+    public function testDirectionMatchPartialValue(string $directionValue, Direction $direction)
     {
-        static::assertInstanceOf(Direction::class, Direction::matchPartialValue($direction));
+        static::assertEquals((string)$direction, Direction::matchPartialValue($directionValue));
     }
 
     public function goodDirectionMatchPartialValueDataProvider(): array
     {
         return [
             [
-                'n'
+                'n',
+                new North()
             ],
             [
-                's'
+                's',
+                new South()
             ],
             [
-                'e'
+                'e',
+                new East()
             ],
             [
-                'w'
+                'w',
+                new West(),
             ],
             [
-                'u'
+                'u',
+                new Up()
             ],
             [
-                'd'
+                'd',
+                new Down()
             ]
         ];
     }

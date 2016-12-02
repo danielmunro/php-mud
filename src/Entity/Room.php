@@ -14,7 +14,7 @@ namespace PhpMud\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use PhpMud\Enum\Direction as DirectionEnum;
+use PhpMud\Direction\Direction as AbstractDirection;
 use function Functional\reduce_left;
 
 /**
@@ -113,7 +113,7 @@ class Room
         return $this->regenRate;
     }
 
-    public function addRoomInDirection(DirectionEnum $directionEnum, Room $room): Direction
+    public function addRoomInDirection(AbstractDirection $directionEnum, Room $room): Direction
     {
         $direction = new Direction($this, $directionEnum, $room);
         $this->directions->add($direction);

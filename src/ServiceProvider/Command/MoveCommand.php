@@ -4,8 +4,14 @@ declare(strict_types=1);
 namespace PhpMud\ServiceProvider\Command;
 
 use PhpMud\Command;
+use PhpMud\Direction\Down;
+use PhpMud\Direction\East;
+use PhpMud\Direction\North;
+use PhpMud\Direction\South;
+use PhpMud\Direction\Up;
+use PhpMud\Direction\West;
 use PhpMud\Entity\Direction as DirectionEntity;
-use PhpMud\Enum\Direction;
+use PhpMud\Direction\Direction;
 use PhpMud\Enum\Disposition;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
@@ -48,7 +54,7 @@ class MoveCommand implements ServiceProviderInterface
                 $targetDirection = first(
                     $mob->getRoom()->getDirections()->toArray(),
                     function (DirectionEntity $d) {
-                        return $d->getDirection()->equals($this->direction);
+                        return (string)$d->getDirection() === (string)$this->direction;
                     }
                 );
 
@@ -70,27 +76,27 @@ class MoveCommand implements ServiceProviderInterface
     public function register(Container $pimple)
     {
         $pimple['down'] = $pimple->protect(function () {
-            return static::svc(Direction::DOWN());
+            return static::svc(new Down());
         });
 
         $pimple['up'] = $pimple->protect(function () {
-            return static::svc(Direction::UP());
+            return static::svc(new Up());
         });
 
         $pimple['north'] = $pimple->protect(function () {
-            return static::svc(Direction::NORTH());
+            return static::svc(new North());
         });
 
         $pimple['south'] = $pimple->protect(function () {
-            return static::svc(Direction::SOUTH());
+            return static::svc(new South());
         });
 
         $pimple['east'] = $pimple->protect(function () {
-            return static::svc(Direction::EAST());
+            return static::svc(new East());
         });
 
         $pimple['west'] = $pimple->protect(function () {
-            return static::svc(Direction::WEST());
+            return static::svc(new West());
         });
     }
 }

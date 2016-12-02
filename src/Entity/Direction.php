@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace PhpMud\Entity;
 
-use PhpMud\Enum\Direction as DirectionEnum;
+use PhpMud\Direction\Direction as AbstractDirection;
 
 /**
  * Class Direction
@@ -32,9 +32,9 @@ class Direction
     /** @Column(type="string") */
     protected $direction;
 
-    public function __construct(Room $sourceRoom, \PhpMud\Enum\Direction $direction, Room $targetRoom)
+    public function __construct(Room $sourceRoom, AbstractDirection $direction, Room $targetRoom)
     {
-        $this->direction = $direction->getValue();
+        $this->direction = $direction;
         $this->sourceRoom = $sourceRoom;
         $this->targetRoom = $targetRoom;
     }
@@ -49,13 +49,30 @@ class Direction
         return $this->targetRoom;
     }
 
-    public function getDirection(): DirectionEnum
+    public function getDirection(): AbstractDirection
     {
-        return new DirectionEnum($this->direction);
+        return $this->direction;
     }
 
     public function setTargetRoom(Room $targetRoom)
     {
         $this->targetRoom = $targetRoom;
+    }
+
+    /**
+     * @PostLoad
+     * @PostPersist
+     */
+    public function postLoad()
+    {
+        $this->direction = AbstractDirection::matchPartialValue((string)$this->direction);
+    }
+
+    /**
+     * @PrePersist
+     */
+    public function prePersist()
+    {
+        $this->direction = (string)$this->direction;
     }
 }

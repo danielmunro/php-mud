@@ -4,11 +4,9 @@ declare(strict_types=1);
 namespace PhpMud\ServiceProvider\Command;
 
 use PhpMud\Server;
-use UnexpectedValueException;
 use PhpMud\Command;
 use PhpMud\Entity\Direction;
 use PhpMud\Entity\Room;
-use PhpMud\Enum\Direction as DirectionEnum;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use Pimple\Container;
@@ -37,7 +35,7 @@ class NewRoomCommand implements ServiceProviderInterface
                     $newRoom->setTitle('A swirling mist');
                     $newRoom->setDescription('You are engulfed by a mist.');
 
-                    $direction = DirectionEnum::matchPartialValue(last($input->getArgs()));
+                    $direction = \PhpMud\Direction\Direction::matchPartialValue(last($input->getArgs()));
                     if (!$direction) {
                         return new Output('That direction does not exist.');
                     }
@@ -46,7 +44,7 @@ class NewRoomCommand implements ServiceProviderInterface
                     $existingDirection = first(
                         $srcRoom->getDirections()->toArray(),
                         function (Direction $dir) use ($direction) {
-                            return $dir->getDirection()->equals($direction);
+                            return (string)$dir->getDirection() === (string)$direction;
                         }
                     );
 
@@ -65,7 +63,8 @@ class NewRoomCommand implements ServiceProviderInterface
                         $reverseDirection = first(
                             $existingRoom->getDirections()->toArray(),
                             function (Direction $dir) use ($existingDirection) {
-                                return $dir->getDirection()->equals($existingDirection->getDirection()->reverse());
+                                return (string)$dir->getDirection()
+                                    === (string)$existingDirection->getDirection()->reverse();
                             }
                         );
                         $reverseDirection->setTargetRoom($newRoom);
