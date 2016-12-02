@@ -55,13 +55,13 @@ class Client
     /**
      * Client constructor.
      *
+     * @param Login $login
      * @param Connection $connection
      */
-    public function __construct(Connection $connection)
+    public function __construct(Login $login, Connection $connection)
     {
+        $this->login = $login;
         $this->connection = $connection;
-        $this->login = new Login();
-
         $connection->on(static::EVENT_DATA, [$this, 'login']);
     }
 

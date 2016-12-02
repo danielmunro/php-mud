@@ -14,6 +14,6 @@ namespace PhpMud\Repository;
 
 use Doctrine\ORM\EntityRepository;
 
-class Mob extends EntityRepository
+class MobRepository extends EntityRepository
 {
 }

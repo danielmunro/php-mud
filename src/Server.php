@@ -94,7 +94,7 @@ class Server
      */
     public function addConnection(Connection $connection): Client
     {
-        $client = new Client($connection);
+        $client = new Client(new Login($this->em->getRepository(Mob::class)), $connection);
         $this->clients->add($client);
 
         $connection->on(

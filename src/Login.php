@@ -12,10 +12,12 @@ declare(strict_types=1);
 
 namespace PhpMud;
 
+use Doctrine\ORM\EntityManager;
 use PhpMud\Entity\Mob;
 use PhpMud\Enum\Gender;
 use PhpMud\IO\Input;
 use PhpMud\Race\Race;
+use PhpMud\Repository\MobRepository;
 
 class Login
 {
@@ -42,9 +44,15 @@ class Login
      */
     protected $mob;
 
-    public function __construct()
+    /**
+     * @var MobRepository
+     */
+    protected $mobRepository;
+
+    public function __construct(MobRepository $mobRepository)
     {
         $this->state = static::STATE_NAME;
+        $this->mobRepository = $mobRepository;
     }
 
     public function next(Input $input): string
@@ -52,8 +60,16 @@ class Login
         switch ($this->state) {
             case static::STATE_NAME:
                 $this->mobName = (string) $input;
-                $input->getClient()->write('Ok. Pick a race > ');
+                $this->mob = $this->mobRepository->findOneBy([
+                    'name' => $this->mobName
+                ]);
+                if ($this->mob) {
+                    $this->state = static::STATE_COMPLETE;
+                    $input->getClient()->write("Welcome back.\n");
+                    break;
+                }
                 $this->state = static::STATE_RACE;
+                $input->getClient()->write('Ok. Pick a race > ');
                 break;
             case static::STATE_RACE:
                 try {

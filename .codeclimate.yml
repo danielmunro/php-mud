@@ -6,6 +6,11 @@ engines:
     enabled: true
   phpmd:
     enabled: true
+    checks:
+          Naming/ShortVariable:
+            enabled: false
+          Naming/LongVariable:
+            enabled: false
     config:
       file_extensions: "php"
       rulesets: "unusedcode,codesize,naming,design,controversial,phpmd.xml"

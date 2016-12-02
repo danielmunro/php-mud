@@ -22,7 +22,7 @@ use PhpMud\Noun;
 use PhpMud\Race\Race;
 
 /**
- * @Entity
+ * @Entity(repositoryClass="\PhpMud\Repository\MobRepository")
  * @HasLifecycleCallbacks
  */
 class Mob implements Noun
