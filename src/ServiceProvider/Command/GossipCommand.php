@@ -21,6 +21,10 @@ class GossipCommand implements ServiceProviderInterface
             return new class() implements Command {
                 public function execute(Server $server, Input $input): Output
                 {
+                    if (count($input->getArgs()) === 1) {
+                        return new Output('Gossip what?');
+                    }
+
                     $strInput = (string)$input;
                     $message = substr($strInput, strpos($strInput, ' '));
                     $messageToClients = sprintf(
@@ -28,6 +32,7 @@ class GossipCommand implements ServiceProviderInterface
                         $input->getMob()->getName(),
                         $message
                     );
+                    
                     each(
                         $server->getClients()->toArray(),
                         function (Client $client) use ($input, $messageToClients) {
