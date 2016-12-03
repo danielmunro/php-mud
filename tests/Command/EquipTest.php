@@ -26,6 +26,8 @@ class EquipTest extends CommandTest
         $commands->execute($client->input('remove helmet'));
         static::assertCount(2, $inv->getItems());
         static::assertCount(0, $eq->getItems());
+        $output = $commands->execute($client->input('remove helmet'));
+        static::assertEquals("You can't find it.", $output->getResponse());
     }
 
     private function getMockHelmet(): Item
