@@ -32,7 +32,7 @@ class GossipCommand implements ServiceProviderInterface
                         $input->getMob()->getName(),
                         $message
                     );
-                    
+
                     each(
                         $server->getClients()->toArray(),
                         function (Client $client) use ($input, $messageToClients) {
