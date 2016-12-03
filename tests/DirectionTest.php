@@ -62,6 +62,11 @@ class DirectionTest extends \PHPUnit_Framework_TestCase
     public function testDirectionMatchPartialValueFail(string $direction)
     {
         static::assertNull(Direction::matchPartialValue($direction));
+        try {
+            Direction::fromValue($direction);
+            $this->fail('expected exception did not throw');
+        } catch (\InvalidArgumentException $e) {
+        }
     }
 
     public function badDirectionMatchPartialValueDataProvider(): array

@@ -36,9 +36,12 @@ class NewRoomCommand implements ServiceProviderInterface
                     $newRoom->setDescription('You are engulfed by a mist.');
 
                     $direction = \PhpMud\Direction\Direction::matchPartialValue(last($input->getArgs()));
+
                     if (!$direction) {
                         return new Output('That direction does not exist.');
                     }
+
+                    $direction = \PhpMud\Direction\Direction::fromValue($direction);
 
                     /** @var Direction $existingDirection */
                     $existingDirection = first(
@@ -77,7 +80,7 @@ class NewRoomCommand implements ServiceProviderInterface
                     $newRoom->getDirections()->add($newDirection);
                     $srcRoom->getArea()->addRoom($newRoom);
 
-                    return new Output(sprintf('A room appears %s', $direction->getValue()));
+                    return new Output(sprintf('A room appears %s', (string)$direction));
                 }
             };
         });
