@@ -21,22 +21,23 @@ class GossipCommand implements ServiceProviderInterface
             return new class() implements Command {
                 public function execute(Server $server, Input $input): Output
                 {
-                    $reduce = reduce_left($input->getArgs(), function (string $value, int $index) {
-                        return $index > 0 ? $value : '';
-                    });
-                    $message = $input->getMob()->getName().' gossips "'.$reduce.'"';
-                    /**
+                    $strInput = (string)$input;
+                    $message = substr($strInput, strpos($strInput, ' '));
+                    $messageToClients = sprintf(
+                        "%s gossips, \"%s\"\n",
+                        $input->getMob()->getName(),
+                        $message
+                    );
                     each(
                         $server->getClients()->toArray(),
-                        function (Client $client) use ($input, $message, $reduce) {
-                            if ($client === $input->getClient()) {
-                                $client->write('You gossip "'.$reduce.'"');
-                            } else {
-                                $client->write($message);
+                        function (Client $client) use ($input, $messageToClients) {
+                            if ($client !== $input->getClient()) {
+                                $client->write($messageToClients);
                             }
                         }
                     );
-                     */
+
+                    return new Output(sprintf("You gossip, \"%s\"\n", $message));
                 }
             };
         });

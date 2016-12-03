@@ -179,4 +179,9 @@ class Server
     {
         return $this->commands;
     }
+
+    public function getClients(): ArrayCollection
+    {
+        return $this->clients;
+    }
 }
