@@ -12,17 +12,11 @@ declare(strict_types=1);
 
 namespace PhpMud;
 
-use PhpMud\Entity\Room;
-use PhpMud\IO\Commands;
 use PhpMud\IO\Output;
-use Pimple\Container;
 use PhpMud\Entity\Mob;
 use PhpMud\IO\Input;
 use React\Socket\Connection;
 
-/**
- * A client
- */
 class Client
 {
     const EVENT_DATA = 'data';

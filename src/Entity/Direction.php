@@ -18,6 +18,7 @@ use PhpMud\Direction\Direction as AbstractDirection;
  * Class Direction
  * @package PhpMud\Entity
  * @Entity
+ * @HasLifecycleCallbacks
  */
 class Direction
 {
@@ -59,13 +60,18 @@ class Direction
         $this->targetRoom = $targetRoom;
     }
 
+    public function __toString(): string
+    {
+        return (string)$this->direction;
+    }
+
     /**
      * @PostLoad
      * @PostPersist
      */
     public function postLoad()
     {
-        $this->direction = AbstractDirection::matchPartialValue((string)$this->direction);
+        $this->direction = AbstractDirection::fromValue((string)$this->direction);
     }
 
     /**

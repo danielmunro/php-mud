@@ -71,12 +71,22 @@ class Room
         $this->visibility = self::VISIBILITY_DEFAULT;
     }
 
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
     /**
      * @param string $title
      */
     public function setTitle(string $title)
     {
         $this->title = $title;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
     }
 
     /**
@@ -152,24 +162,5 @@ class Room
         $this->mobs = $this->mobs->filter(function (Mob $mob) {
             return !$mob->isPlayer();
         });
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString(): string
-    {
-        return
-            $this->title."\n".
-            $this->description."\n".
-            (string) $this->inventory."\n".
-            'Exits ['.
-            reduce_left(
-                $this->directions->toArray(),
-                function (Direction $direction, $index, $collection, $reduction) {
-                    return $reduction . substr($direction->getDirection()->getValue(), 0, 1);
-                }
-            ).
-            '] ';
     }
 }

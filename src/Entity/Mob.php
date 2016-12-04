@@ -23,6 +23,9 @@ use PhpMud\Race\Race;
 
 /**
  * @Entity(repositoryClass="\PhpMud\Repository\MobRepository")
+ * @InheritanceType("SINGLE_TABLE")
+ * @DiscriminatorColumn(name="type", type="string")
+ * @DiscriminatorMap({"mob" = "Mob", "shopkeeper" = "Shopkeeper"})
  * @HasLifecycleCallbacks
  */
 class Mob implements Noun
@@ -150,6 +153,11 @@ class Mob implements Noun
     public function getLook(): string
     {
         return $this->look ?? 'is here.';
+    }
+
+    public function setLook(string $look)
+    {
+        $this->look = $look;
     }
 
     /**

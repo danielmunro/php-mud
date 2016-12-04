@@ -67,7 +67,7 @@ class Server
         $this->startRoom = $startRoom;
         $this->clients = new ArrayCollection();
         $this->commands = new Commands($this);
-        $this->time = new Time();
+        $this->time = new Time(10);
     }
 
     /**

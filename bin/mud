@@ -32,6 +32,7 @@ if (!$room) {
     $mob->setRoom($room);
     $area->addRoom($room);
     $shopkeeper = new \PhpMud\Entity\Shopkeeper('Bill', new \PhpMud\Race\Dwarf());
+    $shopkeeper->setLook('totters around, stinking up the place.');
     $shopkeeper->getShopInventory()->add(new Item('a small brass key', Material::BRASS(), ['small', 'brass', 'key']));
     $room->getMobs()->add($shopkeeper);
 }

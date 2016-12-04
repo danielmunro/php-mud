@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace PhpMud\ServiceProvider\Command;
 
 use PhpMud\Command;
+use PhpMud\Entity\Direction;
+use PhpMud\Entity\Item;
 use PhpMud\Entity\Mob;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
@@ -20,26 +22,49 @@ class LookCommand implements ServiceProviderInterface
             return new class implements Command {
                 public function execute(Server $server, Input $input): Output
                 {
+                    $room = $input->getRoom();
+
                     if (!$input->getDisposition()->canInteract()) {
                         return $input->getClient()->getDispositionCheckFail();
                     }
 
                     if ($server->getTime()->getVisibility() +
-                        $input->getRoom()->getArea()->getWeather()->getVisibility() +
-                        $input->getRoom()->getVisibility() <=
+                        $room->getArea()->getWeather()->getVisibility() +
+                        $room->getVisibility() <=
                         $input->getMob()->getRace()->getVisibilityRequirement()) {
                         return new Output("You can't see a thing!");
                     }
 
-                    return new Output((string) $input->getRoom().reduce_left(
-                        $input->getRoom()->getMobs()->toArray(),
-                        function (Mob $mob, $index, $collection, $reduction) use ($input) {
-                            return $mob === $input->getMob() ?
-                                $reduction :
-                                sprintf("%s\n%s %s\n", $reduction, $mob->getName(), $mob->getLook());
-                        },
-                        "\n"
-                    ));
+                    return new Output(
+                        sprintf(
+                            "\033[36m%s\033[0m\n%s\n\n[\033[1;37mExits\e[0m: \033[32m%s\e[0m]%s%s",
+                            $room->getTitle(),
+                            $room->getDescription(),
+                            reduce_left(
+                                $room->getDirections()->toArray(),
+                                function (Direction $direction, $index, $collection, $reduction) {
+                                    return sprintf("%s %s", $reduction, (string)$direction);
+                                },
+                                ''
+                            ),
+                            reduce_left(
+                                $room->getInventory()->getItems(),
+                                function (Item $item, $index, $collection, $reduction) {
+                                    return sprintf("%s\n%s %s", $reduction, $item->getName(), $item->getLook());
+                                },
+                                ''
+                            ),
+                            reduce_left(
+                                $room->getMobs(),
+                                function (Mob $mob, $index, $collection, $reduction) use ($input) {
+                                    return $mob !== $input->getMob() ?
+                                        sprintf("%s\n%s %s", $reduction, $mob->getName(), $mob->getLook())
+                                        : $reduction;
+                                },
+                                ''
+                            )
+                        )
+                    );
                 }
             };
         });

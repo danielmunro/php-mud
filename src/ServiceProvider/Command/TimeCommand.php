@@ -32,7 +32,7 @@ class TimeCommand implements ServiceProviderInterface
                     return new Output(
                         sprintf(
                             'It is %s %s, day of %s.',
-                            $timeOfDay === 0 ? 12 : $timeOfDay,
+                            $timeOfDay === 0 ? 12 : $timeOfDay % 12,
                             $timeOfDay >= 12 ? 'pm' : 'am',
                             Day::fromIndex(
                                 ($server->getTime()->getHour() / Time::TICKS_PER_DAY) % Time::DAYS_PER_WEEK

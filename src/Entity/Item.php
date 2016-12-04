@@ -26,6 +26,9 @@ class Item implements Noun
     /** @Column(type="string") */
     protected $name;
 
+    /** @Column(type="string", nullable=true) */
+    protected $look;
+
     /** @Column(type="string") */
     protected $material;
 
@@ -66,6 +69,11 @@ class Item implements Noun
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getLook(): string
+    {
+        return $this->look ?? 'is here.';
     }
 
     public function getIdentifiers(): array
