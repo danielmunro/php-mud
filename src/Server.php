@@ -70,15 +70,12 @@ class Server
         $this->time = new Time(10);
     }
 
-    /**
-     * @param int $port
-     */
-    public function listen(int $port)
+    public function listen(string $ip, int $port)
     {
         $loop = Factory::create();
         $socket = new \React\Socket\Server($loop);
         $socket->on(static::EVENT_CONNECTION, [$this, 'addConnection']);
-        $socket->listen($port);
+        $socket->listen($port, $ip);
 
         $loop->addPeriodicTimer(0, [$this, 'heartbeat']);
         $loop->addPeriodicTimer(1, [$this, 'pulse']);

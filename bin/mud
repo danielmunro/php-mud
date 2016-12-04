@@ -37,4 +37,4 @@ if (!$room) {
     $room->getMobs()->add($shopkeeper);
 }
 
-(new Server($em, $room))->listen($config['port']);
+(new Server($em, $room))->listen($config['ip'], $config['port']);
