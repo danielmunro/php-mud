@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace PhpMud\ServiceProvider\Command;
 
+use PhpMud\Color;
 use PhpMud\Command;
 use PhpMud\Entity\Direction;
 use PhpMud\Entity\Item;
@@ -37,15 +38,18 @@ class LookCommand implements ServiceProviderInterface
 
                     return new Output(
                         sprintf(
-                            "\033[36m%s\033[0m\n%s\n\n[\033[1;37mExits\e[0m: \033[32m%s\e[0m]%s%s",
-                            $room->getTitle(),
+                            "%s\n%s\n\n[%s: %s]%s%s",
+                            Color::cyan($room->getTitle()),
                             $room->getDescription(),
-                            reduce_left(
-                                $room->getDirections()->toArray(),
-                                function (Direction $direction, $index, $collection, $reduction) {
-                                    return sprintf("%s %s", $reduction, (string)$direction);
-                                },
-                                ''
+                            Color::white('Exits'),
+                            Color::green(
+                                reduce_left(
+                                    $room->getDirections()->toArray(),
+                                    function (Direction $direction, $index, $collection, $reduction) {
+                                        return sprintf("%s %s", $reduction, (string)$direction);
+                                    },
+                                    ''
+                                )
                             ),
                             reduce_left(
                                 $room->getInventory()->getItems(),
