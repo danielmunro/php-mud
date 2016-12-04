@@ -31,6 +31,9 @@ if (!$room) {
     $mob = new Mob('a janitor', new Human());
     $mob->setRoom($room);
     $area->addRoom($room);
+    $shopkeeper = new \PhpMud\Entity\Shopkeeper('Bill', new \PhpMud\Race\Dwarf());
+    $shopkeeper->getShopInventory()->add(new Item('a small brass key', Material::BRASS(), ['small', 'brass', 'key']));
+    $room->getMobs()->add($shopkeeper);
 }
 
 (new Server($em, $room))->listen($config['port']);

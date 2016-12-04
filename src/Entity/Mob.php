@@ -74,6 +74,30 @@ class Mob implements Noun
     /** @Column(type="string", nullable=true) */
     protected $gender;
 
+    /** @Column(type="integer") */
+    protected $experience;
+
+    /** @Column(type="integer") */
+    protected $level;
+
+    /** @Column(type="integer") */
+    protected $experiencePerLevel;
+
+    /** @Column(type="integer") */
+    protected $ageInSeconds;
+
+    /** @Column(type="integer") */
+    protected $trains;
+
+    /** @Column(type="integer") */
+    protected $practices;
+
+    /** @Column(type="integer") */
+    protected $skillPoints;
+
+    /** @var int $ageTimer */
+    protected $ageTimer;
+
     /** @var Fight $fight */
     protected $fight;
 
@@ -98,6 +122,13 @@ class Mob implements Noun
         $this->disposition = Disposition::STANDING();
         $this->isPlayer = false;
         $this->gender = Gender::NEUTRAL();
+        $this->level = 1;
+        $this->experience = 1;
+        $this->experiencePerLevel = 1;
+        $this->ageInSeconds = 0;
+        $this->trains = 0;
+        $this->practices = 0;
+        $this->skillPoints = 0;
     }
 
     public function attackRoll(Mob $target): bool
@@ -302,6 +333,51 @@ class Mob implements Noun
         return $this->race;
     }
 
+    public function getWeightCapacity(): integer
+    {
+        return (25 * $this->race->getSize()) + (10 * $this->getAttribute('str'));
+    }
+
+    public function getAgeInYears(): int
+    {
+        return 17 + ($this->ageInSeconds / 72000);
+    }
+
+    public function getAgeInHours(): int
+    {
+        return $this->ageInSeconds / 3600;
+    }
+
+    public function getTrains(): int
+    {
+        return $this->trains;
+    }
+
+    public function getPractices(): int
+    {
+        return $this->practices;
+    }
+
+    public function getSkillPoints(): int
+    {
+        return $this->skillPoints;
+    }
+
+    public function getExperience(): int
+    {
+        return $this->experience;
+    }
+
+    public function getExperiencePerLevel(): int
+    {
+        return $this->experiencePerLevel;
+    }
+
+    public function getLevel(): int
+    {
+        return $this->level;
+    }
+
     /**
      * @PostLoad
      * @PostPersist
@@ -310,6 +386,7 @@ class Mob implements Noun
     {
         $this->race = Race::fromValue((string)$this->race);
         $this->disposition = new Disposition($this->disposition);
+        $this->ageTimer = time();
     }
 
     /**
@@ -319,5 +396,6 @@ class Mob implements Noun
     {
         $this->race = (string) $this->race;
         $this->disposition = (string) $this->disposition;
+        $this->ageInSeconds += time() - $this->ageTimer;
     }
 }

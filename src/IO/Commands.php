@@ -14,6 +14,7 @@ namespace PhpMud\IO;
 
 use PhpMud\Command;
 use PhpMud\Server;
+use PhpMud\ServiceProvider\Command\BuyCommand;
 use PhpMud\ServiceProvider\Command\DropCommand;
 use PhpMud\ServiceProvider\Command\EquippedCommand;
 use PhpMud\ServiceProvider\Command\GetCommand;
@@ -26,6 +27,7 @@ use PhpMud\ServiceProvider\Command\NewMobCommand;
 use PhpMud\ServiceProvider\Command\NewRoomCommand;
 use PhpMud\ServiceProvider\Command\QuitCommand;
 use PhpMud\ServiceProvider\Command\RemoveCommand;
+use PhpMud\ServiceProvider\Command\ScoreCommand;
 use PhpMud\ServiceProvider\Command\SitCommand;
 use PhpMud\ServiceProvider\Command\SleepCommand;
 use PhpMud\ServiceProvider\Command\TimeCommand;
@@ -66,6 +68,9 @@ class Commands
         $this->container->register(new RemoveCommand());
         $this->container->register(new EquippedCommand());
         $this->container->register(new InventoryCommand());
+        $this->container->register(new ScoreCommand());
+        $this->container->register(new BuyCommand());
+        //$this->container->register(new Sell)
     }
 
     public function execute(Input $input): Output

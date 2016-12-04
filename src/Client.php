@@ -154,9 +154,9 @@ class Client
         return new Output(sprintf('No way! You are %s.', $this->mob->getDisposition()->getValue()));
     }
 
-    private static function getCondition(Mob $mob): string
+    public function getCondition(): string
     {
-        $hpPercent = $mob->getHp() / $mob->getAttribute('hp');
+        $hpPercent = $this->mob->getHp() / $this->mob->getAttribute('hp');
 
         switch ($hpPercent) {
             case $hpPercent >= 1.0:

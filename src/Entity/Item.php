@@ -83,6 +83,11 @@ class Item implements Noun
         $this->position = $position;
     }
 
+    public function getWeight(): float
+    {
+        return $this->weight;
+    }
+
     /**
      * @PostLoad
      * @PostPersist
