@@ -4,37 +4,85 @@ declare(strict_types=1);
 
 require_once __DIR__.'/../bootstrap.php';
 
+use PhpMud\Fixture\AreaFixture;
+use PhpMud\Fixture\ItemFixture;
+use PhpMud\Fixture\MobFixture;
+use PhpMud\Fixture\RoomFixture;
 use PhpMud\Entity\Area;
 use PhpMud\Entity\Room;
 use PhpMud\Entity\Item;
 use PhpMud\Entity\Mob;
+use PhpMud\Entity\Shopkeeper;
 use PhpMud\Enum\Material;
+use PhpMud\Direction\West;
+use PhpMud\Race\Dwarf;
 use PhpMud\Race\Human;
 use PhpMud\Server;
 
-$roomRepository = $em->getRepository(Room::class);
-$room = $roomRepository->find(1);
+define('START_ROOM', 1);
+
+$room = $em->getRepository(Room::class)->find(START_ROOM);
 
 if (!$room) {
     echo "creating initial world fixtures\n";
-    $area = new Area('Midgaard');
-    $room = new Room();
-    $room->setTitle('Midgaard Town Center');
-    $room->setDescription('Before you is the town center.');
-    $room->getInventory()->add(new Item('a copper teapot', Material::COPPER(), ['copper', 'teapot']));
-    $item = new Item('a wooden sword', Material::WOOD(), ['wooden', 'sword']);
-    $item->setPosition(\PhpMud\Enum\Position::WIELDED());
-    $room->getInventory()->add($item);
-    $item = new Item('a wooden mace', Material::WOOD(), ['wooden', 'mace']);
-    $item->setPosition(\PhpMud\Enum\Position::WIELDED());
-    $room->getInventory()->add($item);
-    $mob = new Mob('a janitor', new Human());
-    $mob->setRoom($room);
-    $area->addRoom($room);
-    $shopkeeper = new \PhpMud\Entity\Shopkeeper('Bill', new \PhpMud\Race\Dwarf());
-    $shopkeeper->setLook('totters around, stinking up the place.');
-    $shopkeeper->getShopInventory()->add(new Item('a small brass key', Material::BRASS(), ['small', 'brass', 'key']));
-    $room->getMobs()->add($shopkeeper);
+
+    $area = new AreaFixture(new Area('Midgaard'));
+
+    $room = $area->addRoom(
+        (new RoomFixture(
+            new Room(
+                'Midgaard Town Center',
+                'Before you is the town center.'
+            )
+        ))->setArea(
+            $area->getInstance()
+        )->addItem(
+            new Item('a copper teapot', Material::COPPER(), ['copper', 'teapot'])
+        )->addItem(
+            (new ItemFixture(
+                new Item(
+                    'a wooden sword',
+                    Material::WOOD(),
+                    ['wooden', 'sword']
+                )
+            ))->setPosition(\PhpMud\Enum\Position::WIELDED())->getInstance()
+        )->addItem(
+            (new ItemFixture(
+                new Item(
+                    'a wooden mace',
+                    Material::WOOD(),
+                    ['wooden', 'mace']
+                )
+            ))->setPosition(\PhpMud\Enum\Position::WIELDED())->getInstance()
+        )->addMob(
+            (new MobFixture(
+                new Mob(
+                    'a janitor',
+                    new Human()
+                )
+            ))->getInstance()
+        )->addRoom(
+            new West(),
+            (new RoomFixture(
+                new Room(
+                    'Ye Olde Armoury',
+                    'A rustic shop is filled with cheap but sturdy training equipment.'
+                )
+            ))->addMob(
+                (new MobFixture(
+                    new Shopkeeper(
+                        'Momnorlum Merriarmour',
+                        new Dwarf()
+                    )
+                ))
+                    ->setLook('totters around, stinking up the place.')
+                    ->addItem(
+                        new Item('a small brass key', Material::BRASS(), ['small', 'brass', 'key'])
+                    )
+                    ->getInstance()
+            )->setArea($area->getInstance())
+        )
+    )->getInstance()->getRooms()->first();
 }
 
 (new Server($em, $room))->listen($config['ip'], $config['port']);

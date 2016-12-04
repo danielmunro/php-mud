@@ -56,16 +56,13 @@ class Room
     /** @ManyToOne(targetEntity="Area", inversedBy="rooms", cascade={"persist"}) */
     protected $area;
 
-    /**
-     * Room constructor.
-     */
-    public function __construct()
+    public function __construct(string $title = '', string $description = '')
     {
+        $this->title = $title;
+        $this->description = $description;
         $this->mobs = new ArrayCollection();
         $this->directions = new ArrayCollection();
         $this->inventory = new Inventory();
-        $this->title = '';
-        $this->description = '';
         $this->regenRate = self::REGEN_DEFAULT;
         $this->isOutside = true;
         $this->visibility = self::VISIBILITY_DEFAULT;

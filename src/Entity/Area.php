@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use PhpMud\Enum\Weather;
 
 /**
@@ -43,6 +44,11 @@ class Area
     {
         $this->rooms->add($room);
         $room->setArea($this);
+    }
+
+    public function getRooms(): Collection
+    {
+        return $this->rooms;
     }
 
     public function getWeather(): Weather

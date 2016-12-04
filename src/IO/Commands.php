@@ -85,6 +85,15 @@ class Commands
      */
     private function parse(Input $input): Command
     {
+        if (!$input->getCommand()) {
+            return new class implements Command {
+                public function execute(Server $server, Input $input): Output
+                {
+                    return new Output(' ');
+                }
+            };
+        }
+
         $command = first($this->container->keys(), function ($key) use ($input) {
             return strpos($key, $input->getCommand()) === 0;
         });
