@@ -27,7 +27,6 @@ if (!$room) {
     echo "creating initial world fixtures\n";
 
     $area = new AreaFixture(new Area('Midgaard'));
-
     $room = $area->addRoom(
         (new RoomFixture(
             new Room(
@@ -65,21 +64,22 @@ if (!$room) {
             new West(),
             (new RoomFixture(
                 new Room(
-                    'Ye Olde Armoury',
-                    'A rustic shop is filled with cheap but sturdy training equipment.'
+                    'Merriarmour Arms and Armour',
+'  A cramped shop is filled with cheap but sturdy training equipment. A red-hot forge
+and workshop fill the back half of the already small space. The silhouette of a dwarf 
+can be seen in front of the forge, hammering out new weapons and armor.'
                 )
             ))->addMob(
                 (new MobFixture(
                     new Shopkeeper(
-                        'Momnorlum Merriarmour',
+                        'Mornolum Merriarmour',
                         new Dwarf()
                     )
-                ))
-                    ->setLook('totters around, stinking up the place.')
-                    ->addItem(
-                        new Item('a small brass key', Material::BRASS(), ['small', 'brass', 'key'])
-                    )
-                    ->getInstance()
+                ))->setLook('totters around, stinking up the place.')
+                ->addItem(
+                    new Item('a small brass key', Material::BRASS(), ['small', 'brass', 'key'])
+                )
+                ->getInstance()
             )->setArea($area->getInstance())
         )
     )->getInstance()->getRooms()->first();

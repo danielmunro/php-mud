@@ -14,6 +14,7 @@ namespace PhpMud\ServiceProvider\Command;
 
 use PhpMud\Command;
 use PhpMud\Entity\Mob;
+use PhpMud\Entity\Shopkeeper;
 use PhpMud\Fight;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
@@ -53,6 +54,10 @@ class KillCommand implements ServiceProviderInterface
 
                     if (!$target) {
                         return new Output("They aren't here.");
+                    }
+
+                    if ($target instanceof Shopkeeper) {
+                        return new Output(sprintf("%s wouldn't like that very much.", $target->getName()));
                     }
 
                     $attacker->setFight(new Fight($attacker, $target));
