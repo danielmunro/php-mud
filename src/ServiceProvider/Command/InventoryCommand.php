@@ -22,12 +22,19 @@ class InventoryCommand implements ServiceProviderInterface
                 public function execute(Server $server, Input $input): Output
                 {
                     return new Output(
-                        reduce_left(
-                            $input->getMob()->getInventory()->getItems(),
-                            function (Item $item, int $index, array $collection, string $reduction) {
-                                return $reduction . $item->getName() . "\n";
-                            },
-                            ''
+                        sprintf(
+                            'You are carrying:%s',
+                            reduce_left(
+                                $input->getMob()->getInventory()->getItemsWithQuantity(),
+                                function (array $info, string $itemName, array $collection, string $reduction) {
+                                    return sprintf(
+                                        "%s\n%s",
+                                        $reduction,
+                                        ($info['count'] > 1 ? '(' . $info['count'] . ') ' : '') . $itemName
+                                    );
+                                },
+                                ''
+                            )
                         )
                     );
                 }

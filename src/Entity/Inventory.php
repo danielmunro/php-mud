@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace PhpMud\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use function Functional\reduce_left;
+use function Functional\map;
 
 /**
  * @Entity
@@ -55,6 +55,24 @@ class Inventory
     public function getItems(): array
     {
         return $this->items->toArray();
+    }
+
+    public function getItemsWithQuantity(): array
+    {
+        $items = [];
+
+        map(
+            $this->items,
+            function (Item $item) use (&$items) {
+                if (isset($items[$item->getName()])) {
+                    $items[$item->getName()]['count']++;
+                } else {
+                    $items[$item->getName()] = ['item' => $item, 'count' => 1];
+                }
+            }
+        );
+
+        return $items;
     }
 
     public function add(Item $item)

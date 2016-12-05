@@ -46,6 +46,21 @@ abstract class Race
         return $this->size;
     }
 
+    public static function matchPartialValue(string $value): Race
+    {
+        if (strpos(self::HUMAN, $value) === 0) {
+            return new Human();
+        } elseif (strpos(self::DWARF, $value) === 0) {
+            return new Dwarf();
+        } elseif (strpos(self::ELF, $value) === 0) {
+            return new Elf();
+        } elseif (strpos(self::OGRE, $value) === 0) {
+            return new Ogre();
+        }
+
+        throw new \UnexpectedValueException(sprintf('unknown value: %s', $value));
+    }
+
     public static function fromValue(string $value): Race
     {
         switch ($value) {

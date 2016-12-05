@@ -14,6 +14,7 @@ use PhpMud\Server;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use function Functional\reduce_left;
+use function Functional\map;
 
 class LookCommand implements ServiceProviderInterface
 {
@@ -38,7 +39,7 @@ class LookCommand implements ServiceProviderInterface
 
                     return new Output(
                         sprintf(
-                            "%s\n%s\n\n[%s: %s]%s%s",
+                            "%s\n%s\n\n[%s: %s]%s%s\n",
                             Color::cyan($room->getTitle()),
                             $room->getDescription(),
                             Color::white('Exits'),
@@ -46,15 +47,20 @@ class LookCommand implements ServiceProviderInterface
                                 reduce_left(
                                     $room->getDirections()->toArray(),
                                     function (Direction $direction, $index, $collection, $reduction) {
-                                        return sprintf("%s %s", $reduction, (string)$direction);
+                                        return sprintf('%s %s', $reduction, (string)$direction);
                                     },
                                     ''
                                 )
                             ),
                             reduce_left(
-                                $room->getInventory()->getItems(),
-                                function (Item $item, $index, $collection, $reduction) {
-                                    return sprintf("%s\n%s %s", $reduction, $item->getName(), $item->getLook());
+                                $room->getInventory()->getItemsWithQuantity(),
+                                function (array $info, string $itemName, array $collection, string $reduction) {
+                                    return sprintf(
+                                        "%s\n%s",
+                                        $reduction,
+                                        ($info['count'] > 1 ? '(' . $info['count'] . ') ' : '') .
+                                            $info['item']->getName() . ' ' . $info['item']->getLook()
+                                    );
                                 },
                                 ''
                             ),
