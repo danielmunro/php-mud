@@ -17,6 +17,7 @@ use PhpMud\Entity\Area;
 use PhpMud\Entity\Item;
 use PhpMud\Entity\Mob;
 use PhpMud\Entity\Room;
+use function Functional\each;
 
 class RoomFixture extends Fixture
 {
@@ -30,6 +31,18 @@ class RoomFixture extends Fixture
     public function addItem(Item $item): self
     {
         $this->room->getInventory()->add($item);
+
+        return $this;
+    }
+
+    public function addItems(array $items): self
+    {
+        each(
+            $items,
+            function (Item $item) {
+                $this->addItem($item);
+            }
+        );
 
         return $this;
     }

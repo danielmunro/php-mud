@@ -21,6 +21,7 @@ use PhpMud\ServiceProvider\Command\GetCommand;
 use PhpMud\ServiceProvider\Command\GossipCommand;
 use PhpMud\ServiceProvider\Command\InventoryCommand;
 use PhpMud\ServiceProvider\Command\KillCommand;
+use PhpMud\ServiceProvider\Command\ListCommand;
 use PhpMud\ServiceProvider\Command\LookCommand;
 use PhpMud\ServiceProvider\Command\MoveCommand;
 use PhpMud\ServiceProvider\Command\NewMobCommand;
@@ -69,6 +70,7 @@ class Commands
         $this->container->register(new EquippedCommand());
         $this->container->register(new InventoryCommand());
         $this->container->register(new ScoreCommand());
+        $this->container->register(new ListCommand());
         $this->container->register(new BuyCommand());
         //$this->container->register(new Sell)
     }

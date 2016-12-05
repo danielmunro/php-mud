@@ -47,6 +47,9 @@ class Item implements Noun
     /** @Column(type="string", nullable=true) */
     protected $position;
 
+    /** @Column(type="integer") */
+    protected $level;
+
     public function __construct(
         string $name,
         Material $material,
@@ -59,6 +62,7 @@ class Item implements Noun
         $this->identifiers = $identifiers;
         $this->weight = $weight;
         $this->value = $value;
+        $this->level = 1;
     }
 
     public function setInventory(Inventory $inventory)
@@ -94,6 +98,26 @@ class Item implements Noun
     public function getWeight(): float
     {
         return $this->weight;
+    }
+
+    public function getValue(): float
+    {
+        return $this->value;
+    }
+
+    public function setValue(float $value)
+    {
+        $this->value = $value;
+    }
+
+    public function getLevel(): int
+    {
+        return $this->level;
+    }
+
+    public function setLevel(int $level)
+    {
+        $this->level = $level;
     }
 
     /**

@@ -31,6 +31,13 @@ class ItemFixture extends Fixture
         return $this;
     }
 
+    public function setValue(float $value): self
+    {
+        $this->item->setValue($value);
+
+        return $this;
+    }
+
     public function getInstance(): Item
     {
         return $this->item;

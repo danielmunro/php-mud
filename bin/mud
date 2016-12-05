@@ -35,17 +35,15 @@ if (!$room) {
             )
         ))->setArea(
             $area->getInstance()
-        )->addItem(
-            new Item('a copper teapot', Material::COPPER(), ['copper', 'teapot'])
-        )->addItem(
+        )->addItems([
+            new Item('a copper teapot', Material::COPPER(), ['copper', 'teapot']),
             (new ItemFixture(
                 new Item(
                     'a wooden sword',
                     Material::WOOD(),
                     ['wooden', 'sword']
                 )
-            ))->setPosition(\PhpMud\Enum\Position::WIELDED())->getInstance()
-        )->addItem(
+            ))->setPosition(\PhpMud\Enum\Position::WIELDED())->getInstance(),
             (new ItemFixture(
                 new Item(
                     'a wooden mace',
@@ -53,7 +51,7 @@ if (!$room) {
                     ['wooden', 'mace']
                 )
             ))->setPosition(\PhpMud\Enum\Position::WIELDED())->getInstance()
-        )->addMob(
+        ])->addMob(
             (new MobFixture(
                 new Mob(
                     'a janitor',
@@ -77,7 +75,14 @@ can be seen in front of the forge, hammering out new weapons and armor.'
                     )
                 ))->setLook('totters around, stinking up the place.')
                 ->addItem(
-                    new Item('a small brass key', Material::BRASS(), ['small', 'brass', 'key'])
+                    (new ItemFixture(
+                        new Item(
+                            'a small brass key',
+                            Material::BRASS(),
+                            ['small', 'brass', 'key']
+                        )
+                    ))->setValue(20)
+                    ->getInstance()
                 )
                 ->getInstance()
             )->setArea($area->getInstance())
