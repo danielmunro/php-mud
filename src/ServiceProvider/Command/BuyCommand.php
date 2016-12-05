@@ -58,6 +58,14 @@ class BuyCommand implements ServiceProviderInterface
                         }
                     }
 
+                    if ($itemToSell->getValue() > $input->getMob()->getInventory()->getValue()) {
+                        return new Output(
+                            sprintf("You can't afford %s.", $itemToSell->getName())
+                        );
+                    }
+
+                    $input->getMob()->getInventory()->add($itemToSell);
+
                     return new Output(sprintf("Here's a smashing deal on %s.", $itemToSell->getName()));
                 }
             };

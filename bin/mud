@@ -50,6 +50,13 @@ if (!$room) {
                     Material::WOOD(),
                     ['wooden', 'mace']
                 )
+            ))->setPosition(\PhpMud\Enum\Position::WIELDED())->getInstance(),
+            (new ItemFixture(
+                new Item(
+                    'a wooden mace',
+                    Material::WOOD(),
+                    ['wooden', 'mace']
+                )
             ))->setPosition(\PhpMud\Enum\Position::WIELDED())->getInstance()
         ])->addMob(
             (new MobFixture(
