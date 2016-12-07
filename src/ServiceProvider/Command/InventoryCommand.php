@@ -26,11 +26,11 @@ class InventoryCommand implements ServiceProviderInterface
                             'You are carrying:%s',
                             reduce_left(
                                 $input->getMob()->getInventory()->getItemsWithQuantity(),
-                                function (array $info, string $itemName, array $collection, string $reduction) {
+                                function (array $info, string $vNum, array $collection, string $reduction) {
                                     return sprintf(
                                         "%s\n%s",
                                         $reduction,
-                                        ($info['count'] > 1 ? '(' . $info['count'] . ') ' : '') . $itemName
+                                        ($info['count'] > 1 ? '(' . $info['count'] . ') ' : '') . $info['item']->getName()
                                     );
                                 },
                                 ''

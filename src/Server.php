@@ -18,10 +18,15 @@ use PhpMud\Entity\Area;
 use PhpMud\Entity\Mob;
 use PhpMud\Entity\Room;
 use PhpMud\IO\Commands;
+use PhpMud\IO\Input;
 use Pimple\Container;
 use React\EventLoop\Factory;
 use React\Socket\Connection;
 use function Functional\each;
+use function Functional\invoke;
+use function Functional\with;
+use function Functional\filter;
+use function Functional\partial_method;
 
 /**
  * Mud server
@@ -120,10 +125,10 @@ class Server
      */
     public function heartbeat()
     {
-        $this->clients->map(function (Client $client) {
-            if ($client->canReadBuffer()) {
-                $this->commands->execute($client->readBuffer())->writeResponse($client);
-            }
+        each($this->clients->toArray(), function (Client $client) {
+            with($client->readBufferIfNotDelayed(), function (Input $input) use ($client) {
+                $this->commands->execute($input)->writeResponse($client);
+            });
         });
     }
 
@@ -132,9 +137,7 @@ class Server
      */
     public function pulse()
     {
-        $this->clients->map(function (Client $client) {
-            $client->pulse();
-        });
+        invoke($this->clients->toArray(), 'pulse');
     }
 
     /**
@@ -144,10 +147,15 @@ class Server
     {
         $this->time->incrementTime();
 
-        $this->clients->map(function (Client $client) {
-            $client->getMob()->regen();
-            $client->write("\n".$client->prompt());
-        });
+        each(
+            $this->clients->toArray(),
+            function (Client $client) {
+                with($client->getLogin()->getState() === Login::STATE_COMPLETE, function () use ($client) {
+                    $client->getMob()->regen();
+                    $client->write("\n" . $client->prompt());
+                });
+            }
+        );
 
         $this->em->persist($this->startRoom);
         $this->em->flush();
@@ -155,9 +163,9 @@ class Server
         each(
             $this->em->getRepository(Area::class)->findAll(),
             function (Area $area) {
-                if (random_int(1, 4) === 1) {
+                with(random_int(1, 4) === 1, function () use ($area) {
                     $area->setRandomWeather();
-                }
+                });
             }
         );
     }

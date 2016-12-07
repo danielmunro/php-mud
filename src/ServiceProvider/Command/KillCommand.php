@@ -14,7 +14,7 @@ namespace PhpMud\ServiceProvider\Command;
 
 use PhpMud\Command;
 use PhpMud\Entity\Mob;
-use PhpMud\Entity\Shopkeeper;
+use PhpMud\Enum\Role;
 use PhpMud\Fight;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
@@ -45,6 +45,7 @@ class KillCommand implements ServiceProviderInterface
                         return $input->getClient()->getDispositionCheckFail();
                     }
 
+                    /** @var Mob $target */
                     $target = first(
                         $input->getRoom()->getMobs()->toArray(),
                         function (Mob $mob) use ($input) {
@@ -56,7 +57,7 @@ class KillCommand implements ServiceProviderInterface
                         return new Output("They aren't here.");
                     }
 
-                    if ($target instanceof Shopkeeper) {
+                    if ($target->hasRole(Role::SHOPKEEPER())) {
                         return new Output(sprintf("%s wouldn't like that very much.", $target->getName()));
                     }
 

@@ -71,8 +71,13 @@ class Login
                 $input->getClient()->write('Ok. Pick a race > ');
                 break;
             case static::STATE_RACE:
+                if (!$input->getCommand()) {
+                    $input->getClient()->write('Please pick a race > ');
+                    break;
+                }
                 try {
                     $this->mob = new Mob($this->mobName, Race::matchPartialValue((string)$input));
+                    $this->mob->getInventory()->modifySilver(20);
                     $input->getClient()->write('Ok. Optionally, pick a gender (female/male/neutral) > ');
                     $this->state = static::STATE_GENDER;
                 } catch (\UnexpectedValueException $e) {

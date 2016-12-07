@@ -16,6 +16,7 @@ use PhpMud\IO\Output;
 use PhpMud\Entity\Mob;
 use PhpMud\IO\Input;
 use React\Socket\Connection;
+use function Functional\with;
 
 class Client
 {
@@ -64,9 +65,13 @@ class Client
         $this->buffer[] = $buffer;
     }
 
-    public function readBuffer(): Input
+    public function readBufferIfNotDelayed()
     {
-        return $this->input(array_shift($this->buffer));
+        if (!$this->delay && $this->buffer) {
+            return $this->input(array_shift($this->buffer));
+        }
+
+        return null;
     }
 
     public function getBuffer(): array
@@ -79,12 +84,16 @@ class Client
         return new Input($this, trim($input));
     }
 
+    public function getLogin(): Login
+    {
+        return $this->login;
+    }
+
     public function login(string $input)
     {
         if ($this->login->next(new Input($this, $input)) === Login::STATE_COMPLETE) {
             $this->mob = $this->login->getMob();
             $this->mob->setClient($this);
-            $this->login = null;
             $this->connection->emit(Server::EVENT_LOGIN, ['mob' => $this->mob]);
             $this->connection->removeListener(static::EVENT_DATA, [$this, 'login']);
             $this->connection->on(static::EVENT_DATA, [$this, 'pushBuffer']);
@@ -96,9 +105,6 @@ class Client
         return sprintf('%dhp %dmana %dmv> ', $this->mob->getHp(), $this->mob->getMana(), $this->mob->getMv());
     }
 
-    /**
-     * @param string $output
-     */
     public function write(string $output)
     {
         $this->connection->write($output);
@@ -127,20 +133,9 @@ class Client
         }
     }
 
-    /**
-     * @return Mob
-     */
     public function getMob(): Mob
     {
         return $this->mob;
-    }
-
-    /**
-     * @return bool
-     */
-    public function canReadBuffer(): bool
-    {
-        return !$this->delay && $this->buffer;
     }
 
     public function getDispositionCheckFail(): Output

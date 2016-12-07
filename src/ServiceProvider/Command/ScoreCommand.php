@@ -26,7 +26,6 @@ class ScoreCommand implements ServiceProviderInterface
                     return new Output(
                         sprintf(
                             "You are %s. %d years old (%d hours).\n".
-                            "%s.\n".
                             "You have %d of %d hit points, %d of %d mana, %d of %d moves.\n".
                             "Race: %s  Gender: %s  Class: NA NA  Kit: NA\n".
                             "Trains: %d  Practices: %d  Skill Points: %d  Bounty: 0\n".
@@ -38,7 +37,6 @@ class ScoreCommand implements ServiceProviderInterface
                             $mob->getName(),
                             $mob->getAgeInYears(),
                             $mob->getAgeInHours(),
-                            $input->getClient()->getCondition(),
                             $mob->getHp(),
                             $mob->getAttribute('hp'),
                             $mob->getMana(),

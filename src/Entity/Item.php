@@ -15,13 +15,16 @@ namespace PhpMud\Entity;
 use PhpMud\Enum\Material;
 use PhpMud\Enum\Position;
 use PhpMud\Noun;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @Entity
+ * @Table(indexes={@Index(name="vnum_idx", columns={"vNum"})})
  */
 class Item implements Noun
 {
     use PrimaryKeyTrait;
+    use VNumTrait;
 
     /** @Column(type="string") */
     protected $name;
@@ -63,11 +66,17 @@ class Item implements Noun
         $this->weight = $weight;
         $this->value = $value;
         $this->level = 1;
+        $this->vNum = Uuid::uuid4()->toString();
     }
 
     public function setInventory(Inventory $inventory)
     {
         $this->inventory = $inventory;
+    }
+
+    public function getInventory(): Inventory
+    {
+        return $this->inventory;
     }
 
     public function getName(): string
@@ -97,7 +106,12 @@ class Item implements Noun
 
     public function getWeight(): float
     {
-        return $this->weight;
+        return (float)$this->weight;
+    }
+
+    public function setWeight(float $weight)
+    {
+        $this->weight = $weight;
     }
 
     public function getValue(): float

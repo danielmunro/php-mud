@@ -16,16 +16,15 @@ use PhpMud\Client;
 use PhpMud\Dice;
 use PhpMud\Enum\Disposition;
 use PhpMud\Enum\Gender;
+use PhpMud\Enum\Role;
 use PhpMud\Fight;
 use PhpMud\IO\Output;
 use PhpMud\Noun;
 use PhpMud\Race\Race;
+use function Functional\map;
 
 /**
  * @Entity(repositoryClass="\PhpMud\Repository\MobRepository")
- * @InheritanceType("SINGLE_TABLE")
- * @DiscriminatorColumn(name="type", type="string")
- * @DiscriminatorMap({"mob" = "Mob", "shopkeeper" = "Shopkeeper"})
  * @HasLifecycleCallbacks
  */
 class Mob implements Noun
@@ -89,6 +88,9 @@ class Mob implements Noun
     /** @Column(type="integer") */
     protected $ageInSeconds;
 
+    /** @Column(type="array") */
+    protected $roles;
+
     /** @Column(type="integer") */
     protected $trains;
 
@@ -132,6 +134,7 @@ class Mob implements Noun
         $this->trains = 0;
         $this->practices = 0;
         $this->skillPoints = 0;
+        $this->roles = [];
     }
 
     public function attackRoll(Mob $target): bool
@@ -348,12 +351,12 @@ class Mob implements Noun
 
     public function getAgeInYears(): int
     {
-        return 17 + ($this->ageInSeconds / 72000);
+        return (int)floor(17 + ($this->ageInSeconds / 72000));
     }
 
     public function getAgeInHours(): int
     {
-        return $this->ageInSeconds / 3600;
+        return (int)floor($this->ageInSeconds / 3600);
     }
 
     public function getTrains(): int
@@ -386,6 +389,16 @@ class Mob implements Noun
         return $this->level;
     }
 
+    public function addRole(Role $role)
+    {
+        $this->roles[] = $role->getValue();
+    }
+
+    public function hasRole(Role $role): bool
+    {
+        return in_array($role->getValue(), $this->roles, true);
+    }
+
     /**
      * @PostLoad
      * @PostPersist
@@ -394,6 +407,7 @@ class Mob implements Noun
     {
         $this->race = Race::fromValue((string)$this->race);
         $this->disposition = new Disposition($this->disposition);
+        $this->gender = new Gender($this->gender);
         $this->ageTimer = time();
     }
 

@@ -64,15 +64,36 @@ class Inventory
         map(
             $this->items,
             function (Item $item) use (&$items) {
-                if (isset($items[$item->getName()])) {
-                    $items[$item->getName()]['count']++;
+                if (isset($items[$item->getVNum()])) {
+                    $items[$item->getVNum()]['count']++;
                 } else {
-                    $items[$item->getName()] = ['item' => $item, 'count' => 1];
+                    $items[$item->getVNum()] = ['item' => $item, 'count' => 1];
                 }
             }
         );
 
         return $items;
+    }
+
+    public function purchase(Item $item)
+    {
+        $fromInventory = $item->getInventory();
+        $silver = (int)min($this->silver, $item->getValue());
+        $gold = 0;
+
+        if ($silver < $item->getValue()) {
+            $gold = (int)floor(($item->getValue() - $silver + 999) / 1000);
+            $silver = (int)floor(($item->getValue() - 1000) * $gold);
+        }
+
+        $fromInventory->modifyGold($gold);
+        $fromInventory->modifySilver($silver);
+
+        $this->gold -= $gold;
+        $this->silver -= $silver;
+
+        $fromInventory->remove($item);
+        $this->add($item);
     }
 
     public function add(Item $item)
@@ -99,6 +120,16 @@ class Inventory
     public function getValue(): int
     {
         return ($this->gold * 1000) + $this->silver;
+    }
+
+    public function modifySilver(int $silver)
+    {
+        $this->silver += $silver;
+    }
+
+    public function modifyGold(int $gold)
+    {
+        $this->gold += $gold;
     }
 
     public function getWeight(): float

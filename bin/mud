@@ -12,8 +12,8 @@ use PhpMud\Entity\Area;
 use PhpMud\Entity\Room;
 use PhpMud\Entity\Item;
 use PhpMud\Entity\Mob;
-use PhpMud\Entity\Shopkeeper;
 use PhpMud\Enum\Material;
+use PhpMud\Enum\Role;
 use PhpMud\Direction\West;
 use PhpMud\Race\Dwarf;
 use PhpMud\Race\Human;
@@ -36,28 +36,35 @@ if (!$room) {
         ))->setArea(
             $area->getInstance()
         )->addItems([
-            new Item('a copper teapot', Material::COPPER(), ['copper', 'teapot']),
+            (new ItemFixture(
+                new Item(
+                    'a copper teapot',
+                    Material::COPPER(),
+                    ['copper', 'teapot']
+                )
+            ))
+                ->setWeight(0.5)
+                ->getInstance(),
             (new ItemFixture(
                 new Item(
                     'a wooden sword',
                     Material::WOOD(),
                     ['wooden', 'sword']
                 )
-            ))->setPosition(\PhpMud\Enum\Position::WIELDED())->getInstance(),
+            ))
+                ->setPosition(\PhpMud\Enum\Position::WIELDED())
+                ->setWeight(4.0)
+                ->getInstance(),
             (new ItemFixture(
                 new Item(
                     'a wooden mace',
                     Material::WOOD(),
                     ['wooden', 'mace']
                 )
-            ))->setPosition(\PhpMud\Enum\Position::WIELDED())->getInstance(),
-            (new ItemFixture(
-                new Item(
-                    'a wooden mace',
-                    Material::WOOD(),
-                    ['wooden', 'mace']
-                )
-            ))->setPosition(\PhpMud\Enum\Position::WIELDED())->getInstance()
+            ))
+                ->setPosition(\PhpMud\Enum\Position::WIELDED())
+                ->setWeight(5.0)
+                ->getInstance()
         ])->addMob(
             (new MobFixture(
                 new Mob(
@@ -76,22 +83,25 @@ can be seen in front of the forge, hammering out new weapons and armor.'
                 )
             ))->addMob(
                 (new MobFixture(
-                    new Shopkeeper(
+                    new Mob(
                         'Mornolum Merriarmour',
                         new Dwarf()
                     )
-                ))->setLook('totters around, stinking up the place.')
-                ->addItem(
-                    (new ItemFixture(
-                        new Item(
-                            'a small brass key',
-                            Material::BRASS(),
-                            ['small', 'brass', 'key']
-                        )
-                    ))->setValue(20)
-                    ->getInstance()
-                )
-                ->getInstance()
+                ))
+                    ->setLook('totters around, stinking up the place.')
+                    ->addRole(Role::SHOPKEEPER())
+                    ->addItem(
+                        (new ItemFixture(
+                            new Item(
+                                'a small brass key',
+                                Material::BRASS(),
+                                ['small', 'brass', 'key']
+                            )
+                        ))
+                            ->setValue(20)
+                            ->setWeight(0.1)
+                            ->getInstance()
+                )->getInstance()
             )->setArea($area->getInstance())
         )
     )->getInstance()->getRooms()->first();

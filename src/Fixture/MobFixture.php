@@ -15,7 +15,7 @@ namespace PhpMud\Fixture;
 use PhpMud\Entity\Item;
 use PhpMud\Entity\Mob;
 use PhpMud\Entity\Room;
-use PhpMud\Entity\Shopkeeper;
+use PhpMud\Enum\Role;
 
 class MobFixture extends Fixture
 {
@@ -42,11 +42,14 @@ class MobFixture extends Fixture
 
     public function addItem(Item $item): self
     {
-        if ($this->mob instanceof Shopkeeper) {
-            $this->mob->getShopInventory()->add($item);
-        } else {
-            $this->mob->getInventory()->add($item);
-        }
+        $this->mob->getInventory()->add($item);
+
+        return $this;
+    }
+
+    public function addRole(Role $role): self
+    {
+        $this->mob->addRole($role);
 
         return $this;
     }

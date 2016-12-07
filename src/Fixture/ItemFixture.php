@@ -38,6 +38,20 @@ class ItemFixture extends Fixture
         return $this;
     }
 
+    public function setVNum(string $vNum): self
+    {
+        $this->item->setVNum($vNum);
+
+        return $this;
+    }
+
+    public function setWeight(float $weight): self
+    {
+        $this->item->setWeight($weight);
+
+        return $this;
+    }
+
     public function getInstance(): Item
     {
         return $this->item;

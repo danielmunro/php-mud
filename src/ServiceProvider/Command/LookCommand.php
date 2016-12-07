@@ -54,7 +54,7 @@ class LookCommand implements ServiceProviderInterface
                             ),
                             reduce_left(
                                 $room->getInventory()->getItemsWithQuantity(),
-                                function (array $info, string $itemName, array $collection, string $reduction) {
+                                function (array $info, string $vNum, array $collection, string $reduction) {
                                     return sprintf(
                                         "%s\n%s",
                                         $reduction,

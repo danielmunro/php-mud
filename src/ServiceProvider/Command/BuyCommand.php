@@ -6,13 +6,14 @@ namespace PhpMud\ServiceProvider\Command;
 use PhpMud\Command;
 use PhpMud\Entity\Item;
 use PhpMud\Entity\Mob;
-use PhpMud\Entity\Shopkeeper;
+use PhpMud\Enum\Role;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Server;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use function Functional\first;
+use function Functional\with;
 
 class BuyCommand implements ServiceProviderInterface
 {
@@ -23,50 +24,47 @@ class BuyCommand implements ServiceProviderInterface
             {
                 public function execute(Server $server, Input $input): Output
                 {
-                    /** @var Shopkeeper $shopkeeper */
-                    $shopkeeper = first(
-                        $input->getRoom()->getMobs()->toArray(),
-                        function (Mob $mob) {
-                            return $mob instanceof Shopkeeper;
-                        }
-                    );
-
-                    if (!$shopkeeper) {
-                        return new Output("They aren't here.");
-                    }
-
-                    $shopItem = first(
-                        $shopkeeper->getShopInventory()->getItems(),
-                        function (Item $item) use ($input) {
-                            return $input->isSubjectMatch($item);
-                        }
-                    );
-
-                    /** @var Item $itemToSell */
-                    if ($shopItem) {
-                        $itemToSell = clone $shopItem;
-                    } else {
-                        $itemToSell = first(
-                            $shopkeeper->getInventory()->getItems(),
-                            function (Item $item) use ($input) {
-                                return $input->isSubjectMatch($item);
+                    $output = with(
+                        first(
+                            $input->getRoom()->getMobs()->toArray(),
+                            function (Mob $mob) {
+                                return $mob->hasRole(Role::SHOPKEEPER());
                             }
-                        );
+                        ),
+                        function (Mob $shopkeeper) use ($input) {
+                            $output = with(
+                                first(
+                                    $shopkeeper->getInventory()->getItems(),
+                                    function (Item $item) use ($input) {
+                                        return $input->isSubjectMatch($item);
+                                    }
+                                ),
+                                function (Item $item) use ($input) {
+                                    if ($item->getValue() > $input->getMob()->getInventory()->getValue()) {
+                                        return new Output(
+                                            sprintf("You can't afford %s.", $item->getName())
+                                        );
+                                    }
 
-                        if (!$itemToSell) {
-                            return new Output(sprintf("%s says, \"I don't have that.\"", $shopkeeper->getName()));
+                                    $input->getMob()->getInventory()->purchase($item);
+
+                                    return new Output(sprintf('You purchase %s.', $item->getName()));
+                                }
+                            );
+
+                            if ($output) {
+                                return $output;
+                            }
+
+                            return new Output("They don't have that.");
                         }
+                    );
+
+                    if ($output) {
+                        return $output;
                     }
 
-                    if ($itemToSell->getValue() > $input->getMob()->getInventory()->getValue()) {
-                        return new Output(
-                            sprintf("You can't afford %s.", $itemToSell->getName())
-                        );
-                    }
-
-                    $input->getMob()->getInventory()->add($itemToSell);
-
-                    return new Output(sprintf("Here's a smashing deal on %s.", $itemToSell->getName()));
+                    return new Output("They aren't here.");
                 }
             };
         });
