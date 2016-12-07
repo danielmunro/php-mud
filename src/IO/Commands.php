@@ -29,6 +29,7 @@ use PhpMud\ServiceProvider\Command\NewRoomCommand;
 use PhpMud\ServiceProvider\Command\QuitCommand;
 use PhpMud\ServiceProvider\Command\RemoveCommand;
 use PhpMud\ServiceProvider\Command\ScoreCommand;
+use PhpMud\ServiceProvider\Command\SellCommand;
 use PhpMud\ServiceProvider\Command\SitCommand;
 use PhpMud\ServiceProvider\Command\SleepCommand;
 use PhpMud\ServiceProvider\Command\TimeCommand;
@@ -72,7 +73,7 @@ class Commands
         $this->container->register(new ScoreCommand());
         $this->container->register(new ListCommand());
         $this->container->register(new BuyCommand());
-        //$this->container->register(new Sell)
+        $this->container->register(new SellCommand());
     }
 
     public function execute(Input $input): Output

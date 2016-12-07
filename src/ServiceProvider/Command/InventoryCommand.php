@@ -30,7 +30,10 @@ class InventoryCommand implements ServiceProviderInterface
                                     return sprintf(
                                         "%s\n%s",
                                         $reduction,
-                                        ($info['count'] > 1 ? '(' . $info['count'] . ') ' : '') . $info['item']->getName()
+                                        ($info['count'] > 1 ?
+                                            '(' . $info['count'] . ') ' :
+                                            ''
+                                        ) . $info['item']->getName()
                                     );
                                 },
                                 ''

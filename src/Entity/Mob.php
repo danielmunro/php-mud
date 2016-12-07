@@ -401,7 +401,6 @@ class Mob implements Noun
 
     /**
      * @PostLoad
-     * @PostPersist
      */
     public function postLoad()
     {

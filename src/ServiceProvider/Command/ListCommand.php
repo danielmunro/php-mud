@@ -46,7 +46,12 @@ class ListCommand implements ServiceProviderInterface
                                                 $item->getValue(),
                                                 (
                                                 $item->getValue() < 100000 ?
-                                                    str_pad('-- ', 8 - strlen((string)$item->getValue()), ' ', STR_PAD_LEFT) :
+                                                    str_pad(
+                                                        '-- ',
+                                                        8 - strlen((string)$item->getValue()),
+                                                        ' ',
+                                                        STR_PAD_LEFT
+                                                    ) :
                                                     '-- '
                                                 ),
                                                 $item->getName()

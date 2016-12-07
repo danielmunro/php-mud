@@ -15,11 +15,11 @@ use Pimple\ServiceProviderInterface;
 use function Functional\first;
 use function Functional\with;
 
-class BuyCommand implements ServiceProviderInterface
+class SellCommand implements ServiceProviderInterface
 {
     public function register(Container $pimple)
     {
-        $pimple['buy'] = $pimple->protect(function () {
+        $pimple['sell'] = $pimple->protect(function () {
             return new class implements Command
             {
                 public function execute(Server $server, Input $input): Output
@@ -34,21 +34,25 @@ class BuyCommand implements ServiceProviderInterface
                         function (Mob $shopkeeper) use ($input) {
                             $output = with(
                                 first(
-                                    $shopkeeper->getInventory()->getItems(),
+                                    $input->getMob()->getInventory()->getItems(),
                                     function (Item $item) use ($input) {
                                         return $input->isSubjectMatch($item);
                                     }
                                 ),
-                                function (Item $item) use ($input) {
-                                    if ($item->getValue() > $input->getMob()->getInventory()->getValue()) {
+                                function (Item $item) use ($input, $shopkeeper) {
+                                    if ($item->getValue() > $shopkeeper->getInventory()->getValue()) {
                                         return new Output(
-                                            sprintf("You can't afford %s.", $item->getName())
+                                            sprintf(
+                                                "%s can't afford %s.",
+                                                $shopkeeper->getName(),
+                                                $item->getName()
+                                            )
                                         );
                                     }
 
-                                    $input->getMob()->getInventory()->purchase($item);
+                                    $shopkeeper->getInventory()->purchase($item);
 
-                                    return new Output(sprintf('You buy %s.', $item->getName()));
+                                    return new Output(sprintf('You sell %s.', $item->getName()));
                                 }
                             );
 
