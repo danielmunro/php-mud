@@ -15,6 +15,7 @@ namespace PhpMud;
 use PhpMud\Entity\Mob;
 use PhpMud\Enum\Gender;
 use PhpMud\IO\Input;
+use PhpMud\Job\Job;
 use PhpMud\Race\Race;
 use PhpMud\Repository\MobRepository;
 
@@ -23,6 +24,8 @@ class Login
     const STATE_NAME = 'name';
 
     const STATE_RACE = 'race';
+
+    const STATE_JOB = 'job';
 
     const STATE_GENDER = 'gender';
 
@@ -37,6 +40,16 @@ class Login
      * @var string
      */
     protected $mobName;
+
+    /**
+     * @var Race
+     */
+    protected $race;
+
+    /**
+     * @var Job
+     */
+    protected $job;
 
     /**
      * @var Mob
@@ -76,12 +89,23 @@ class Login
                     break;
                 }
                 try {
-                    $this->mob = new Mob($this->mobName, Race::matchPartialValue((string)$input));
+                    $this->race = Race::matchPartialValue((string)$input);
+                    $input->getClient()->write('Ok. Pick a job [warrior/cleric/mage/thief] > ');
+                    $this->state = static::STATE_JOB;
+                } catch (\UnexpectedValueException $e) {
+                    $input->getClient()->write("That's not a valid race. Try again > ");
+                }
+                break;
+            case static::STATE_JOB:
+                try {
+                    $this->job = Job::matchPartialValue((string)$input);
+                    $this->mob = new Mob($this->mobName, $this->race);
+                    $this->mob->setJob($this->job);
                     $this->mob->getInventory()->modifySilver(20);
                     $input->getClient()->write('Ok. Optionally, pick a gender (female/male/neutral) > ');
                     $this->state = static::STATE_GENDER;
                 } catch (\UnexpectedValueException $e) {
-                    $input->getClient()->write("That's not a valid race. Try again > ");
+                    $input->getClient()->write("That's not a valid job. Try again > ");
                 }
                 break;
             case static::STATE_GENDER:

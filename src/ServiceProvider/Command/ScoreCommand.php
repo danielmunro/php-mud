@@ -27,7 +27,7 @@ class ScoreCommand implements ServiceProviderInterface
                         sprintf(
                             "You are %s. %d years old (%d hours).\n".
                             "You have %d of %d hit points, %d of %d mana, %d of %d moves.\n".
-                            "Race: %s  Gender: %s  Class: NA NA  Kit: NA\n".
+                            "Race: %s  Gender: %s  Class: %s  Kit: NA\n".
                             "Trains: %d  Practices: %d  Skill Points: %d  Bounty: 0\n".
                             "You are carrying %d/%d items, %d%% weight capacity.\n".
                             "Str: %d/%d Int: %d/%d Wis: %d/%d\n".
@@ -45,6 +45,7 @@ class ScoreCommand implements ServiceProviderInterface
                             $mob->getAttribute('mv'),
                             (string)$mob->getRace(),
                             (string)$mob->getGender(),
+                            (string)$mob->getJob(),
                             $mob->getTrains(),
                             $mob->getPractices(),
                             $mob->getSkillPoints(),

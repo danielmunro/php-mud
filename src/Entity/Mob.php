@@ -19,6 +19,8 @@ use PhpMud\Enum\Gender;
 use PhpMud\Enum\Role;
 use PhpMud\Fight;
 use PhpMud\IO\Output;
+use PhpMud\Job\Job;
+use PhpMud\Job\Uninitiated;
 use PhpMud\Noun;
 use PhpMud\Race\Race;
 use function Functional\map;
@@ -100,6 +102,9 @@ class Mob implements Noun
     /** @Column(type="integer") */
     protected $skillPoints;
 
+    /** @Column(type="string") */
+    protected $job;
+
     /** @var int $ageTimer */
     protected $ageTimer;
 
@@ -112,12 +117,14 @@ class Mob implements Noun
     /**
      * @param string $name
      * @param Race $race
+     * @param Job $job
      */
     public function __construct(string $name, Race $race)
     {
         $this->name = $name;
         $this->identifiers = explode(' ', $name);
         $this->race = $race;
+        $this->job = new Uninitiated();
         $this->attributes = $race->getStartingAttributes();
         $this->hp = $this->attributes->getAttribute('hp');
         $this->mana = $this->attributes->getAttribute('mana');
@@ -399,14 +406,26 @@ class Mob implements Noun
         return in_array($role->getValue(), $this->roles, true);
     }
 
+    public function getJob(): Job
+    {
+        return $this->job;
+    }
+
+    public function setJob(Job $job)
+    {
+        $this->job = $job;
+    }
+
     /**
      * @PostLoad
+     * @PostPersist
      */
     public function postLoad()
     {
         $this->race = Race::fromValue((string)$this->race);
         $this->disposition = new Disposition($this->disposition);
         $this->gender = new Gender($this->gender);
+        $this->job = Job::matchPartialValue((string)$this->job);
         $this->ageTimer = time();
     }
 
