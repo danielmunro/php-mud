@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace PhpMud\Tests;
 
+use PhpMud\Client;
 use PhpMud\Entity\Area;
 use PhpMud\Entity\Room;
 use PhpMud\Server;
@@ -13,6 +14,15 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testHeartbeat()
     {
         $server = $this->getMockServer();
+        $client = $this->getMockClient($server);
+        $client->pushBuffer('look');
+        static::assertNotEmpty($client->getBuffer());
+        $server->heartbeat();
+        static::assertEmpty($client->getBuffer());
+    }
+
+    protected function getMockClient(Server $server): Client
+    {
         $connection = $this->getMockBuilder(Connection::class)->disableOriginalConstructor()->getMock();
         $client = $server->addConnection($connection);
         $client->login('test');
@@ -20,10 +30,8 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $client->login('warrior');
         $client->login('neutral');
         $client->getMob()->setRoom($server->getStartRoom());
-        $client->pushBuffer('look');
-        static::assertNotEmpty($client->getBuffer());
-        $server->heartbeat();
-        static::assertEmpty($client->getBuffer());
+
+        return $client;
     }
 
     protected function getMockServer(): Server

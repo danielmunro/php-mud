@@ -24,51 +24,41 @@ class SellCommand implements ServiceProviderInterface
             {
                 public function execute(Server $server, Input $input): Output
                 {
-                    $output = with(
-                        first(
-                            $input->getRoom()->getMobs()->toArray(),
-                            function (Mob $mob) {
-                                return $mob->hasRole(Role::SHOPKEEPER());
-                            }
-                        ),
-                        function (Mob $shopkeeper) use ($input) {
-                            $output = with(
-                                first(
-                                    $input->getMob()->getInventory()->getItems(),
-                                    function (Item $item) use ($input) {
-                                        return $input->isSubjectMatch($item);
-                                    }
-                                ),
-                                function (Item $item) use ($input, $shopkeeper) {
-                                    if ($item->getValue() > $shopkeeper->getInventory()->getValue()) {
-                                        return new Output(
-                                            sprintf(
-                                                "%s can't afford %s.",
-                                                $shopkeeper->getName(),
-                                                $item->getName()
-                                            )
-                                        );
-                                    }
-
-                                    $shopkeeper->getInventory()->purchase($item);
-
-                                    return new Output(sprintf('You sell %s.', $item->getName()));
-                                }
-                            );
-
-                            if ($output) {
-                                return $output;
-                            }
-
-                            return new Output("They don't have that.");
+                    $shopkeeper = first(
+                        $input->getRoom()->getMobs()->toArray(),
+                        function (Mob $mob) {
+                            return $mob->hasRole(Role::SHOPKEEPER());
                         }
                     );
 
-                    if ($output) {
-                        return $output;
+                    if (!$shopkeeper) {
+                        return new Output("They aren't here.");
                     }
 
-                    return new Output("They aren't here.");
+                    $item = first(
+                        $input->getMob()->getInventory()->getItems(),
+                        function (Item $item) use ($input) {
+                            return $input->isSubjectMatch($item);
+                        }
+                    );
+
+                    if (!$item) {
+                        return new Output("You don't have that.");
+                    }
+
+                    if ($item->getValue() > $shopkeeper->getInventory()->getValue()) {
+                        return new Output(
+                            sprintf(
+                                "%s can't afford %s.",
+                                $shopkeeper->getName(),
+                                $item->getName()
+                            )
+                        );
+                    }
+
+                    $shopkeeper->getInventory()->purchase($item);
+
+                    return new Output(sprintf('You sell %s.', $item->getName()));
                 }
             };
         });

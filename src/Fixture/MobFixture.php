@@ -26,6 +26,20 @@ class MobFixture extends Fixture
         $this->mob = $mob;
     }
 
+    public function modifyGold(int $gold): self
+    {
+        $this->mob->getInventory()->modifyGold($gold);
+
+        return $this;
+    }
+
+    public function modifySilver(int $silver): self
+    {
+        $this->mob->getInventory()->modifySilver($silver);
+
+        return $this;
+    }
+
     public function setLook(string $look): self
     {
         $this->mob->setLook($look);

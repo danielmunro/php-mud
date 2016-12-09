@@ -18,10 +18,12 @@ use MyCLabs\Enum\Enum;
  * @method static COPPER()
  * @method static WOOD()
  * @method static BRASS()
+ * @method static FOOD()
  */
 class Material extends Enum
 {
     const COPPER = 'copper';
     const WOOD = 'wood';
     const BRASS = 'brass';
+    const FOOD = 'food';
 }

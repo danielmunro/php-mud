@@ -23,7 +23,6 @@ use PhpMud\Job\Job;
 use PhpMud\Job\Uninitiated;
 use PhpMud\Noun;
 use PhpMud\Race\Race;
-use function Functional\map;
 
 /**
  * @Entity(repositoryClass="\PhpMud\Repository\MobRepository")
@@ -32,6 +31,8 @@ use function Functional\map;
 class Mob implements Noun
 {
     use PrimaryKeyTrait;
+
+    const INITIAL_SILVER = 20;
 
     /** @Column(type="string") */
     protected $name;

@@ -101,7 +101,7 @@ class Login
                     $this->job = Job::matchPartialValue((string)$input);
                     $this->mob = new Mob($this->mobName, $this->race);
                     $this->mob->setJob($this->job);
-                    $this->mob->getInventory()->modifySilver(20);
+                    $this->mob->getInventory()->modifySilver(Mob::INITIAL_SILVER);
                     $input->getClient()->write('Ok. Optionally, pick a gender (female/male/neutral) > ');
                     $this->state = static::STATE_GENDER;
                 } catch (\UnexpectedValueException $e) {

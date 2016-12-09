@@ -16,7 +16,6 @@ use PhpMud\IO\Output;
 use PhpMud\Entity\Mob;
 use PhpMud\IO\Input;
 use React\Socket\Connection;
-use function Functional\with;
 
 class Client
 {

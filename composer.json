@@ -1,7 +1,8 @@
 {
     "autoload": {
         "psr-4": {
-            "PhpMud\\": "src"
+            "PhpMud\\": "src",
+            "PhpMud\\Tests\\": "tests"
         }
     },
     "require": {
