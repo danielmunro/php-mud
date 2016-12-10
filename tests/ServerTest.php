@@ -36,13 +36,13 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     protected function getMockServer(): Server
     {
-        global $em;
+        global $em, $log;
 
         $area = new Area('test');
         $room = new Room();
         $room->setTitle('Test room');
         $area->addRoom($room);
 
-        return new Server($em, $room);
+        return new Server($em, $room, $log);
     }
 }
