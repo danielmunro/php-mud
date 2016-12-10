@@ -29,11 +29,10 @@ class BuySellTest extends ServerTest
             new Mob('shopkeeper', new Human())
         ))
             ->addRole(Role::SHOPKEEPER())
-            ->addItem((new ItemFixture(
-                new Item('pie', Material::FOOD(), ['pie'])
-            ))
-                ->setValue(Mob::INITIAL_SILVER)
-                ->getInstance()
+            ->addItem(
+                (new ItemFixture(new Item('pie', Material::FOOD(), ['pie'])))
+                    ->setValue(Mob::INITIAL_SILVER)
+                    ->getInstance()
             )
             ->getInstance();
         $server = $this->getMockServer();
@@ -57,11 +56,10 @@ class BuySellTest extends ServerTest
             new Mob('shopkeeper', new Human())
         ))
             ->addRole(Role::SHOPKEEPER())
-            ->addItem((new ItemFixture(
-                new Item('pie', Material::FOOD(), ['pie'])
-            ))
-                ->setValue(Mob::INITIAL_SILVER + 1)
-                ->getInstance()
+            ->addItem(
+                (new ItemFixture(new Item('pie', Material::FOOD(), ['pie'])))
+                    ->setValue(Mob::INITIAL_SILVER + 1)
+                    ->getInstance()
             )
             ->getInstance();
         $server = $this->getMockServer();

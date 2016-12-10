@@ -39,6 +39,8 @@ abstract class Job
             return new Thief();
         } elseif (strpos(self::WARRIOR, $value) === 0) {
             return new Warrior();
+        } elseif (strpos(self::UNINITIATED, $value) === 0) {
+            return new Uninitiated();
         }
 
         throw new \UnexpectedValueException(sprintf('unknown value: %s', $value));

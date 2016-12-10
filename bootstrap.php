@@ -7,6 +7,8 @@ use Symfony\Component\Yaml\Yaml;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
 
+define('START_ROOM', 1);
+
 $configFile = __DIR__.'/config.yaml';
 
 if (!file_exists($configFile)) {

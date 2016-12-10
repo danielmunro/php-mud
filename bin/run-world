@@ -1,0 +1,17 @@
+#!/usr/bin/env php
+<?php
+declare(strict_types=1);
+
+require_once __DIR__.'/../bootstrap.php';
+
+use PhpMud\Entity\Room;
+use PhpMud\Server;
+
+/** @var Room $room */
+$room = $em->getRepository(Room::class)->find(START_ROOM);
+
+if (!$room) {
+    die("World fixtures does not exist\n");
+}
+
+(new Server($em, $room))->listen($config['ip'], $config['port']);

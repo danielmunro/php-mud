@@ -22,7 +22,8 @@ class Thief extends Job
             'wis' => -2,
             'int' => -1,
             'dex' => 2,
-            'cha' => 2
+            'str' => 1,
+            'cha' => 1
         ]);
     }
 

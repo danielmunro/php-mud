@@ -20,24 +20,26 @@ use PhpMud\IO\Output;
  * @method static STANDING()
  * @method static FIGHTING()
  * @method static SLEEPING()
- * @method static FLAT_FOOTED()
+ * @method static STUNNED()
  * @method static INCAPACITATED()
  */
 class Disposition extends Enum
 {
     const SITTING = 'sitting';
     const STANDING = 'standing';
-    const FLAT_FOOTED = 'flat-footed';
+    const STUNNED = 'stunned';
     const FIGHTING = 'fighting';
 
     const SLEEPING = 'sleeping';
+
     const INCAPACITATED = 'incapacitated';
+    const DEAD = 'dead';
 
     public function getRegenRate(): float
     {
         switch ($this->value) {
             case self::FIGHTING:
-            case self::FLAT_FOOTED:
+            case self::STUNNED:
                 return 0.0;
             case self::STANDING:
                 return 0.05;
@@ -54,7 +56,34 @@ class Disposition extends Enum
     {
         return $this->value === self::SITTING
             || $this->value === self::STANDING
-            || $this->value === self::FLAT_FOOTED
+            || $this->value === self::STUNNED
             || $this->value === self::FIGHTING;
+    }
+
+    public function satisfiesMinimumDisposition(Disposition $minimum)
+    {
+        return $this->getComparator() >= $minimum->getComparator();
+    }
+
+    private function getComparator(): int
+    {
+        switch ($this->value) {
+            case self::DEAD:
+                return 0;
+            case self::INCAPACITATED:
+                return 1;
+            case self::STUNNED:
+                return 2;
+            case self::SLEEPING:
+                return 3;
+            case self::SITTING:
+                return 4;
+            case self::FIGHTING:
+                return 5;
+            case self::STANDING:
+                return 6;
+            default:
+                throw new \UnexpectedValueException($this->value);
+        }
     }
 }

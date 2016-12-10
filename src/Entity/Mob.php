@@ -86,6 +86,9 @@ class Mob implements Noun
     protected $level;
 
     /** @Column(type="integer") */
+    protected $debitLevels;
+
+    /** @Column(type="integer") */
     protected $experiencePerLevel;
 
     /** @Column(type="integer") */
@@ -106,6 +109,9 @@ class Mob implements Noun
     /** @Column(type="string") */
     protected $job;
 
+    /** @Column(type="integer") */
+    protected $alignment;
+
     /** @var int $ageTimer */
     protected $ageTimer;
 
@@ -118,7 +124,6 @@ class Mob implements Noun
     /**
      * @param string $name
      * @param Race $race
-     * @param Job $job
      */
     public function __construct(string $name, Race $race)
     {
@@ -142,6 +147,8 @@ class Mob implements Noun
         $this->trains = 0;
         $this->practices = 0;
         $this->skillPoints = 0;
+        $this->debitLevels = 0;
+        $this->alignment = 0;
         $this->roles = [];
     }
 
@@ -382,6 +389,11 @@ class Mob implements Noun
         return $this->skillPoints;
     }
 
+    public function getAlignment(): int
+    {
+        return $this->alignment;
+    }
+
     public function getExperience(): int
     {
         return $this->experience;
@@ -390,6 +402,57 @@ class Mob implements Noun
     public function getExperiencePerLevel(): int
     {
         return $this->experiencePerLevel;
+    }
+
+    public function getExperienceToLevel(): int
+    {
+        //return (int)ceil($this->experience / $this->);
+        return 1;
+    }
+
+    public function gainExperienceFromKill(Mob $victim)
+    {
+        if ($this->debitLevels) {
+            return;
+        }
+
+        $diff = $victim->getLevel() - $this->level;
+
+        if ($diff < -8) {
+            $base = 0;
+        } elseif ($diff > 5) {
+            $base = 320 + 30 * ($diff - 5);
+        } else {
+            $base = [
+                -8 => 2,
+                -7 => 7,
+                -6 => 13,
+                -5 => 20,
+                -4 => 26,
+                -3 => 40,
+                -2 => 60,
+                -1 => 80,
+                0 => 100,
+                1 => 140,
+                2 => 180,
+                3 => 220,
+                4 => 280,
+                5 => 320
+            ][$diff];
+        }
+
+        $base += ($this->alignment > $victim->getAlignment() ?
+            $this->alignment - $victim->getAlignment() : $victim->getAlignment() - $this->alignment) / 20;
+
+        if ($this->level < 11) {
+            $base += 15 * $base / ($this->level + 4);
+        } elseif ($this->level > 40) {
+            $base += 40 * $base / ($this->level - 1);
+        }
+
+        $base = random_int($base * 0.8, $base * 1.2);
+
+        return 100 + $this->getAttribute('wis') * $base / 100;
     }
 
     public function getLevel(): int
@@ -425,7 +488,7 @@ class Mob implements Noun
     {
         $this->race = Race::fromValue((string)$this->race);
         $this->disposition = new Disposition($this->disposition);
-        $this->gender = new Gender($this->gender);
+        $this->gender = new Gender((string)$this->gender);
         $this->job = Job::matchPartialValue((string)$this->job);
         $this->ageTimer = time();
     }
