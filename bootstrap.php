@@ -6,16 +6,33 @@ require_once __DIR__.'/vendor/autoload.php';
 use Symfony\Component\Yaml\Yaml;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
-
-define('START_ROOM', 1);
+use Monolog\Logger;
 
 $configFile = __DIR__.'/config.yaml';
 
 if (!file_exists($configFile)) {
-    die('need a config file');
+    die(
+<<<NOCONFIG
+No configuration file was found!
+
+Create a file at ./config.yaml with example contents below:
+
+ip: 127.0.0.1
+port: 9000
+debug: true
+persist:
+  driver: pdo_sqlite
+  path: db.sqlite
+log:
+  name: phpmud
+
+NOCONFIG
+);
 }
 
 $config = Yaml::parse(file_get_contents($configFile));
+
+$log = new Logger($config['log']['name']);
 
 $em = EntityManager::create(
     $config['persist'],

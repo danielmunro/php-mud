@@ -8,10 +8,11 @@ use PhpMud\Entity\Room;
 use PhpMud\Server;
 
 /** @var Room $room */
-$room = $em->getRepository(Room::class)->find(START_ROOM);
+$room = $em->getRepository(Room::class)->find(Room::START);
 
 if (!$room) {
-    die("World fixtures does not exist\n");
+    $log->error('db fixtures have not been created yet');
+    return;
 }
 
-(new Server($em, $room))->listen($config['ip'], $config['port']);
+(new Server($em, $room, $log))->listen($config['ip'], $config['port']);

@@ -24,6 +24,7 @@ use function Functional\reduce_left;
  */
 class Room
 {
+    const START = 1;
     const REGEN_DEFAULT = 0.1;
     const VISIBILITY_DEFAULT = 0;
 

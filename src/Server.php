@@ -14,6 +14,7 @@ namespace PhpMud;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use Monolog\Logger;
 use PhpMud\Entity\Area;
 use PhpMud\Entity\Mob;
 use PhpMud\Entity\Room;
@@ -56,6 +57,9 @@ class Server
     /** @var Room $startRoom */
     protected $startRoom;
 
+    /** @var Logger $logger */
+    protected $logger;
+
     /** @var Container $commands */
     protected $commands;
 
@@ -65,11 +69,13 @@ class Server
     /**
      * @param EntityManager $em
      * @param Room $startRoom
+     * @param Logger $logger
      */
-    public function __construct(EntityManager $em, Room $startRoom)
+    public function __construct(EntityManager $em, Room $startRoom, Logger $logger)
     {
         $this->em = $em;
         $this->startRoom = $startRoom;
+        $this->logger = $logger;
         $this->clients = new ArrayCollection();
         $this->commands = new Commands($this);
         $this->time = new Time(10);
@@ -77,6 +83,11 @@ class Server
 
     public function listen(string $ip, int $port)
     {
+        $this->logger->info('mud is up and running', [
+            'start' => new \DateTime(),
+            'port' => $port
+        ]);
+
         $loop = Factory::create();
         $socket = new \React\Socket\Server($loop);
         $socket->on(static::EVENT_CONNECTION, [$this, 'addConnection']);
@@ -96,12 +107,20 @@ class Server
      */
     public function addConnection(Connection $connection): Client
     {
+        $this->logger->info('new remote connection', [
+            'ip' => $connection->getRemoteAddress()
+        ]);
+
         $client = new Client(new Login($this->em->getRepository(Mob::class)), $connection);
         $this->clients->add($client);
 
         $connection->on(
             static::EVENT_LOGIN,
-            function (Mob $mob) use ($client) {
+            function (Mob $mob) use ($client, $connection) {
+                $this->logger->info('login', [
+                    'ip' => $connection->getRemoteAddress(),
+                    'mob' => $mob->getName()
+                ]);
                 $mob->setRoom($this->startRoom);
                 $this->startRoom->getMobs()->add($mob);
                 $client->pushBuffer('look');
@@ -110,7 +129,11 @@ class Server
 
         $connection->on(
             static::EVENT_CLOSE,
-            function () use ($client) {
+            function () use ($client, $connection) {
+                $this->logger->info('logout', [
+                    'ip' => $connection->getRemoteAddress(),
+                    'mob' => $client->getMob()->getName()
+                ]);
                 $this->clients->removeElement($client);
             }
         );
@@ -145,6 +168,10 @@ class Server
      */
     public function tick()
     {
+        $this->logger->info('tick', [
+            'clients' => $this->clients->count()
+        ]);
+
         $this->time->incrementTime();
 
         each(

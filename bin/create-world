@@ -21,16 +21,18 @@ use Doctrine\DBAL\Exception\TableNotFoundException;
 
 try {
     /** @var Room $room */
-    $room = $em->getRepository(Room::class)->find(START_ROOM);
+    $room = $em->getRepository(Room::class)->find(Room::START);
 } catch (TableNotFoundException $e) {
-    die("There was an error, likely the DB does not exist\n");
+    $log->error('db or tables are missing');
+    return;
 }
 
 if ($room) {
-    die("World fixtures already exist\n");
+    $log->warn('initial world fixtures already exist');
+    return;
 }
 
-echo "creating initial world fixtures\n";
+$log->info('creating initial world fixtures');
 
 $area = new AreaFixture(new Area('Midgaard'));
 $room = $area->addRoom(

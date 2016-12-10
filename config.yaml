@@ -4,3 +4,5 @@ debug: true
 persist:
   driver: pdo_sqlite
   path: db.sqlite
+log:
+  name: phpmud
