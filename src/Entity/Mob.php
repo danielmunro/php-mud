@@ -22,7 +22,7 @@ use PhpMud\Job\Job;
 use PhpMud\Job\Uninitiated;
 use PhpMud\Noun;
 use PhpMud\Race\Race;
-use function PhpMud\d20;
+use function PhpMud\Dice\d20;
 
 /**
  * @Entity(repositoryClass="\PhpMud\Repository\MobRepository")

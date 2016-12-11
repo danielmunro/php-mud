@@ -5,7 +5,8 @@
             "PhpMud\\Tests\\": "tests"
         },
         "files": [
-            "src/Dice.php"
+            "src/Dice.php",
+            "src/Help.php"
         ]
     },
     "require": {

@@ -10,14 +10,12 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace PhpMud\Dice;
+namespace PhpMud\Help;
 
-function dInt($int): int
+function dwarf(): string
 {
-    return random_int(1, $int);
-}
+    return <<<heredoc
+foo bar
 
-function d20(): int
-{
-    return random_int(1, 20);
+heredoc;
 }

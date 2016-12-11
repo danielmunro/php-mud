@@ -18,6 +18,7 @@ use PhpMud\IO\Input;
 use PhpMud\Job\Job;
 use PhpMud\Race\Race;
 use PhpMud\Repository\MobRepository;
+use PhpMud\ServiceProvider\Command\HelpCommand;
 
 class Login
 {
@@ -86,6 +87,10 @@ class Login
             case static::STATE_RACE:
                 if (!$input->getCommand()) {
                     $input->getClient()->write('Please pick a race > ');
+                    break;
+                }
+                if ($input->getCommand() === 'help') {
+                    $input->getClient()->write((string)HelpCommand::getHelpOutput($input->getSubject()));
                     break;
                 }
                 try {

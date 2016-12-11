@@ -14,7 +14,7 @@ namespace PhpMud;
 
 use PhpMud\Entity\Mob;
 use PhpMud\IO\Output;
-use function PhpMud\dInt;
+use function PhpMud\Dice\dInt;
 
 /**
  * A fight
