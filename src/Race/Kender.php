@@ -43,6 +43,6 @@ class Kender extends Race
 
     public function __toString(): string
     {
-        return Race::ELF;
+        return Race::KENDER;
     }
 }

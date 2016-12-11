@@ -37,7 +37,7 @@ class HelpCommand implements ServiceProviderInterface
             first(self::$helpFuncs, function (string $helpFunc) use ($subject) {
                 return strpos($helpFunc, $subject) === 0;
             }),
-            function(string $helperFunc) {
+            function (string $helperFunc) {
                 $func = sprintf('\PhpMud\Help\%s', $helperFunc);
 
                 if (function_exists($func)) {

@@ -23,6 +23,7 @@ abstract class Race
     const OGRE = 'ogre';
     const FAERIE = 'faerie';
     const GIANT = 'giant';
+    const KENDER = 'kender';
 
     /** @var Attributes $startingAttributes */
     protected $startingAttributes;
@@ -70,6 +71,8 @@ abstract class Race
             return new Faerie();
         } elseif (strpos(self::GIANT, $value) === 0) {
             return new Giant();
+        } elseif (strpos(self::KENDER, $value) === 0) {
+            return new Kender();
         }
 
         throw new \UnexpectedValueException(sprintf('unknown value: %s', $value));
@@ -90,6 +93,8 @@ abstract class Race
                 return new Faerie();
             case self::GIANT:
                 return new Giant();
+            case self::KENDER:
+                return new Kender();
             default:
                 throw new \UnexpectedValueException($value);
         }

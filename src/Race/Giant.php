@@ -43,6 +43,6 @@ class Giant extends Race
 
     public function __toString(): string
     {
-        return Race::OGRE;
+        return Race::GIANT;
     }
 }
