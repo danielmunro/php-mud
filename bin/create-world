@@ -92,7 +92,7 @@ can be seen in front of the forge, hammering out new weapons and armor.'
         ))->addMob(
             (new MobFixture(
                 new Mob(
-                    'Mornolum Merriarmour',
+                    'Mo Merriarmour',
                     new Dwarf()
                 )
             ))

@@ -36,10 +36,9 @@ class Human extends Race
             'acPierce' => 0,
             'acMagic' => 0
         ]);
-
         $this->visibilityRequirement = 60;
-
         $this->size = Size::MEDIUM();
+        $this->creationPoints = 5;
     }
 
     public function __toString(): string

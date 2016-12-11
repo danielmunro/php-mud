@@ -21,6 +21,8 @@ abstract class Race
     const ELF = 'elf';
     const DWARF = 'dwarf';
     const OGRE = 'ogre';
+    const FAERIE = 'faerie';
+    const GIANT = 'giant';
 
     /** @var Attributes $startingAttributes */
     protected $startingAttributes;
@@ -30,6 +32,9 @@ abstract class Race
 
     /** @var Size $size */
     protected $size;
+
+    /** @var int $creationPoints */
+    protected $creationPoints;
 
     public function getStartingAttributes(): Attributes
     {
@@ -46,6 +51,11 @@ abstract class Race
         return $this->size;
     }
 
+    public function getCreationPoints(): int
+    {
+        return $this->creationPoints;
+    }
+
     public static function matchPartialValue(string $value): Race
     {
         if (strpos(self::HUMAN, $value) === 0) {
@@ -56,6 +66,10 @@ abstract class Race
             return new Elf();
         } elseif (strpos(self::OGRE, $value) === 0) {
             return new Ogre();
+        } elseif (strpos(self::FAERIE, $value) === 0) {
+            return new Faerie();
+        } elseif (strpos(self::GIANT, $value) === 0) {
+            return new Giant();
         }
 
         throw new \UnexpectedValueException(sprintf('unknown value: %s', $value));
@@ -72,6 +86,10 @@ abstract class Race
                 return new Elf();
             case self::OGRE:
                 return new Ogre();
+            case self::FAERIE:
+                return new Faerie();
+            case self::GIANT:
+                return new Giant();
             default:
                 throw new \UnexpectedValueException($value);
         }

@@ -14,6 +14,7 @@ namespace PhpMud;
 
 use PhpMud\Entity\Mob;
 use PhpMud\IO\Output;
+use function PhpMud\dInt;
 
 /**
  * A fight
@@ -41,7 +42,7 @@ class Fight
         }
 
         if ($this->attacker->attackRoll($this->target)) {
-            $this->target->modifyHp(-Dice::dInt($this->attacker->getAttribute('dam')));
+            $this->target->modifyHp(-dInt($this->attacker->getAttribute('dam')));
             $this->target->notify(new Output($this->attacker->getName() . "'s clumsy punch hits you.\n"));
             $this->attacker->notify(new Output('Your clumsy punch hits ' . $this->target->getName() . ".\n"));
         } else {
@@ -51,7 +52,7 @@ class Fight
 
         if ($this->isContinuing() && $this->target->getFight() === $this) {
             if ($this->target->attackRoll($this->attacker)) {
-                $this->attacker->modifyHp(-Dice::dInt($this->attacker->getAttribute('dam')));
+                $this->attacker->modifyHp(-dInt($this->attacker->getAttribute('dam')));
                 $this->attacker->notify(new Output($this->target->getName() . "'s clumsy punch hits you.\n"));
                 $this->target->notify(new Output('Your clumsy punch hits ' . $this->target->getName() . "\n"));
             } else {
@@ -84,14 +85,26 @@ class Fight
     protected function resolve()
     {
         if ($this->attacker->getHp() <= 0) {
-            $this->attacker->notify(new Output('You have been KILLED!'));
-            $this->target->notify(new Output('You killed '.$this->attacker->getName().'!'));
+            static::kill($this->target, $this->attacker);
         } elseif ($this->target->getHp() <= 0) {
-            $this->target->notify(new Output('You have been KILLED!'));
-            $this->attacker->notify(new Output('You killed '.$this->target->getName().'!'));
+            static::kill($this->attacker, $this->target);
         }
 
         $this->attacker->resolveFight();
         $this->target->resolveFight();
+    }
+
+    protected static function kill(Mob $killer, Mob $victim)
+    {
+        $victim->notify(new Output('You have been KILLED!'));
+        $killer->notify(
+            new Output(
+                sprintf(
+                    "You killed %s!\nYou gained %d experience.\n",
+                    $victim->getName(),
+                    $killer->getXpFromKill($victim)
+                )
+            )
+        );
     }
 }

@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace PhpMud\Entity;
 
 use PhpMud\Client;
-use PhpMud\Dice;
 use PhpMud\Enum\Disposition;
 use PhpMud\Enum\Gender;
 use PhpMud\Enum\Role;
@@ -23,6 +22,7 @@ use PhpMud\Job\Job;
 use PhpMud\Job\Uninitiated;
 use PhpMud\Noun;
 use PhpMud\Race\Race;
+use function PhpMud\d20;
 
 /**
  * @Entity(repositoryClass="\PhpMud\Repository\MobRepository")
@@ -154,7 +154,7 @@ class Mob implements Noun
 
     public function attackRoll(Mob $target): bool
     {
-        $hitRoll = Dice::d20();
+        $hitRoll = d20();
         if ($hitRoll === 1) {
             return false;
         } elseif ($hitRoll < 20) {
@@ -410,20 +410,20 @@ class Mob implements Noun
         return 1;
     }
 
-    public function gainExperienceFromKill(Mob $victim)
+    public function getXpFromKill(Mob $victim): int
     {
         if ($this->debitLevels) {
-            return;
+            return 0;
         }
 
         $diff = $victim->getLevel() - $this->level;
 
         if ($diff < -8) {
-            $base = 0;
+            $xpGain = 0;
         } elseif ($diff > 5) {
-            $base = 320 + 30 * ($diff - 5);
+            $xpGain = 320 + 30 * ($diff - 5);
         } else {
-            $base = [
+            $xpGain = [
                 -8 => 2,
                 -7 => 7,
                 -6 => 13,
@@ -441,18 +441,22 @@ class Mob implements Noun
             ][$diff];
         }
 
-        $base += ($this->alignment > $victim->getAlignment() ?
+        $xpGain += ($this->alignment > $victim->getAlignment() ?
             $this->alignment - $victim->getAlignment() : $victim->getAlignment() - $this->alignment) / 20;
 
         if ($this->level < 11) {
-            $base += 15 * $base / ($this->level + 4);
+            $xpGain += 15 * $xpGain / ($this->level + 4);
         } elseif ($this->level > 40) {
-            $base += 40 * $base / ($this->level - 1);
+            $xpGain += 40 * $xpGain / ($this->level - 1);
         }
 
-        $base = random_int($base * 0.8, $base * 1.2);
+        $xpGain = random_int((int)floor($xpGain * 0.8), (int)ceil($xpGain * 1.2));
 
-        return 100 + $this->getAttribute('wis') * $base / 100;
+        $xpGain = (int)floor(100 + $this->getAttribute('wis') * $xpGain / 100);
+
+        $this->experience += $xpGain;
+
+        return $xpGain;
     }
 
     public function getLevel(): int

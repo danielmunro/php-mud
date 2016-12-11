@@ -23,11 +23,11 @@ class Ogre extends Race
             'hp' => 20,
             'mana' => 100,
             'mv' => 100,
-            'str' => 18,
+            'str' => 17,
             'int' => 12,
             'wis' => 13,
             'dex' => 12,
-            'con' => 18,
+            'con' => 17,
             'cha' => 11,
             'hit' => 1,
             'dam' => 2,
@@ -36,10 +36,9 @@ class Ogre extends Race
             'acPierce' => 0,
             'acMagic' => -10
         ]);
-
         $this->visibilityRequirement = 70;
-
         $this->size = Size::LARGE();
+        $this->creationPoints = 11;
     }
 
     public function __toString(): string

@@ -111,8 +111,21 @@ class Server
             'ip' => $connection->getRemoteAddress()
         ]);
 
-        $client = new Client(new Login($this->em->getRepository(Mob::class)), $connection);
+        $client = new Client($connection);
         $this->clients->add($client);
+        $login = new Login($this->em->getRepository(Mob::class));
+
+        $connection->on(
+            Client::EVENT_DATA,
+            function (string $input) use ($client, $login, $connection) {
+                if ($login->next(new Input($client, $input)) === Login::STATE_COMPLETE) {
+                    $client->setMob($login->getMob());
+                    $connection->emit(Server::EVENT_LOGIN, ['mob' => $login->getMob()]);
+                    $connection->removeAllListeners();
+                    $connection->on(Client::EVENT_DATA, [$client, 'pushBuffer']);
+                }
+            }
+        );
 
         $connection->on(
             static::EVENT_LOGIN,
@@ -149,9 +162,21 @@ class Server
     public function heartbeat()
     {
         each($this->clients->toArray(), function (Client $client) {
-            with($client->readBufferIfNotDelayed(), function (Input $input) use ($client) {
-                $this->commands->execute($input)->writeResponse($client);
-            });
+            if (!$client->getConnection()->isWritable()) {
+                $this->logger->info('connection not writable, closing', [
+                    'mob' => $client->getMob()->getName()
+                ]);
+                $client->getConnection()->close();
+                $this->clients->removeElement($client);
+            }
+            $this->checkBuffer($client);
+        });
+    }
+
+    public function checkBuffer(Client $client)
+    {
+        with($client->readBufferIfNotDelayed(), function (Input $input) use ($client) {
+            $this->commands->execute($input)->writeResponse($client);
         });
     }
 
@@ -177,7 +202,7 @@ class Server
         each(
             $this->clients->toArray(),
             function (Client $client) {
-                with($client->getLogin()->getState() === Login::STATE_COMPLETE, function () use ($client) {
+                with($client->getMob(), function () use ($client) {
                     $client->getMob()->regen();
                     $client->write("\n" . $client->prompt());
                 });

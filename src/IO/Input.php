@@ -37,12 +37,18 @@ class Input
      */
     protected $command;
 
+    /**
+     * @var string $subject
+     */
+    protected $subject;
+
     public function __construct(Client $client, string $input)
     {
         $input = trim($input);
         $this->client = $client;
         $this->args = explode(' ', $input);
         $this->command = $this->args[0];
+        $this->subject = $this->args[1] ?? '';
         $this->input = $input;
     }
 
@@ -84,6 +90,11 @@ class Input
     public function getCommand(): string
     {
         return $this->command;
+    }
+
+    public function getSubject(): string
+    {
+        return $this->subject;
     }
 
     public function __toString()

@@ -20,6 +20,7 @@ use Ramsey\Uuid\Uuid;
 /**
  * @Entity
  * @Table(indexes={@Index(name="vnum_idx", columns={"vNum"})})
+ * @HasLifecycleCallbacks
  */
 class Item implements Noun
 {
@@ -143,6 +144,7 @@ class Item implements Noun
         if ($this->position) {
             $this->position = new Position($this->position);
         }
+        $this->value = (float)$this->value;
     }
 
     /**

@@ -12,15 +12,12 @@ declare(strict_types=1);
 
 namespace PhpMud;
 
-class Dice
+function dInt($int): int
 {
-    public static function dInt($int): int
-    {
-        return random_int(1, $int);
-    }
+    return random_int(1, $int);
+}
 
-    public static function d20(): int
-    {
-        return random_int(1, 20);
-    }
+function d20(): int
+{
+    return random_int(1, 20);
 }

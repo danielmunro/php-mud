@@ -5,7 +5,10 @@ namespace PhpMud\Tests;
 
 use PhpMud\Client;
 use PhpMud\Entity\Area;
+use PhpMud\Entity\Mob;
 use PhpMud\Entity\Room;
+use PhpMud\Fixture\MobFixture;
+use PhpMud\Race\Human;
 use PhpMud\Server;
 use React\Socket\Connection;
 
@@ -25,10 +28,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->getMockBuilder(Connection::class)->disableOriginalConstructor()->getMock();
         $client = $server->addConnection($connection);
-        $client->login('test');
-        $client->login('human');
-        $client->login('warrior');
-        $client->login('neutral');
+        $client->setMob((new MobFixture(new Mob('mob', new Human())))->modifySilver(20)->getInstance());
         $client->getMob()->setRoom($server->getStartRoom());
 
         return $client;

@@ -24,10 +24,10 @@ class Elf extends Race
             'mana' => 100,
             'mv' => 100,
             'str' => 12,
-            'int' => 18,
+            'int' => 17,
             'wis' => 16,
-            'dex' => 18,
-            'con' => 11,
+            'dex' => 16,
+            'con' => 12,
             'cha' => 17,
             'hit' => 1,
             'dam' => 1,
@@ -36,10 +36,9 @@ class Elf extends Race
             'acPierce' => 0,
             'acMagic' => 10
         ]);
-
         $this->visibilityRequirement = 50;
-
         $this->size = Size::SMALL();
+        $this->creationPoints = 14;
     }
 
     public function __toString(): string

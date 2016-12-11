@@ -22,11 +22,6 @@ class Client
     const EVENT_DATA = 'data';
 
     /**
-     * @var Connection
-     */
-    protected $connection;
-
-    /**
      * @var array
      */
     protected $buffer = [];
@@ -42,21 +37,13 @@ class Client
     protected $mob;
 
     /**
-     * @var Login
+     * @var Connection $connection
      */
-    protected $login;
+    protected $connection;
 
-    /**
-     * Client constructor.
-     *
-     * @param Login $login
-     * @param Connection $connection
-     */
-    public function __construct(Login $login, Connection $connection)
+    public function __construct(Connection $connection)
     {
-        $this->login = $login;
         $this->connection = $connection;
-        $connection->on(static::EVENT_DATA, [$this, 'login']);
     }
 
     public function pushBuffer(string $buffer)
@@ -78,25 +65,14 @@ class Client
         return $this->buffer;
     }
 
+    public function getConnection(): Connection
+    {
+        return $this->connection;
+    }
+
     public function input(string $input): Input
     {
         return new Input($this, trim($input));
-    }
-
-    public function getLogin(): Login
-    {
-        return $this->login;
-    }
-
-    public function login(string $input)
-    {
-        if ($this->login->next(new Input($this, $input)) === Login::STATE_COMPLETE) {
-            $this->mob = $this->login->getMob();
-            $this->mob->setClient($this);
-            $this->connection->emit(Server::EVENT_LOGIN, ['mob' => $this->mob]);
-            $this->connection->removeListener(static::EVENT_DATA, [$this, 'login']);
-            $this->connection->on(static::EVENT_DATA, [$this, 'pushBuffer']);
-        }
     }
 
     public function prompt()
@@ -107,11 +83,6 @@ class Client
     public function write(string $output)
     {
         $this->connection->write($output);
-    }
-
-    public function close()
-    {
-        $this->connection->close();
     }
 
     public function pulse()
@@ -132,9 +103,15 @@ class Client
         }
     }
 
-    public function getMob(): Mob
+    public function getMob()
     {
         return $this->mob;
+    }
+
+    public function setMob(Mob $mob)
+    {
+        $this->mob = $mob;
+        $mob->setClient($this);
     }
 
     public function getDispositionCheckFail(): Output

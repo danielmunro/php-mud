@@ -38,18 +38,16 @@ class BuySellTest extends ServerTest
         $server = $this->getMockServer();
         $server->getStartRoom()->getMobs()->add($shop);
         $client = $this->getMockClient($server);
+        static::assertEquals(Mob::INITIAL_SILVER, $client->getMob()->getInventory()->getSilver());
         $client->pushBuffer('buy pie');
-        $server->heartbeat();
+        $server->checkBuffer($client);
         static::assertEquals(0, $client->getMob()->getInventory()->getSilver());
 
         $client->pushBuffer('sell pie');
-        $server->heartbeat();
+        $server->checkBuffer($client);
         static::assertEquals(Mob::INITIAL_SILVER, $client->getMob()->getInventory()->getSilver());
     }
 
-    /**
-     * @depends testBuyShopkeeper
-     */
     public function testBuyShopkeeperNotEnoughSilver()
     {
         $shop = (new MobFixture(

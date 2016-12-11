@@ -50,6 +50,7 @@ class RoomFixture extends Fixture
     public function addMob(Mob $mob): self
     {
         $this->room->getMobs()->add($mob);
+        $mob->setRoom($this->room);
 
         return $this;
     }

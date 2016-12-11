@@ -15,7 +15,7 @@ namespace PhpMud\Race;
 use PhpMud\Entity\Attributes;
 use PhpMud\Enum\Size;
 
-class Dwarf extends Race
+class Giant extends Race
 {
     public function __construct()
     {
@@ -24,25 +24,25 @@ class Dwarf extends Race
             'mana' => 100,
             'mv' => 100,
             'str' => 18,
-            'int' => 12,
-            'wis' => 17,
-            'dex' => 11,
+            'int' => 11,
+            'wis' => 11,
+            'dex' => 12,
             'con' => 18,
-            'cha' => 13,
+            'cha' => 11,
             'hit' => 1,
             'dam' => 2,
             'acSlash' => 0,
-            'acBash' => 10,
+            'acBash' => 0,
             'acPierce' => 0,
-            'acMagic' => 0
+            'acMagic' => -10
         ]);
-        $this->visibilityRequirement = 35;
-        $this->size = Size::SMALL();
-        $this->creationPoints = 9;
+        $this->visibilityRequirement = 60;
+        $this->size = Size::XLARGE();
+        $this->creationPoints = 5;
     }
 
     public function __toString(): string
     {
-        return Race::DWARF;
+        return Race::OGRE;
     }
 }
