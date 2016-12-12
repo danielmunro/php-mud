@@ -89,9 +89,6 @@ class Mob implements Noun
     protected $debitLevels;
 
     /** @Column(type="integer") */
-    protected $experiencePerLevel;
-
-    /** @Column(type="integer") */
     protected $ageInSeconds;
 
     /** @Column(type="array") */
@@ -112,6 +109,9 @@ class Mob implements Noun
     /** @Column(type="integer") */
     protected $alignment;
 
+    /** @Column(type="integer")  */
+    protected $creationPoints;
+
     /** @var int $ageTimer */
     protected $ageTimer;
 
@@ -130,6 +130,7 @@ class Mob implements Noun
         $this->name = $name;
         $this->identifiers = explode(' ', $name);
         $this->race = $race;
+        $this->creationPoints = $race->getCreationPoints();
         $this->job = new Uninitiated();
         $this->attributes = $race->getStartingAttributes();
         $this->hp = $this->attributes->getAttribute('hp');
@@ -141,8 +142,7 @@ class Mob implements Noun
         $this->isPlayer = false;
         $this->gender = Gender::NEUTRAL();
         $this->level = 1;
-        $this->experience = 1;
-        $this->experiencePerLevel = 1;
+        $this->experience = 0;
         $this->ageInSeconds = 0;
         $this->trains = 0;
         $this->practices = 0;
@@ -401,13 +401,40 @@ class Mob implements Noun
 
     public function getExperiencePerLevel(): int
     {
-        return $this->experiencePerLevel;
+        $exp = 1000;
+        $cp = $this->creationPoints;
+
+        if ($cp < 40) {
+            return (int)floor($exp * $this->race->getJobExpMultiplier($this->job) / 100);
+        }
+
+        $increment = 500;
+        $cp -= 40;
+
+        while ($cp > 9) {
+            $exp += $increment;
+            $cp -= 10;
+            if ($cp > 9) {
+                $exp += $increment;
+                $increment *= 2;
+                $cp -= 10;
+            }
+        }
+
+        $exp += $cp * $increment / 10;
+        $exp *= $this->race->getJobExpMultiplier($this->job) / 100;
+
+        return $exp > 411000 ? 411000 : $exp;
     }
 
     public function getExperienceToLevel(): int
     {
-        //return (int)ceil($this->experience / $this->);
-        return 1;
+        return $this->getExperiencePerLevel() - (int)floor($this->experience / $this->level);
+    }
+
+    public function getCreationPoints(): int
+    {
+        return $this->creationPoints;
     }
 
     public function getXpFromKill(Mob $victim): int
@@ -456,11 +483,32 @@ class Mob implements Noun
 
         $this->experience += $xpGain;
 
+        if ($this->getExperienceToLevel() < 0) {
+            $this->debitLevels++;
+        }
+
         return $xpGain;
     }
 
     public function getLevel(): int
     {
+        return $this->level;
+    }
+
+    public function getDebitLevels(): int
+    {
+        return $this->debitLevels;
+    }
+
+    public function levelUp(): int
+    {
+        if (!$this->debitLevels) {
+            return $this->level;
+        }
+
+        $this->debitLevels--;
+        $this->level++;
+
         return $this->level;
     }
 

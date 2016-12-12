@@ -14,6 +14,7 @@ namespace PhpMud\Race;
 
 use PhpMud\Entity\Attributes;
 use PhpMud\Enum\Size;
+use PhpMud\Job\Job;
 
 class Kender extends Race
 {
@@ -39,6 +40,22 @@ class Kender extends Race
         $this->visibilityRequirement = 50;
         $this->size = Size::SMALL();
         $this->creationPoints = 6;
+    }
+
+    public function getJobExpMultiplier(Job $job): int
+    {
+        switch ($job) {
+            case Job::CLERIC:
+                return 110;
+            case Job::MAGE:
+                return 110;
+            case Job::THIEF:
+                return 100;
+            case Job::WARRIOR:
+                return 130;
+            default:
+                return 100;
+        }
     }
 
     public function __toString(): string

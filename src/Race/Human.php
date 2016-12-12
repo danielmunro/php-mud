@@ -14,6 +14,7 @@ namespace PhpMud\Race;
 
 use PhpMud\Entity\Attributes;
 use PhpMud\Enum\Size;
+use PhpMud\Job\Job;
 
 class Human extends Race
 {
@@ -39,6 +40,11 @@ class Human extends Race
         $this->visibilityRequirement = 60;
         $this->size = Size::MEDIUM();
         $this->creationPoints = 5;
+    }
+
+    public function getJobExpMultiplier(Job $job): int
+    {
+        return 100;
     }
 
     public function __toString(): string

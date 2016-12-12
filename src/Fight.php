@@ -97,6 +97,7 @@ class Fight
     protected static function kill(Mob $killer, Mob $victim)
     {
         $victim->notify(new Output('You have been KILLED!'));
+        $debitLevels = $killer->getDebitLevels();
         $killer->notify(
             new Output(
                 sprintf(
@@ -106,5 +107,8 @@ class Fight
                 )
             )
         );
+        if ($killer->getDebitLevels() > $debitLevels) {
+            $killer->notify(new Output("You qualify for a level!\n"));
+        }
     }
 }

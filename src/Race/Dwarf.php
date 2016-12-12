@@ -14,6 +14,7 @@ namespace PhpMud\Race;
 
 use PhpMud\Entity\Attributes;
 use PhpMud\Enum\Size;
+use PhpMud\Job\Job;
 
 class Dwarf extends Race
 {
@@ -39,6 +40,22 @@ class Dwarf extends Race
         $this->visibilityRequirement = 35;
         $this->size = Size::SMALL();
         $this->creationPoints = 9;
+    }
+
+    public function getJobExpMultiplier(Job $job): int
+    {
+        switch ($job) {
+            case Job::CLERIC:
+                return 100;
+            case Job::MAGE:
+                return 150;
+            case Job::THIEF:
+                return 125;
+            case Job::WARRIOR:
+                return 100;
+            default:
+                return 100;
+        }
     }
 
     public function __toString(): string

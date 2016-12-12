@@ -22,6 +22,7 @@ use PhpMud\ServiceProvider\Command\GossipCommand;
 use PhpMud\ServiceProvider\Command\HelpCommand;
 use PhpMud\ServiceProvider\Command\InventoryCommand;
 use PhpMud\ServiceProvider\Command\KillCommand;
+use PhpMud\ServiceProvider\Command\LevelCommand;
 use PhpMud\ServiceProvider\Command\ListCommand;
 use PhpMud\ServiceProvider\Command\LookCommand;
 use PhpMud\ServiceProvider\Command\MoveCommand;
@@ -76,6 +77,7 @@ class Commands
         $this->container->register(new BuyCommand());
         $this->container->register(new SellCommand());
         $this->container->register(new HelpCommand());
+        $this->container->register(new LevelCommand());
     }
 
     public function execute(Input $input): Output

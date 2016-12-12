@@ -14,6 +14,7 @@ namespace PhpMud\Race;
 
 use PhpMud\Entity\Attributes;
 use PhpMud\Enum\Size;
+use PhpMud\Job\Job;
 
 abstract class Race
 {
@@ -99,6 +100,8 @@ abstract class Race
                 throw new \UnexpectedValueException($value);
         }
     }
+
+    abstract public function getJobExpMultiplier(Job $job): int;
 
     abstract public function __toString(): string;
 }

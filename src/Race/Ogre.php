@@ -14,6 +14,7 @@ namespace PhpMud\Race;
 
 use PhpMud\Entity\Attributes;
 use PhpMud\Enum\Size;
+use PhpMud\Job\Job;
 
 class Ogre extends Race
 {
@@ -39,6 +40,22 @@ class Ogre extends Race
         $this->visibilityRequirement = 70;
         $this->size = Size::LARGE();
         $this->creationPoints = 11;
+    }
+
+    public function getJobExpMultiplier(Job $job): int
+    {
+        switch ($job) {
+            case Job::CLERIC:
+                return 150;
+            case Job::MAGE:
+                return 200;
+            case Job::THIEF:
+                return 150;
+            case Job::WARRIOR:
+                return 105;
+            default:
+                return 100;
+        }
     }
 
     public function __toString(): string

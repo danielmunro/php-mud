@@ -67,7 +67,7 @@ class ScoreCommand implements ServiceProviderInterface
                             $mob->getExperience(),
                             $inv->getGold(),
                             $inv->getSilver(),
-                            ($mob->getLevel() + 1) * $mob->getExperiencePerLevel() - $mob->getExperience()
+                            $mob->getExperienceToLevel()
                         )
                     );
                 }
