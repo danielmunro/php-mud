@@ -3,10 +3,8 @@ declare(strict_types=1);
 
 namespace PhpMud\ServiceProvider\Command;
 
-use PhpMud\Client;
 use PhpMud\Command;
 use PhpMud\Entity\Mob;
-use PhpMud\Enum\Race;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Race\Human;
@@ -35,7 +33,7 @@ class NewMobCommand implements ServiceProviderInterface
                     $input->getRoom()->getMobs()->add($mob);
                     $mob->setRoom($input->getRoom());
 
-                    return new Output('', 'A fresh mob arrives from the mob factory.');
+                    return new Output('A fresh mob arrives from the mob factory.');
                 }
             };
         });

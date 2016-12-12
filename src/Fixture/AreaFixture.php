@@ -26,6 +26,7 @@ class AreaFixture extends Fixture
     public function addRoom(RoomFixture $room): self
     {
         $this->area->addRoom($room->getInstance());
+        $room->getInstance()->setArea($this->area);
 
         return $this;
     }
