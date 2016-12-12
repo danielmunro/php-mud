@@ -102,7 +102,7 @@ can be seen in front of the forge, hammering out new weapons and armor.'
             mob(
                 'Mo Merriarmour',
                 new Dwarf()
-            )->setLook('totters around, stinking up the place.')
+            )->setLook('A stout dwarf totters around, stinking up the place.')
             ->addRole(Role::SHOPKEEPER())
             ->addItem(
                 item(
@@ -113,6 +113,28 @@ can be seen in front of the forge, hammering out new weapons and armor.'
                 ->setWeight(0.1)
                 ->getInstance()
             )->getInstance()
+        )
+    )->addRoom(
+        new \PhpMud\Direction\East(),
+        room(
+            'A bakery',
+            '  A bakery shop is here.'
+        )->setArea($area->getInstance())->addMob(
+            mob(
+                'a baker',
+                new Human()
+            )->setLook('standing behind the counter, %s wipes flour from his forehead.')
+            ->addRole(Role::SHOPKEEPER())
+            ->addItem(
+                item(
+                    'a loaf of bread',
+                    Material::FOOD(),
+                    ['loaf', 'bread']
+                )->setValue(4)
+                ->setWeight(0.2)
+                ->getInstance()
+            )
+                ->getInstance()
         )
     )
 )->getInstance()->getRooms()->first();

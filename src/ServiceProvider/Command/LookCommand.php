@@ -68,7 +68,11 @@ class LookCommand implements ServiceProviderInterface
                                 $room->getMobs(),
                                 function (Mob $mob, $index, $collection, $reduction) use ($input) {
                                     return $mob !== $input->getMob() ?
-                                        sprintf("%s\n%s %s", $reduction, $mob->getName(), $mob->getLook())
+                                        sprintf(
+                                            "%s\n".$mob->getLook(),
+                                            $reduction,
+                                            $mob->getName()
+                                        )
                                         : $reduction;
                                 },
                                 ''

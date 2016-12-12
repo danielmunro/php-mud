@@ -170,7 +170,7 @@ class Mob implements Noun
 
     public function getLook(): string
     {
-        return $this->look ?? 'is here.';
+        return $this->look ?? '%s is here.';
     }
 
     public function setLook(string $look)
