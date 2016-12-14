@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace PhpMud\Race;
 
+use PhpMud\Bash;
+use PhpMud\Berserk;
 use PhpMud\Entity\Attributes;
 use PhpMud\Enum\Size;
 use PhpMud\Job\Job;
@@ -40,6 +42,10 @@ class Dwarf extends Race
         $this->visibilityRequirement = 35;
         $this->size = Size::SMALL();
         $this->creationPoints = 9;
+        $this->bonusSkills = [
+            Berserk::getName(),
+            Bash::getName()
+        ];
     }
 
     public function getJobExpMultiplier(Job $job): int
