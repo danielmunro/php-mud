@@ -43,8 +43,8 @@ class Dwarf extends Race
         $this->size = Size::SMALL();
         $this->creationPoints = 9;
         $this->bonusSkills = [
-            Berserk::getName(),
-            Bash::getName()
+            'berserk',
+            'bash'
         ];
     }
 

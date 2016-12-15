@@ -40,6 +40,10 @@ class Giant extends Race
         $this->visibilityRequirement = 60;
         $this->size = Size::XLARGE();
         $this->creationPoints = 5;
+        $this->bonusSkills = [
+            'fast healing',
+            'bash'
+        ];
     }
 
     public function getJobExpMultiplier(Job $job): int

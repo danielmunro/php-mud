@@ -40,6 +40,10 @@ class Kender extends Race
         $this->visibilityRequirement = 50;
         $this->size = Size::SMALL();
         $this->creationPoints = 6;
+        $this->bonusSkills = [
+            'sneak',
+            'dodge'
+        ];
     }
 
     public function getJobExpMultiplier(Job $job): int

@@ -40,6 +40,10 @@ class Faerie extends Race
         $this->visibilityRequirement = 20;
         $this->size = Size::XSMALL();
         $this->creationPoints = 13;
+        $this->bonusSkills = [
+            'dodge',
+            'meditation'
+        ];
     }
 
     public function getJobExpMultiplier(Job $job): int

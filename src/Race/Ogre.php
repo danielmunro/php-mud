@@ -40,6 +40,10 @@ class Ogre extends Race
         $this->visibilityRequirement = 70;
         $this->size = Size::LARGE();
         $this->creationPoints = 11;
+        $this->bonusSkills = [
+            'bash',
+            'fast healing'
+        ];
     }
 
     public function getJobExpMultiplier(Job $job): int

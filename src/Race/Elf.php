@@ -40,6 +40,9 @@ class Elf extends Race
         $this->visibilityRequirement = 50;
         $this->size = Size::SMALL();
         $this->creationPoints = 14;
+        $this->bonusSkills = [
+            'sneak'
+        ];
     }
 
     public function getJobExpMultiplier(Job $job): int
