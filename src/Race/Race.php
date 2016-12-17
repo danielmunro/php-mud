@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace PhpMud\Race;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use PhpMud\Entity\Attributes;
 use PhpMud\Enum\Size;
 use PhpMud\Job\Job;
@@ -38,6 +39,9 @@ abstract class Race
     /** @var int $creationPoints */
     protected $creationPoints;
 
+    /** @var array $bonusSkills */
+    protected $bonusSkills = [];
+
     public function getStartingAttributes(): Attributes
     {
         return $this->startingAttributes;
@@ -56,6 +60,11 @@ abstract class Race
     public function getCreationPoints(): int
     {
         return $this->creationPoints;
+    }
+
+    public function getBonusSkills(): array
+    {
+        return $this->bonusSkills;
     }
 
     public static function matchPartialValue(string $value): Race
