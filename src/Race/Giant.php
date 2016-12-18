@@ -13,7 +13,10 @@ declare(strict_types=1);
 namespace PhpMud\Race;
 
 use PhpMud\Entity\Attributes;
+use PhpMud\Enum\EyeSight;
 use PhpMud\Enum\Size;
+use PhpMud\Enum\Skill;
+use PhpMud\Enum\Vuln;
 use PhpMud\Job\Job;
 
 class Giant extends Race
@@ -37,12 +40,20 @@ class Giant extends Race
             'acPierce' => 0,
             'acMagic' => -10
         ]);
-        $this->visibilityRequirement = 60;
+        $this->visibilityRequirement = EyeSight::POOR();
         $this->size = Size::XLARGE();
         $this->creationPoints = 5;
         $this->bonusSkills = [
-            'fast healing',
-            'bash'
+            Skill::FAST_HEALING(),
+            Skill::BASH()
+        ];
+        $this->vulns = [
+            Vuln::MENTAL(),
+            Vuln::MAGIC()
+        ];
+        $this->resists = [
+            Vuln::FIRE(),
+            Vuln::COLD()
         ];
     }
 

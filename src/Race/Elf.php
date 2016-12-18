@@ -14,6 +14,8 @@ namespace PhpMud\Race;
 
 use PhpMud\Entity\Attributes;
 use PhpMud\Enum\Size;
+use PhpMud\Enum\Skill;
+use PhpMud\Enum\Vuln;
 use PhpMud\Job\Job;
 
 class Elf extends Race
@@ -41,7 +43,13 @@ class Elf extends Race
         $this->size = Size::SMALL();
         $this->creationPoints = 14;
         $this->bonusSkills = [
-            'sneak'
+            Skill::SNEAK()
+        ];
+        $this->vulns = [
+            Vuln::IRON()
+        ];
+        $this->resists = [
+            Vuln::MENTAL()
         ];
     }
 

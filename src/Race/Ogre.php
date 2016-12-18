@@ -13,7 +13,10 @@ declare(strict_types=1);
 namespace PhpMud\Race;
 
 use PhpMud\Entity\Attributes;
+use PhpMud\Enum\EyeSight;
 use PhpMud\Enum\Size;
+use PhpMud\Enum\Skill;
+use PhpMud\Enum\Vuln;
 use PhpMud\Job\Job;
 
 class Ogre extends Race
@@ -37,12 +40,20 @@ class Ogre extends Race
             'acPierce' => 0,
             'acMagic' => -10
         ]);
-        $this->visibilityRequirement = 70;
+        $this->visibilityRequirement = EyeSight::VERY_POOR();
         $this->size = Size::LARGE();
         $this->creationPoints = 11;
         $this->bonusSkills = [
-            'bash',
-            'fast healing'
+            Skill::BASH(),
+            Skill::FAST_HEALING()
+        ];
+        $this->vulns = [
+            Vuln::DISTRACTION(),
+            Vuln::MENTAL()
+        ];
+        $this->resists = [
+            Vuln::DISEASE(),
+            Vuln::COLD()
         ];
     }
 

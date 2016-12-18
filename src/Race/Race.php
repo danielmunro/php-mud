@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud\Race;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use MyCLabs\Enum\Enum;
 use PhpMud\Entity\Attributes;
 use PhpMud\Enum\Size;
 use PhpMud\Job\Job;
@@ -30,7 +31,7 @@ abstract class Race
     /** @var Attributes $startingAttributes */
     protected $startingAttributes;
 
-    /** @var int $visibilityRequirement */
+    /** @var Enum $visibilityRequirement */
     protected $visibilityRequirement = 0;
 
     /** @var Size $size */
@@ -42,12 +43,18 @@ abstract class Race
     /** @var array $bonusSkills */
     protected $bonusSkills = [];
 
+    /** @var array $vulns */
+    protected $vulns = [];
+
+    /** @var array $resists */
+    protected $resists = [];
+
     public function getStartingAttributes(): Attributes
     {
         return $this->startingAttributes;
     }
 
-    public function getVisibilityRequirement(): int
+    public function getVisibilityRequirement(): Enum
     {
         return $this->visibilityRequirement;
     }
@@ -65,6 +72,16 @@ abstract class Race
     public function getBonusSkills(): array
     {
         return $this->bonusSkills;
+    }
+
+    public function getVulns(): array
+    {
+        return $this->vulns;
+    }
+
+    public function getResists(): array
+    {
+        return $this->resists;
     }
 
     public static function matchPartialValue(string $value): Race

@@ -13,7 +13,10 @@ declare(strict_types=1);
 namespace PhpMud\Race;
 
 use PhpMud\Entity\Attributes;
+use PhpMud\Enum\EyeSight;
 use PhpMud\Enum\Size;
+use PhpMud\Enum\Skill;
+use PhpMud\Enum\Vuln;
 use PhpMud\Job\Job;
 
 class Faerie extends Race
@@ -37,12 +40,18 @@ class Faerie extends Race
             'acPierce' => 0,
             'acMagic' => 10
         ]);
-        $this->visibilityRequirement = 20;
+        $this->visibilityRequirement = EyeSight::VERY_GOOD();
         $this->size = Size::XSMALL();
         $this->creationPoints = 13;
         $this->bonusSkills = [
-            'dodge',
-            'meditation'
+            Skill::DODGE(),
+            SKILL::MEDITATION()
+        ];
+        $this->vulns = [
+            Vuln::BASH()
+        ];
+        $this->resists = [
+            Vuln::MAGIC()
         ];
     }
 

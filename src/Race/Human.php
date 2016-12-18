@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud\Race;
 
 use PhpMud\Entity\Attributes;
+use PhpMud\Enum\EyeSight;
 use PhpMud\Enum\Size;
 use PhpMud\Job\Job;
 
@@ -37,7 +38,7 @@ class Human extends Race
             'acPierce' => 0,
             'acMagic' => 0
         ]);
-        $this->visibilityRequirement = 60;
+        $this->visibilityRequirement = EyeSight::AVERAGE();
         $this->size = Size::MEDIUM();
         $this->creationPoints = 5;
     }

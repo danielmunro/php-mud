@@ -15,7 +15,10 @@ namespace PhpMud\Race;
 use PhpMud\Bash;
 use PhpMud\Berserk;
 use PhpMud\Entity\Attributes;
+use PhpMud\Enum\EyeSight;
 use PhpMud\Enum\Size;
+use PhpMud\Enum\Skill;
+use PhpMud\Enum\Vuln;
 use PhpMud\Job\Job;
 
 class Dwarf extends Race
@@ -39,12 +42,19 @@ class Dwarf extends Race
             'acPierce' => 0,
             'acMagic' => 0
         ]);
-        $this->visibilityRequirement = 35;
+        $this->visibilityRequirement = EyeSight::VERY_GOOD();
         $this->size = Size::SMALL();
         $this->creationPoints = 9;
         $this->bonusSkills = [
-            'berserk',
-            'bash'
+            Skill::BERSERK(),
+            Skill::BASH()
+        ];
+        $this->vulns = [
+            Vuln::DROWNING()
+        ];
+        $this->resists = [
+            Vuln::DISEASE(),
+            Vuln::POISON()
         ];
     }
 

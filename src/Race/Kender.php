@@ -13,7 +13,10 @@ declare(strict_types=1);
 namespace PhpMud\Race;
 
 use PhpMud\Entity\Attributes;
+use PhpMud\Enum\EyeSight;
 use PhpMud\Enum\Size;
+use PhpMud\Enum\Skill;
+use PhpMud\Enum\Vuln;
 use PhpMud\Job\Job;
 
 class Kender extends Race
@@ -37,12 +40,18 @@ class Kender extends Race
             'acPierce' => 0,
             'acMagic' => 10
         ]);
-        $this->visibilityRequirement = 50;
+        $this->visibilityRequirement = EyeSight::GOOD();
         $this->size = Size::SMALL();
         $this->creationPoints = 6;
         $this->bonusSkills = [
-            'sneak',
-            'dodge'
+            Skill::DODGE()
+        ];
+        $this->vulns = [
+            Vuln::COLD(),
+            Vuln::POISON()
+        ];
+        $this->resists = [
+            Vuln::BASH()
         ];
     }
 

@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace PhpMud\Enum;
 
 use MyCLabs\Enum\Enum;
-use PhpMud\IO\Output;
 
 /**
  * @method static SITTING()

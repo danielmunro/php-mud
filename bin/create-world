@@ -20,6 +20,7 @@ use PhpMud\Enum\Material;
 use PhpMud\Enum\Role;
 use PhpMud\Enum\Position;
 use PhpMud\Direction\West;
+use PhpMud\Direction\East;
 use PhpMud\Race\Dwarf;
 use PhpMud\Race\Human;
 use PhpMud\Race\Race;
@@ -70,7 +71,8 @@ $firstRoom = $area->addRoom(
     room(
         'Midgaard Town Center',
         'Before you is the town center.'
-    )->addItems([
+    )
+    ->addItems([
         item(
             'a copper teapot',
             Material::COPPER(),
@@ -86,55 +88,67 @@ $firstRoom = $area->addRoom(
             Material::WOOD(),
             ['wooden', 'mace']
         )->setPosition(Position::WIELDED())->setWeight(5.0)->getInstance(),
-    ])->addMob(
+    ])
+    ->addMob(
         mob(
             'a janitor',
             new Human()
-        )->getInstance()
-    )->addRoom(
+        )->addRole(Role::SCAVENGER())->getInstance()
+    )
+    ->addRoom(
         new West(),
         room(
             'Merriarmour Arms and Armour',
             '  A cramped shop is filled with cheap but sturdy training equipment. A red-hot forge
 and workshop fill the back half of the already small space. The silhouette of a dwarf
 can be seen in front of the forge, hammering out new weapons and armor.'
-        )->setArea($area->getInstance())->addMob(
+        )
+        ->setArea($area->getInstance())
+        ->addMob(
             mob(
                 'Mo Merriarmour',
                 new Dwarf()
-            )->setLook('A stout dwarf totters around, stinking up the place.')
+            )
+            ->setLook('A stout dwarf totters around, stinking up the place.')
             ->addRole(Role::SHOPKEEPER())
             ->addItem(
                 item(
                     'a small brass key',
                     Material::BRASS(),
                     ['small', 'brass', 'key']
-                )->setValue(20)
+                )
+                ->setValue(20)
                 ->setWeight(0.1)
                 ->getInstance()
-            )->getInstance()
+            )
+            ->getInstance()
         )
-    )->addRoom(
-        new \PhpMud\Direction\East(),
+    )
+    ->addRoom(
+        new East(),
         room(
             'A bakery',
             '  A bakery shop is here.'
-        )->setArea($area->getInstance())->addMob(
+        )
+        ->setArea($area->getInstance())
+        ->addMob(
             mob(
                 'a baker',
                 new Human()
-            )->setLook('standing behind the counter, %s wipes flour from his forehead.')
+            )
+            ->setLook('standing behind the counter, %s wipes flour from his forehead.')
             ->addRole(Role::SHOPKEEPER())
             ->addItem(
                 item(
                     'a loaf of bread',
                     Material::FOOD(),
                     ['loaf', 'bread']
-                )->setValue(4)
+                )
+                ->setValue(4)
                 ->setWeight(0.2)
                 ->getInstance()
             )
-                ->getInstance()
+            ->getInstance()
         )
     )
 )->getInstance()->getRooms()->first();
