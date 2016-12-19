@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud\Job;
 
 use PhpMud\Entity\Attributes;
+use PhpMud\Skill\Mace;
 
 class Cleric extends Job
 {
@@ -25,6 +26,8 @@ class Cleric extends Job
             'str' => -1,
             'cha' => 2
         ]);
+
+        $this->defaultWeapon = new Mace();
     }
 
     public function __toString(): string

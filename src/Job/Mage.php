@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud\Job;
 
 use PhpMud\Entity\Attributes;
+use PhpMud\Skill\Wand;
 
 class Mage extends Job
 {
@@ -25,6 +26,8 @@ class Mage extends Job
             'dex' => -1,
             'con' => -1
         ]);
+
+        $this->defaultWeapon = new Wand();
     }
 
     public function __toString(): string

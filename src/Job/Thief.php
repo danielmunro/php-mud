@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud\Job;
 
 use PhpMud\Entity\Attributes;
+use PhpMud\Skill\Dagger;
 
 class Thief extends Job
 {
@@ -25,6 +26,8 @@ class Thief extends Job
             'str' => 1,
             'cha' => 1
         ]);
+
+        $this->defaultWeapon = new Dagger();
     }
 
     public function __toString(): string
