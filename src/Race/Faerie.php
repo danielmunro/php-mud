@@ -15,7 +15,7 @@ namespace PhpMud\Race;
 use PhpMud\Entity\Attributes;
 use PhpMud\Enum\EyeSight;
 use PhpMud\Enum\Size;
-use PhpMud\Enum\Skill;
+use PhpMud\Enum\Ability;
 use PhpMud\Enum\Vuln;
 use PhpMud\Job\Job;
 
@@ -44,8 +44,8 @@ class Faerie extends Race
         $this->size = Size::XSMALL();
         $this->creationPoints = 13;
         $this->bonusSkills = [
-            Skill::DODGE(),
-            SKILL::MEDITATION()
+            Ability::DODGE(),
+            Ability::MEDITATION()
         ];
         $this->vulns = [
             Vuln::BASH()

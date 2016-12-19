@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace PhpMud\Skill;
 
-use PhpMud\Ability;
-
-abstract class Skill
+interface Weapon
 {
 }

@@ -10,13 +10,15 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace PhpMud;
+namespace PhpMud\Skill;
 
+use PhpMud\Ability;
+use PhpMud\CreationGroup;
 use PhpMud\Enum\Disposition;
 use PhpMud\Enum\TargetType;
 use PhpMud\Job\Job;
 
-class Mace implements Ability, CreationGroup
+class Mace implements Ability, CreationGroup, Weapon
 {
     public function getCreationPoints(Job $job): int
     {
@@ -48,7 +50,7 @@ class Mace implements Ability, CreationGroup
         return TargetType::NONE();
     }
 
-    public static function getName(): string
+    public function __toString(): string
     {
         return 'mace';
     }

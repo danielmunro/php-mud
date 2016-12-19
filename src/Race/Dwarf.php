@@ -17,7 +17,7 @@ use PhpMud\Berserk;
 use PhpMud\Entity\Attributes;
 use PhpMud\Enum\EyeSight;
 use PhpMud\Enum\Size;
-use PhpMud\Enum\Skill;
+use PhpMud\Enum\Ability;
 use PhpMud\Enum\Vuln;
 use PhpMud\Job\Job;
 
@@ -46,8 +46,8 @@ class Dwarf extends Race
         $this->size = Size::SMALL();
         $this->creationPoints = 9;
         $this->bonusSkills = [
-            Skill::BERSERK(),
-            Skill::BASH()
+            Ability::BERSERK(),
+            Ability::BASH()
         ];
         $this->vulns = [
             Vuln::DROWNING()

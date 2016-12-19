@@ -15,7 +15,7 @@ namespace PhpMud\Race;
 use PhpMud\Entity\Attributes;
 use PhpMud\Enum\EyeSight;
 use PhpMud\Enum\Size;
-use PhpMud\Enum\Skill;
+use PhpMud\Enum\Ability;
 use PhpMud\Enum\Vuln;
 use PhpMud\Job\Job;
 
@@ -44,8 +44,8 @@ class Ogre extends Race
         $this->size = Size::LARGE();
         $this->creationPoints = 11;
         $this->bonusSkills = [
-            Skill::BASH(),
-            Skill::FAST_HEALING()
+            Ability::BASH(),
+            Ability::FAST_HEALING()
         ];
         $this->vulns = [
             Vuln::DISTRACTION(),

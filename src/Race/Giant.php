@@ -15,7 +15,7 @@ namespace PhpMud\Race;
 use PhpMud\Entity\Attributes;
 use PhpMud\Enum\EyeSight;
 use PhpMud\Enum\Size;
-use PhpMud\Enum\Skill;
+use PhpMud\Enum\Ability;
 use PhpMud\Enum\Vuln;
 use PhpMud\Job\Job;
 
@@ -44,8 +44,8 @@ class Giant extends Race
         $this->size = Size::XLARGE();
         $this->creationPoints = 5;
         $this->bonusSkills = [
-            Skill::FAST_HEALING(),
-            Skill::BASH()
+            Ability::FAST_HEALING(),
+            Ability::BASH()
         ];
         $this->vulns = [
             Vuln::MENTAL(),

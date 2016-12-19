@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace PhpMud\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use PhpMud\Client;
 use PhpMud\Enum\Disposition;
 use PhpMud\Enum\Gender;
@@ -112,6 +113,12 @@ class Mob implements Noun
     /** @Column(type="integer")  */
     protected $creationPoints;
 
+    /**
+     * @OneToMany(targetEntity="Ability", mappedBy="mob")
+     * @var ArrayCollection $abilities
+     */
+    protected $abilities;
+
     /** @var int $ageTimer */
     protected $ageTimer;
 
@@ -150,6 +157,7 @@ class Mob implements Noun
         $this->debitLevels = 0;
         $this->alignment = 0;
         $this->roles = [];
+        $this->abilities = new ArrayCollection();
     }
 
     public function attackRoll(Mob $target): bool

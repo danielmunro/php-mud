@@ -21,5 +21,5 @@ interface Ability
 
     public function getTargetType(): TargetType;
 
-    public static function getName(): string;
+    public function __toString(): string;
 }

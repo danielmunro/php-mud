@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud\Job;
 
 use PhpMud\Entity\Attributes;
+use PhpMud\Skill\Weapon;
 
 abstract class Job
 {
@@ -23,6 +24,13 @@ abstract class Job
     const UNINITIATED = 'uninitiated';
 
     protected $startingAttributes;
+
+    protected $defaultWeapon;
+
+    public function getDefaultWeapon(): Weapon
+    {
+        return $this->defaultWeapon;
+    }
 
     public function getStartingAttributes(): Attributes
     {

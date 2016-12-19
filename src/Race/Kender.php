@@ -15,7 +15,7 @@ namespace PhpMud\Race;
 use PhpMud\Entity\Attributes;
 use PhpMud\Enum\EyeSight;
 use PhpMud\Enum\Size;
-use PhpMud\Enum\Skill;
+use PhpMud\Enum\Ability;
 use PhpMud\Enum\Vuln;
 use PhpMud\Job\Job;
 
@@ -44,7 +44,7 @@ class Kender extends Race
         $this->size = Size::SMALL();
         $this->creationPoints = 6;
         $this->bonusSkills = [
-            Skill::DODGE()
+            Ability::DODGE()
         ];
         $this->vulns = [
             Vuln::COLD(),
