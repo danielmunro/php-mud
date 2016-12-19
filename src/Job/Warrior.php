@@ -14,19 +14,23 @@ namespace PhpMud\Job;
 
 use PhpMud\Entity\Attributes;
 use PhpMud\Skill\Sword;
+use PhpMud\Skill\Weapon;
 
-class Warrior extends Job
+class Warrior implements Job
 {
-    public function __construct()
+    public function getStartingAttributes(): Attributes
     {
-        $this->startingAttributes = new Attributes([
+        return new Attributes([
             'wis' => -1,
             'int' => -1,
             'dex' => 1,
             'str' => 2
         ]);
+    }
 
-        $this->defaultWeapon = new Sword();
+    public function getDefaultWeapon(): Weapon
+    {
+        return new Sword();
     }
 
     public function __toString(): string

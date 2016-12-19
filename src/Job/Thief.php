@@ -14,20 +14,24 @@ namespace PhpMud\Job;
 
 use PhpMud\Entity\Attributes;
 use PhpMud\Skill\Dagger;
+use PhpMud\Skill\Weapon;
 
-class Thief extends Job
+class Thief implements Job
 {
-    public function __construct()
+    public function getStartingAttributes(): Attributes
     {
-        $this->startingAttributes = new Attributes([
+        return new Attributes([
             'wis' => -2,
             'int' => -1,
             'dex' => 2,
             'str' => 1,
             'cha' => 1
         ]);
+    }
 
-        $this->defaultWeapon = new Dagger();
+    public function getDefaultWeapon(): Weapon
+    {
+        return new Dagger();
     }
 
     public function __toString(): string

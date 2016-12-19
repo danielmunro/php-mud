@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace PhpMud\Entity;
 
-use PhpMud\Ability as AbilityInterface;
 use PhpMud\Enum\Ability as AbilityEnum;
 
 /**
@@ -28,14 +27,24 @@ class Ability
     /** @Column(type="string") */
     protected $ability;
 
-    /** @Column(type="int") */
+    /** @Column(type="integer") */
     protected $level;
 
-    public function __construct(Mob $mob, AbilityInterface $ability, int $level)
+    public function __construct(Mob $mob, AbilityEnum $ability, int $level)
     {
         $this->mob = $mob;
         $this->ability = $ability;
         $this->level = $level;
+    }
+
+    public function getLevel(): int
+    {
+        return $this->level;
+    }
+
+    public function checkImprovement()
+    {
+
     }
 
     /**

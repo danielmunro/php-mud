@@ -13,12 +13,19 @@ declare(strict_types=1);
 namespace PhpMud\Job;
 
 use PhpMud\Entity\Attributes;
+use PhpMud\Skill\HandToHand;
+use PhpMud\Skill\Weapon;
 
-class Uninitiated extends Job
+class Uninitiated implements Job
 {
-    public function __construct()
+    public function getStartingAttributes(): Attributes
     {
-        $this->startingAttributes = new Attributes();
+        return new Attributes();
+    }
+
+    public function getDefaultWeapon(): Weapon
+    {
+        return new HandToHand();
     }
 
     public function __toString(): string

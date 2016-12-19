@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace PhpMud\Race;
 
-use PhpMud\Bash;
-use PhpMud\Berserk;
 use PhpMud\Entity\Attributes;
 use PhpMud\Enum\EyeSight;
 use PhpMud\Enum\Size;

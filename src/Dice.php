@@ -21,3 +21,8 @@ function d20(): int
 {
     return random_int(1, 20);
 }
+
+function d100(): int
+{
+    return random_int(1, 100);
+}

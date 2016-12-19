@@ -14,20 +14,24 @@ namespace PhpMud\Job;
 
 use PhpMud\Entity\Attributes;
 use PhpMud\Skill\Mace;
+use PhpMud\Skill\Weapon;
 
-class Cleric extends Job
+class Cleric implements Job
 {
-    public function __construct()
+    public function getStartingAttributes(): Attributes
     {
-        $this->startingAttributes = new Attributes([
+        return new Attributes([
             'wis' => 2,
             'int' => 1,
             'dex' => -2,
             'str' => -1,
             'cha' => 2
         ]);
+    }
 
-        $this->defaultWeapon = new Mace();
+    public function getDefaultWeapon(): Weapon
+    {
+        return new Mace();
     }
 
     public function __toString(): string

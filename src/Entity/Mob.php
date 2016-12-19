@@ -20,10 +20,18 @@ use PhpMud\Enum\Role;
 use PhpMud\Fight;
 use PhpMud\IO\Output;
 use PhpMud\Job\Job;
+use PhpMud\Job\JobFactory;
 use PhpMud\Job\Uninitiated;
 use PhpMud\Noun;
 use PhpMud\Race\Race;
+use PhpMud\Skill\FastHealing;
 use function PhpMud\Dice\d20;
+use function PhpMud\Dice\d100;
+use function PhpMud\Dice\dInt;
+use function Functional\with;
+use function Functional\each;
+use function Functional\first;
+use PhpMud\Skill\Meditation;
 
 /**
  * @Entity(repositoryClass="\PhpMud\Repository\MobRepository")
@@ -41,13 +49,19 @@ class Mob implements Noun
     /** @Column(type="string", nullable=true) */
     protected $look;
 
-    /** @Column(type="string") */
+    /**
+     * @Column(type="string")
+     * @var Disposition $disposition
+     */
     protected $disposition;
 
     /** @Column(type="array") */
     protected $identifiers;
 
-    /** @ManyToOne(targetEntity="Room", inversedBy="mobs") */
+    /**
+     * @ManyToOne(targetEntity="Room", inversedBy="mobs")
+     * @var Room $room
+     */
     protected $room;
 
     /** @OneToOne(targetEntity="Attributes", cascade={"persist"})  */
@@ -114,7 +128,7 @@ class Mob implements Noun
     protected $creationPoints;
 
     /**
-     * @OneToMany(targetEntity="Ability", mappedBy="mob")
+     * @OneToMany(targetEntity="Ability", mappedBy="mob", cascade={"persist"})
      * @var ArrayCollection $abilities
      */
     protected $abilities;
@@ -157,7 +171,14 @@ class Mob implements Noun
         $this->debitLevels = 0;
         $this->alignment = 0;
         $this->roles = [];
+        $this->disposition = Disposition::STANDING();
         $this->abilities = new ArrayCollection();
+        each(
+            $this->race->getBonusSkills(),
+            function (\PhpMud\Enum\Ability $ability) {
+                $this->abilities->add(new \PhpMud\Entity\Ability($this, $ability, 1));
+            }
+        );
     }
 
     public function attackRoll(Mob $target): bool
@@ -340,11 +361,68 @@ class Mob implements Noun
 
     public function regen()
     {
-        $regenBase = $this->room->getRegenRate();
+        if (!$this->room) {
+            return;
+        }
 
-        $this->modifyHp((int) floor($this->attributes->getAttribute('hp') * $regenBase));
-        $this->modifyMana((int) floor($this->attributes->getAttribute('mana') * $regenBase));
-        $this->modifyMv((int) floor($this->attributes->getAttribute('mv') * $regenBase));
+        $regenBase = $this->room->getRegenRate() + $this->disposition->getRegenRate();
+
+        $this->modifyHp($this->hpGain($regenBase));
+        $this->modifyMana($this->manaGain($regenBase));
+        $this->modifyMv($this->mvGain($regenBase));
+    }
+
+    public function hpGain(float $base): int
+    {
+        $amount = max(3, $base * $this->attributes->getAttribute('hp'));
+        $amount += max(0, 15 - $this->attributes->getAttribute('con'));
+        $amount += $this->level / 2;
+        $amount += $this->withAbility(FastHealing::class, function () {
+            return dInt($this->level);
+        });
+
+        return (int)floor($amount);
+    }
+
+    public function manaGain(float $base): int
+    {
+        $amount = max(3, $base * $this->attributes->getAttribute('hp'));
+        $amount += random_int(1, $this->attributes->getAttribute('wis'));
+        $amount += $this->level / 2;
+        $amount += $this->withAbility(Meditation::class, function () {
+            return dInt($this->level);
+        });
+
+        return (int)floor($amount);
+    }
+
+    public function mvGain(float $base): int
+    {
+        $amount = max(3, $base * $this->attributes->getAttribute('hp'));
+        $amount += random_int(1, $this->attributes->getAttribute('wis'));
+        $amount += $this->level / 2;
+
+        return (int)floor($amount);
+    }
+
+    public function withAbility(string $abilityClass, callable $callable)
+    {
+        return with(
+            first(
+                $this->abilities->toArray(),
+                function (\PhpMud\Entity\Ability $ability) use ($abilityClass) {
+                    return get_class($ability) === $abilityClass;
+                }
+            ),
+            function (\PhpMud\Entity\Ability $ability) use ($callable) {
+                if($ability->getLevel() > d100()) {
+                    $ability->checkImprovement();
+                    return $callable($ability);
+                }
+
+                return null;
+            }
+        );
     }
 
     public function isPlayer(): bool
@@ -549,7 +627,7 @@ class Mob implements Noun
         $this->race = Race::fromValue((string)$this->race);
         $this->disposition = new Disposition($this->disposition);
         $this->gender = new Gender((string)$this->gender);
-        $this->job = Job::matchPartialValue((string)$this->job);
+        $this->job = JobFactory::matchPartialValue((string)$this->job);
         $this->ageTimer = time();
     }
 

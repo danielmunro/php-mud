@@ -16,6 +16,7 @@ use PhpMud\Entity\Mob;
 use PhpMud\Enum\Gender;
 use PhpMud\IO\Input;
 use PhpMud\Job\Job;
+use PhpMud\Job\JobFactory;
 use PhpMud\Race\Race;
 use PhpMud\Repository\MobRepository;
 use PhpMud\ServiceProvider\Command\HelpCommand;
@@ -103,7 +104,7 @@ class Login
                 break;
             case static::STATE_JOB:
                 try {
-                    $this->job = Job::matchPartialValue((string)$input);
+                    $this->job = JobFactory::matchPartialValue((string)$input);
                     $this->mob = new Mob($this->mobName, $this->race);
                     $this->mob->setJob($this->job);
                     $this->mob->getInventory()->modifySilver(Mob::INITIAL_SILVER);

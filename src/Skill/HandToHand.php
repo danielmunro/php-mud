@@ -18,7 +18,7 @@ use PhpMud\Enum\Disposition;
 use PhpMud\Enum\TargetType;
 use PhpMud\Job\Job;
 
-class FastHealing implements Ability, CreationGroup
+class HandToHand implements Ability, CreationGroup, Weapon
 {
     public function getCreationPoints(Job $job): int
     {
@@ -26,10 +26,10 @@ class FastHealing implements Ability, CreationGroup
             case Job::WARRIOR:
                 return 4;
             case Job::THIEF:
-                return 6;
-            case Job::CLERIC:
                 return 5;
-            case JOB::MAGE:
+            case Job::CLERIC:
+                return 6;
+            case Job::MAGE:
             default:
                 return 8;
         }
@@ -37,22 +37,12 @@ class FastHealing implements Ability, CreationGroup
 
     public function getLevel(Job $job): int
     {
-        switch ((string)$job) {
-            case Job::WARRIOR:
-                return 6;
-            case Job::THIEF:
-                return 16;
-            case Job::CLERIC:
-                return 15;
-            case JOB::MAGE:
-            default:
-                return 9;
-        }
+        return 1;
     }
 
     public function getMinimumDisposition(): Disposition
     {
-        return Disposition::SLEEPING();
+        return Disposition::FIGHTING();
     }
 
     public function getTargetType(): TargetType
@@ -62,6 +52,6 @@ class FastHealing implements Ability, CreationGroup
 
     public function __toString(): string
     {
-        return 'fast healing';
+        return 'hand to hand';
     }
 }

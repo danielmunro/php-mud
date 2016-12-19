@@ -15,7 +15,7 @@ namespace PhpMud\Job;
 use PhpMud\Entity\Attributes;
 use PhpMud\Skill\Weapon;
 
-abstract class Job
+interface Job
 {
     const CLERIC = 'cleric';
     const MAGE = 'mage';
@@ -23,36 +23,9 @@ abstract class Job
     const WARRIOR = 'warrior';
     const UNINITIATED = 'uninitiated';
 
-    protected $startingAttributes;
+    public function getDefaultWeapon(): Weapon;
 
-    protected $defaultWeapon;
+    public function getStartingAttributes(): Attributes;
 
-    public function getDefaultWeapon(): Weapon
-    {
-        return $this->defaultWeapon;
-    }
-
-    public function getStartingAttributes(): Attributes
-    {
-        return $this->startingAttributes;
-    }
-
-    public static function matchPartialValue(string $value): Job
-    {
-        if (strpos(self::CLERIC, $value) === 0) {
-            return new Cleric();
-        } elseif (strpos(self::MAGE, $value) === 0) {
-            return new Mage();
-        } elseif (strpos(self::THIEF, $value) === 0) {
-            return new Thief();
-        } elseif (strpos(self::WARRIOR, $value) === 0) {
-            return new Warrior();
-        } elseif (strpos(self::UNINITIATED, $value) === 0) {
-            return new Uninitiated();
-        }
-
-        throw new \UnexpectedValueException(sprintf('unknown value: %s', $value));
-    }
-
-    abstract public function __toString(): string;
+    public function __toString(): string;
 }
