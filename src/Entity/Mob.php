@@ -415,7 +415,7 @@ class Mob implements Noun
                 }
             ),
             function (\PhpMud\Entity\Ability $ability) use ($callable) {
-                if($ability->getLevel() > d100()) {
+                if ($ability->getLevel() > d100()) {
                     $ability->checkImprovement();
                     return $callable($ability);
                 }
