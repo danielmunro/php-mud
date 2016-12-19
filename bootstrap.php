@@ -12,7 +12,7 @@ $configFile = __DIR__.'/config.yaml';
 
 if (!file_exists($configFile)) {
     die(
-    <<<NOCONFIG
+        <<<NOCONFIG
 No configuration file was found!
 
 Create a file at ./config.yaml with example contents below:
@@ -27,7 +27,7 @@ log:
   name: phpmud
 
 NOCONFIG
-);
+    );
 }
 
 $config = Yaml::parse(file_get_contents($configFile));

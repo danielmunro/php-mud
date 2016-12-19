@@ -15,12 +15,13 @@ namespace PhpMud\Skill;
 use PhpMud\Ability;
 use PhpMud\CreationGroup;
 use PhpMud\Enum\Disposition;
+use PhpMud\Enum\Job;
 use PhpMud\Enum\TargetType;
-use PhpMud\Job\Job;
+use PhpMud\Job\Job as JobInterface;
 
 class Dagger implements Ability, CreationGroup, Weapon
 {
-    public function getCreationPoints(Job $job): int
+    public function getCreationPoints(JobInterface $job): int
     {
         switch ((string)$job) {
             case Job::WARRIOR:
@@ -35,7 +36,7 @@ class Dagger implements Ability, CreationGroup, Weapon
         }
     }
 
-    public function getLevel(Job $job): int
+    public function getLevel(JobInterface $job): int
     {
         return 1;
     }

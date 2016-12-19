@@ -16,6 +16,7 @@ use PhpMud\Entity\Attributes;
 use PhpMud\Enum\Size;
 use PhpMud\Enum\Ability;
 use PhpMud\Enum\Vuln;
+use PhpMud\Enum\Job as JobEnum;
 use PhpMud\Job\Job;
 
 class Elf extends Race
@@ -55,14 +56,14 @@ class Elf extends Race
 
     public function getJobExpMultiplier(Job $job): int
     {
-        switch ($job) {
-            case Job::CLERIC:
+        switch ((string)$job) {
+            case JobEnum::CLERIC:
                 return 125;
-            case Job::MAGE:
+            case JobEnum::MAGE:
                 return 100;
-            case Job::THIEF:
+            case JobEnum::THIEF:
                 return 100;
-            case Job::WARRIOR:
+            case JobEnum::WARRIOR:
                 return 120;
             default:
                 return 100;

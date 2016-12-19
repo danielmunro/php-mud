@@ -15,6 +15,7 @@ namespace PhpMud\Job;
 use PhpMud\Entity\Attributes;
 use PhpMud\Skill\Dagger;
 use PhpMud\Skill\Weapon;
+use PhpMud\Enum\Job as JobEnum;
 
 class Thief implements Job
 {
@@ -36,6 +37,6 @@ class Thief implements Job
 
     public function __toString(): string
     {
-        return Job::THIEF;
+        return JobEnum::THIEF;
     }
 }

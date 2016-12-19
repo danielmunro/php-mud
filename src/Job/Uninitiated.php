@@ -15,6 +15,7 @@ namespace PhpMud\Job;
 use PhpMud\Entity\Attributes;
 use PhpMud\Skill\HandToHand;
 use PhpMud\Skill\Weapon;
+use PhpMud\Enum\Job as JobEnum;
 
 class Uninitiated implements Job
 {
@@ -30,6 +31,6 @@ class Uninitiated implements Job
 
     public function __toString(): string
     {
-        return Job::UNINITIATED;
+        return JobEnum::UNINITIATED;
     }
 }

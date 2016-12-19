@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud\Job;
 
 use PhpMud\Entity\Attributes;
+use PhpMud\Enum\Job as JobEnum;
 use PhpMud\Skill\Wand;
 use PhpMud\Skill\Weapon;
 
@@ -36,6 +37,6 @@ class Mage implements Job
 
     public function __toString(): string
     {
-        return Job::MAGE;
+        return JobEnum::MAGE;
     }
 }

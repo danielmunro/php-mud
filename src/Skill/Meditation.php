@@ -15,18 +15,19 @@ namespace PhpMud\Skill;
 use PhpMud\Ability;
 use PhpMud\CreationGroup;
 use PhpMud\Enum\Disposition;
+use PhpMud\Enum\Job;
 use PhpMud\Enum\TargetType;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
-use PhpMud\Job\Job;
+use PhpMud\Job\Job as JobInterface;
 
 class Meditation implements Ability, CreationGroup, Weapon
 {
-    public function getCreationPoints(Job $job): int
+    public function getCreationPoints(JobInterface $job): int
     {
         switch ((string)$job) {
             case Job::CLERIC:
-            case JOB::MAGE:
+            case Job::MAGE:
                 return 6;
             case Job::WARRIOR:
             case Job::THIEF:
@@ -35,11 +36,11 @@ class Meditation implements Ability, CreationGroup, Weapon
         }
     }
 
-    public function getLevel(Job $job): int
+    public function getLevel(JobInterface $job): int
     {
         switch ((string)$job) {
             case Job::CLERIC:
-            case JOB::MAGE:
+            case Job::MAGE:
                 return 5;
             case Job::WARRIOR:
             case Job::THIEF:

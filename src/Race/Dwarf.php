@@ -14,10 +14,11 @@ namespace PhpMud\Race;
 
 use PhpMud\Entity\Attributes;
 use PhpMud\Enum\EyeSight;
+use PhpMud\Enum\Job;
 use PhpMud\Enum\Size;
 use PhpMud\Enum\Ability;
 use PhpMud\Enum\Vuln;
-use PhpMud\Job\Job;
+use PhpMud\Job\Job as JobInterface;
 
 class Dwarf extends Race
 {
@@ -56,7 +57,7 @@ class Dwarf extends Race
         ];
     }
 
-    public function getJobExpMultiplier(Job $job): int
+    public function getJobExpMultiplier(JobInterface $job): int
     {
         switch ($job) {
             case Job::CLERIC:

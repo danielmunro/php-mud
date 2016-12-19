@@ -17,12 +17,6 @@ use PhpMud\Skill\Weapon;
 
 interface Job
 {
-    const CLERIC = 'cleric';
-    const MAGE = 'mage';
-    const THIEF = 'thief';
-    const WARRIOR = 'warrior';
-    const UNINITIATED = 'uninitiated';
-
     public function getDefaultWeapon(): Weapon;
 
     public function getStartingAttributes(): Attributes;
