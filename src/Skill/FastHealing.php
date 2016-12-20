@@ -19,8 +19,18 @@ use PhpMud\Enum\Job;
 use PhpMud\Enum\TargetType;
 use PhpMud\Job\Job as JobInterface;
 
-class FastHealing implements Ability, CreationGroup
+class FastHealing implements Ability, Skill, CreationGroup
 {
+    public function getAvailableJobs(): array
+    {
+        return [
+            Job::MAGE(),
+            Job::CLERIC(),
+            Job::WARRIOR(),
+            Job::THIEF()
+        ];
+    }
+
     public function getCreationPoints(JobInterface $job): int
     {
         switch ((string)$job) {

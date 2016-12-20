@@ -21,8 +21,18 @@ use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Job\Job as JobInterface;
 
-class Dodge implements Ability, CreationGroup
+class Dodge implements Ability, Skill, CreationGroup
 {
+    public function getAvailableJobs(): array
+    {
+        return [
+            Job::MAGE(),
+            Job::CLERIC(),
+            Job::WARRIOR(),
+            Job::THIEF()
+        ];
+    }
+
     public function getCreationPoints(JobInterface $job): int
     {
         switch ((string)$job) {

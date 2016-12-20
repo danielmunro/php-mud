@@ -19,6 +19,7 @@ use PhpMud\Skill\Berserk;
 use PhpMud\Skill\Dagger;
 use PhpMud\Skill\Dodge;
 use PhpMud\Skill\FastHealing;
+use PhpMud\Skill\HandToHand;
 use PhpMud\Skill\Mace;
 use PhpMud\Skill\Meditation;
 use PhpMud\Skill\Sneak;
@@ -31,6 +32,7 @@ use PhpMud\Skill\Wand;
  * @method static DAGGER()
  * @method static DODGE()
  * @method static FAST_HEALING()
+ * @method static HAND_TO_HAND()
  * @method static MACE()
  * @method static MEDITATION()
  * @method static SNEAK()
@@ -44,6 +46,7 @@ class Ability extends Enum
     const DAGGER = 'dagger';
     const DODGE = 'dodge';
     const FAST_HEALING = 'fast healing';
+    const HAND_TO_HAND = 'hand to hand';
     const MACE = 'mace';
     const MEDITATION = 'meditation';
     const SNEAK = 'sneak';
@@ -63,6 +66,8 @@ class Ability extends Enum
                 return new Dodge();
             case self::FAST_HEALING:
                 return new FastHealing();
+            case self::HAND_TO_HAND:
+                return new HandToHand();
             case self::MACE:
                 return new Mace();
             case self::MEDITATION:

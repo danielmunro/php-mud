@@ -10,16 +10,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace PhpMud\Job;
+namespace PhpMud\Skill;
 
-use PhpMud\Entity\Attributes;
-use PhpMud\Enum\Ability;
-
-interface Job
+interface Skill
 {
-    public function getDefaultWeapon(): Ability;
-
-    public function getStartingAttributes(): Attributes;
-
-    public function __toString(): string;
 }

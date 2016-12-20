@@ -21,5 +21,7 @@ interface Ability
 
     public function getTargetType(): TargetType;
 
+    public function getAvailableJobs(): array;
+
     public function __toString(): string;
 }

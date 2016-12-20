@@ -15,14 +15,22 @@ namespace PhpMud\Skill;
 use PhpMud\Ability;
 use PhpMud\CreationGroup;
 use PhpMud\Enum\Disposition;
+use PhpMud\Enum\Job;
 use PhpMud\Enum\TargetType;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
-use PhpMud\Job\Job;
+use PhpMud\Job\Job as JobInterface;
 
-class Sneak implements Ability, CreationGroup
+class Sneak implements Ability, Skill, CreationGroup
 {
-    public function getCreationPoints(Job $job): int
+    public function getAvailableJobs(): array
+    {
+        return [
+            Job::THIEF()
+        ];
+    }
+
+    public function getCreationPoints(JobInterface $job): int
     {
         switch ((string)$job) {
             case Job::THIEF:
@@ -33,7 +41,7 @@ class Sneak implements Ability, CreationGroup
         }
     }
 
-    public function getLevel(Job $job): int
+    public function getLevel(JobInterface $job): int
     {
         switch ((string)$job) {
             case Job::THIEF:

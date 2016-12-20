@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud\Job;
 
 use PhpMud\Entity\Attributes;
+use PhpMud\Enum\Ability;
 use PhpMud\Enum\Job as JobEnum;
 use PhpMud\Skill\Mace;
 use PhpMud\Skill\Weapon;
@@ -30,9 +31,9 @@ class Cleric implements Job
         ]);
     }
 
-    public function getDefaultWeapon(): Weapon
+    public function getDefaultWeapon(): Ability
     {
-        return new Mace();
+        return Ability::MACE();
     }
 
     public function __toString(): string

@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud\Job;
 
 use PhpMud\Entity\Attributes;
+use PhpMud\Enum\Ability;
 use PhpMud\Skill\Sword;
 use PhpMud\Skill\Weapon;
 use PhpMud\Enum\Job as JobEnum;
@@ -29,9 +30,9 @@ class Warrior implements Job
         ]);
     }
 
-    public function getDefaultWeapon(): Weapon
+    public function getDefaultWeapon(): Ability
     {
-        return new Sword();
+        return Ability::SWORD();
     }
 
     public function __toString(): string

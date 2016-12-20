@@ -19,8 +19,17 @@ use PhpMud\Enum\Job;
 use PhpMud\Enum\TargetType;
 use PhpMud\Job\Job as JobInterface;
 
-class Sword implements Ability, CreationGroup, Weapon
+class Sword implements Ability, Skill, CreationGroup, Weapon
 {
+    public function getAvailableJobs(): array
+    {
+        return [
+            Job::MAGE(),
+            Job::CLERIC(),
+            Job::WARRIOR(),
+            Job::THIEF()
+        ];
+    }
     public function getCreationPoints(JobInterface $job): int
     {
         switch ((string)$job) {

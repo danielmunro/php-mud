@@ -37,6 +37,11 @@ class Ability
         $this->level = $level;
     }
 
+    public function getAbility(): AbilityEnum
+    {
+        return $this->ability;
+    }
+
     public function getLevel(): int
     {
         return $this->level;

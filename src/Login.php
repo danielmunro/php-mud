@@ -24,13 +24,10 @@ use PhpMud\ServiceProvider\Command\HelpCommand;
 class Login
 {
     const STATE_NAME = 'name';
-
     const STATE_RACE = 'race';
-
     const STATE_JOB = 'job';
-
     const STATE_GENDER = 'gender';
-
+    const STATE_CUSTOMIZE = 'customize';
     const STATE_COMPLETE = 'complete';
 
     /**
@@ -115,7 +112,7 @@ class Login
                 }
                 break;
             case static::STATE_GENDER:
-                if ($input->getCommand()) {
+                if ((string)$input) {
                     $gender = Gender::partialSearch((string)$input);
                     if ($gender) {
                         $this->mob->setGender($gender);
@@ -127,10 +124,20 @@ class Login
                     $input->getClient()->write('Not understood, try again (female/male/neutral) > ');
                     break;
                 }
-
-                $input->getClient()->write("Done.\n");
-                $this->state = static::STATE_COMPLETE;
+                $input->getClient()->write('Ok. Would you like to customize? (y/n) > ');
+                $this->state = static::STATE_CUSTOMIZE;
                 break;
+            case static::STATE_CUSTOMIZE:
+                if (stripos('yes', (string)$input) === 0) {
+                    $input->getClient()->write("Not implemented.\n");
+                } elseif (stripos('no', (string)$input) === 0) {
+                    $input->getClient()->write("Done.\n");
+                } elseif (!(string)$input) {
+                    $input->getClient()->write('Please answer yes or no.');
+                    break;
+                }
+
+                $this->state = static::STATE_COMPLETE;
         }
 
         return $this->state;

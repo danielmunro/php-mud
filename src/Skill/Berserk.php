@@ -15,13 +15,22 @@ namespace PhpMud\Skill;
 use PhpMud\Ability;
 use PhpMud\CreationGroup;
 use PhpMud\Enum\Disposition;
+use PhpMud\Enum\Job as JobEnum;
 use PhpMud\Enum\TargetType;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Job\Job;
 
-class Berserk implements Ability, CreationGroup
+class Berserk implements Ability, Skill, CreationGroup
 {
+    public function getAvailableJobs(): array
+    {
+        return [
+            JobEnum::WARRIOR(),
+            JobEnum::THIEF()
+        ];
+    }
+
     public function getCreationPoints(Job $job): int
     {
         return 5;

@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud\Job;
 
 use PhpMud\Entity\Attributes;
+use PhpMud\Enum\Ability;
 use PhpMud\Skill\HandToHand;
 use PhpMud\Skill\Weapon;
 use PhpMud\Enum\Job as JobEnum;
@@ -24,9 +25,9 @@ class Uninitiated implements Job
         return new Attributes();
     }
 
-    public function getDefaultWeapon(): Weapon
+    public function getDefaultWeapon(): Ability
     {
-        return new HandToHand();
+        return Ability::HAND_TO_HAND();
     }
 
     public function __toString(): string

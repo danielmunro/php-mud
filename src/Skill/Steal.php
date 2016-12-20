@@ -21,42 +21,22 @@ use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Job\Job as JobInterface;
 
-class Meditation implements Ability, Skill, CreationGroup, Weapon
+class Steal implements Ability, Skill, CreationGroup
 {
     public function getAvailableJobs(): array
     {
         return [
-            Job::MAGE(),
-            Job::CLERIC(),
-            Job::WARRIOR(),
             Job::THIEF()
         ];
     }
-
     public function getCreationPoints(JobInterface $job): int
     {
-        switch ((string)$job) {
-            case Job::CLERIC:
-            case Job::MAGE:
-                return 6;
-            case Job::WARRIOR:
-            case Job::THIEF:
-            default:
-                return 15;
-        }
+        return 4;
     }
 
     public function getLevel(JobInterface $job): int
     {
-        switch ((string)$job) {
-            case Job::CLERIC:
-            case Job::MAGE:
-                return 5;
-            case Job::WARRIOR:
-            case Job::THIEF:
-            default:
-                return 8;
-        }
+        return 5;
     }
 
     public function perform(Input $input): Output
@@ -66,7 +46,7 @@ class Meditation implements Ability, Skill, CreationGroup, Weapon
 
     public function getMinimumDisposition(): Disposition
     {
-        return Disposition::SLEEPING();
+        return Disposition::FIGHTING();
     }
 
     public function getTargetType(): TargetType
@@ -76,6 +56,6 @@ class Meditation implements Ability, Skill, CreationGroup, Weapon
 
     public function __toString(): string
     {
-        return 'meditation';
+        return 'sneak';
     }
 }

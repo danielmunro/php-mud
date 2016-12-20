@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use PhpMud\Client;
 use PhpMud\Enum\Disposition;
 use PhpMud\Enum\Gender;
@@ -176,7 +177,7 @@ class Mob implements Noun
         each(
             $this->race->getBonusSkills(),
             function (\PhpMud\Enum\Ability $ability) {
-                $this->abilities->add(new \PhpMud\Entity\Ability($this, $ability, 1));
+                $this->abilities->add(new Ability($this, $ability, 1));
             }
         );
     }
@@ -195,6 +196,11 @@ class Mob implements Noun
         }
 
         return true;
+    }
+
+    public function getAbilities(): Collection
+    {
+        return $this->abilities;
     }
 
     public function getLook(): string
@@ -615,7 +621,12 @@ class Mob implements Noun
 
     public function setJob(Job $job)
     {
+        if (!$this->job instanceof Uninitiated) {
+            throw new \RuntimeException('Cannot change jobs');
+        }
+
         $this->job = $job;
+        $this->abilities->add(new Ability($this, $job->getDefaultWeapon(), 1));
     }
 
     /**

@@ -33,6 +33,7 @@ use PhpMud\ServiceProvider\Command\RemoveCommand;
 use PhpMud\ServiceProvider\Command\ScoreCommand;
 use PhpMud\ServiceProvider\Command\SellCommand;
 use PhpMud\ServiceProvider\Command\SitCommand;
+use PhpMud\ServiceProvider\Command\SkillsCommand;
 use PhpMud\ServiceProvider\Command\SleepCommand;
 use PhpMud\ServiceProvider\Command\TimeCommand;
 use PhpMud\ServiceProvider\Command\WakeCommand;
@@ -78,6 +79,7 @@ class Commands
         $this->container->register(new SellCommand());
         $this->container->register(new HelpCommand());
         $this->container->register(new LevelCommand());
+        $this->container->register(new SkillsCommand());
     }
 
     public function execute(Input $input): Output

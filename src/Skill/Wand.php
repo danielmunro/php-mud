@@ -15,11 +15,22 @@ namespace PhpMud\Skill;
 use PhpMud\Ability;
 use PhpMud\CreationGroup;
 use PhpMud\Enum\Disposition;
+use PhpMud\Enum\Job;
 use PhpMud\Enum\TargetType;
 use PhpMud\Job\Job as JobInterface;
 
-class Wand implements Ability, CreationGroup, Weapon
+class Wand implements Ability, Skill, CreationGroup, Weapon
 {
+    public function getAvailableJobs(): array
+    {
+        return [
+            Job::MAGE(),
+            Job::CLERIC(),
+            Job::WARRIOR(),
+            Job::THIEF()
+        ];
+    }
+
     public function getCreationPoints(JobInterface $job): int
     {
         switch ((string)$job) {

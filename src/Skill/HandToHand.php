@@ -19,8 +19,18 @@ use PhpMud\Enum\Job;
 use PhpMud\Enum\TargetType;
 use PhpMud\Job\Job as JobInterface;
 
-class HandToHand implements Ability, CreationGroup, Weapon
+class HandToHand implements Ability, Skill, CreationGroup, Weapon
 {
+    public function getAvailableJobs(): array
+    {
+        return [
+            Job::MAGE(),
+            Job::CLERIC(),
+            Job::WARRIOR(),
+            Job::THIEF()
+        ];
+    }
+
     public function getCreationPoints(JobInterface $job): int
     {
         switch ((string)$job) {

@@ -19,8 +19,18 @@ use PhpMud\Enum\Job;
 use PhpMud\Enum\TargetType;
 use PhpMud\Job\Job as JobInterface;
 
-class Mace implements Ability, CreationGroup, Weapon
+class Mace implements Ability, Skill, CreationGroup, Weapon
 {
+    public function getAvailableJobs(): array
+    {
+        return [
+            Job::MAGE(),
+            Job::CLERIC(),
+            Job::WARRIOR(),
+            Job::THIEF()
+        ];
+    }
+
     public function getCreationPoints(JobInterface $job): int
     {
         switch ((string)$job) {
