@@ -83,7 +83,7 @@ class Server
 
     public function listen(string $ip, int $port)
     {
-        $this->logger->info('mud is up and running', [
+        $this->logger->info('php-mud is up and running', [
             'start' => new \DateTime(),
             'port' => $port
         ]);
