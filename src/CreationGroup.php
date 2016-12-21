@@ -18,5 +18,5 @@ interface CreationGroup
 {
     public function getCreationPoints(Job $job): int;
 
-    public function getLevel(Job $job): int;
+    public function getAvailableJobs(): array;
 }

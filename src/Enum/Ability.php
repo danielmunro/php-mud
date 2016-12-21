@@ -38,9 +38,16 @@ use PhpMud\Skill\Wand;
  * @method static SNEAK()
  * @method static SWORD()
  * @method static WAND()
+ *
+ * @method static CURE_LIGHT()
+ *
+ * @method static MAGIC_MISSILE()
  */
 class Ability extends Enum
 {
+    /**
+     * Skills
+     */
     const BASH = 'bash';
     const BERSERK = 'berserk';
     const DAGGER = 'dagger';
@@ -52,6 +59,12 @@ class Ability extends Enum
     const SNEAK = 'sneak';
     const SWORD = 'sword';
     const WAND = 'wand';
+
+    /**
+     * Spells
+     */
+    const CURE_LIGHT = 'cure light';
+    const MAGIC_MISSILE = 'magic missile';
 
     public static function fromName(string $name): AbilityInterface
     {
@@ -78,6 +91,10 @@ class Ability extends Enum
                 return new Sword();
             case self::WAND:
                 return new Wand();
+            case self::CURE_LIGHT:
+                //return new Cure
+            case self::MAGIC_MISSILE:
+                //
             default:
                 throw new \UnexpectedValueException(sprintf('unknown skill %s', $name));
         }

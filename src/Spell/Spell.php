@@ -10,9 +10,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace PhpMud\SpellGroup;
+namespace PhpMud\Spell;
 
-interface SpellGroup
+interface Spell
 {
-    public function getSpells(): array;
 }

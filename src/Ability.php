@@ -14,6 +14,7 @@ namespace PhpMud;
 
 use PhpMud\Enum\Disposition;
 use PhpMud\Enum\TargetType;
+use PhpMud\Job\Job;
 
 interface Ability
 {
@@ -21,7 +22,7 @@ interface Ability
 
     public function getTargetType(): TargetType;
 
-    public function getAvailableJobs(): array;
+    public function getLevel(Job $job): int;
 
     public function __toString(): string;
 }

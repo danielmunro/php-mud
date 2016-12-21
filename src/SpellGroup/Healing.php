@@ -12,7 +12,14 @@ declare(strict_types=1);
 
 namespace PhpMud\SpellGroup;
 
-interface SpellGroup
+use PhpMud\Spell\CureLight;
+
+class Healing implements SpellGroup
 {
-    public function getSpells(): array;
+    public function getSpells(): array
+    {
+        return [
+            new CureLight()
+        ];
+    }
 }

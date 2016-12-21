@@ -98,15 +98,15 @@ $firstRoom = $area->addRoom(
     ->addRoom(
         new West(),
         room(
-            'Merriarmour Arms and Armour',
-            '  A cramped shop is filled with cheap but sturdy training equipment. A red-hot forge
-and workshop fill the back half of the already small space. The silhouette of a dwarf
+            'Arms and Armour',
+            '  A cramped armory is filled with cheap but sturdy training equipment. A red-hot forge
+and workshop consume the back half of the already small space. A silhouette of a dwarf
 can be seen in front of the forge, hammering out new weapons and armor.'
         )
         ->setArea($area->getInstance())
         ->addMob(
             mob(
-                'Mo Merriarmour',
+                'A dwarven armorer',
                 new Dwarf()
             )
             ->setLook('A stout dwarf totters around, stinking up the place.')
