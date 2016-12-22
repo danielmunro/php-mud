@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace PhpMud\Skill;
 
-use PhpMud\Ability;
+use PhpMud\Ability\Ability;
 use PhpMud\CreationGroup;
 use PhpMud\Enum\Disposition;
 use PhpMud\Enum\Job;
@@ -21,7 +21,7 @@ use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Job\Job as JobInterface;
 
-class Meditation implements Ability, Skill, CreationGroup, Weapon
+class Meditation implements Ability, Skill, CreationGroup
 {
     public function getAvailableJobs(): array
     {
@@ -76,6 +76,6 @@ class Meditation implements Ability, Skill, CreationGroup, Weapon
 
     public function __toString(): string
     {
-        return 'meditation';
+        return \PhpMud\Enum\Ability::MEDITATION;
     }
 }

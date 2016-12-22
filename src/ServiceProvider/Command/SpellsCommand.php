@@ -8,26 +8,26 @@ use PhpMud\Entity\Ability;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Server;
-use PhpMud\Skill\Skill;
+use PhpMud\Spell\Spell;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use function Functional\reduce_left;
 
-class SkillsCommand implements ServiceProviderInterface
+class SpellsCommand implements ServiceProviderInterface
 {
     public function register(Container $pimple)
     {
-        $pimple['skills'] = $pimple->protect(function () {
+        $pimple['spells'] = $pimple->protect(function () {
             return new class() implements Command
             {
                 public function execute(Server $server, Input $input): Output
                 {
                     return new Output(
                         sprintf(
-                            "Your skills:\n%s",
+                            "Your spells:\n%s",
                             reduce_left(
                                 $input->getMob()->getAbilities()->filter(function (Ability $ability) {
-                                    return $ability instanceof Skill;
+                                    return $ability instanceof Spell;
                                 })->toArray(),
                                 function (Ability $ability, int $index, array $collection, string $reduction) {
                                     return sprintf(

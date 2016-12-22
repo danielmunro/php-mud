@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace PhpMud\Skill;
 
-use PhpMud\Ability;
+use PhpMud\Ability\Ability;
 use PhpMud\CreationGroup;
 use PhpMud\Enum\Disposition;
 use PhpMud\Enum\Job;
@@ -63,6 +63,6 @@ class Wand implements Ability, Skill, CreationGroup, Weapon
 
     public function __toString(): string
     {
-        return 'wand';
+        return \PhpMud\Enum\Ability::WAND;
     }
 }

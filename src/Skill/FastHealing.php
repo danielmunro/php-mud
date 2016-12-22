@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace PhpMud\Skill;
 
-use PhpMud\Ability;
+use PhpMud\Ability\Ability;
 use PhpMud\CreationGroup;
 use PhpMud\Enum\Disposition;
 use PhpMud\Enum\Job;
@@ -73,6 +73,6 @@ class FastHealing implements Ability, Skill, CreationGroup
 
     public function __toString(): string
     {
-        return 'fast healing';
+        return \PhpMud\Enum\Ability::FAST_HEALING;
     }
 }

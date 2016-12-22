@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace PhpMud\Spell;
 
-use PhpMud\Ability;
+use PhpMud\Ability\Ability;
 use PhpMud\Enum\Disposition;
 use PhpMud\Enum\TargetType;
 use PhpMud\Job\Job;

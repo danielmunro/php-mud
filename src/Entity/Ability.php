@@ -33,6 +33,7 @@ class Ability
     public function __construct(Mob $mob, AbilityEnum $ability, int $level)
     {
         $this->mob = $mob;
+        // @todo add enum property and change ability to instance of ability class
         $this->ability = $ability;
         $this->level = $level;
     }

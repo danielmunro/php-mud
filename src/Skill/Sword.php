@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace PhpMud\Skill;
 
-use PhpMud\Ability;
+use PhpMud\Ability\Ability;
 use PhpMud\CreationGroup;
 use PhpMud\Enum\Disposition;
 use PhpMud\Enum\Job;
@@ -62,6 +62,6 @@ class Sword implements Ability, Skill, CreationGroup, Weapon
 
     public function __toString(): string
     {
-        return 'sword';
+        return \PhpMud\Enum\Ability::SWORD;
     }
 }
