@@ -34,6 +34,11 @@ class Sleep implements Spell, Ability
         return 1;
     }
 
+    public function improveDifficultyMultiplier(): int
+    {
+        return 1;
+    }
+
     public function __toString(): string
     {
         return \PhpMud\Enum\Ability::SLEEP;
