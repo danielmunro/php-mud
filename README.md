@@ -15,6 +15,16 @@ $ git clone https://github.com/danielmunro/php-mud.git
 $ cd php-mud
 ```
 
+Vagrant up:
+
+```
+$ vagrant up
+...
+$ vagrant ssh
+...
+$ cd /vagrant
+```
+
 Create world fixtures:
 
 ```
