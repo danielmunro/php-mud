@@ -43,6 +43,7 @@ use PhpMud\IO\Command\WearCommand;
 use PhpMud\IO\Command\WeatherCommand;
 use Pimple\Container;
 use function Functional\first;
+use function Functional\with;
 
 class Commands
 {
@@ -86,7 +87,15 @@ class Commands
 
     public function execute(Input $input): Output
     {
-        return $this->parse($input)->execute($this->server, $input);
+        return
+            $input->getCommand() ?
+            $this->parse($input)->execute($this->server, $input) :
+            new class implements Command {
+                public function execute(Server $server, Input $input): Output
+                {
+                    return new Output('');
+                }
+            };
     }
 
     /**
@@ -96,79 +105,83 @@ class Commands
      */
     private function parse(Input $input): Command
     {
-        /**
-         * First, see if the input matches a command.
-         */
-        if (!$input->getCommand()) {
-            return new class implements Command {
-                public function execute(Server $server, Input $input): Output
-                {
-                    return new Output('');
+        return
+            /**
+             * First check for a command
+             */
+            with(
+                first($this->container->keys(), function ($key) use ($input) {
+                    return strpos($key, $input->getCommand()) === 0;
+                }),
+                function (string $command) {
+                    return $this->container[$command]();
                 }
-            };
-        }
+            ) ??
 
-        $command = first($this->container->keys(), function ($key) use ($input) {
-            return strpos($key, $input->getCommand()) === 0;
-        });
-
-        if ($command) {
-            return $this->container[$command]();
-        }
-
-        /**
-         * Try parsing for an ability.
-         */
-        /** @var Ability $ability */
-        $ability = first(
-            $input->getMob()->getAbilities()->toArray(),
-            function (Ability $ability) use ($input) {
-                return $ability->getAbility() instanceof Performable &&
-                    $input->isAbilityMatch($ability);
-            }
-        );
-
-        if ($ability) {
-            if (!$input->getMob()->getDisposition()->satisfiesMinimumDisposition(
-                $ability->getAbility()->getMinimumDisposition()
-            ))
-            {
-                return new class implements Command {
-                    public function execute(Server $server, Input $input): Output
-                    {
-                        return new Output(
-                            sprintf(
-                                'No way! You are %s.',
-                                $input->getMob()->getDisposition()
-                            )
-                        );
+            /**
+             * Next check for a performable ability
+             */
+            with(
+                first(
+                    $input->getMob()->getAbilities()->toArray(),
+                    function (Ability $ability) use ($input) {
+                        return $ability->getAbility() instanceof Performable &&
+                            $input->isAbilityMatch($ability);
                     }
-                };
-            }
+                ),
+                function (Ability $ability) use ($input) {
+                    if (!$input->getMob()->getDisposition()->satisfiesMinimumDisposition(
+                        $ability->getAbility()->getMinimumDisposition()
+                    ))
+                    {
+                        return $this->dispositionCheckFailCommand();
+                    }
 
-            return new class($ability) implements Command {
+                    return new class($ability) implements Command {
 
-                protected $ability;
+                        /** @var Ability $ability */
+                        protected $ability;
 
-                public function __construct($ability)
-                {
-                    $this->ability = $ability;
+                        public function __construct($ability)
+                        {
+                            $this->ability = $ability;
+                        }
+
+                        public function execute(Server $server, Input $input): Output
+                        {
+                            return $this->ability->getAbility()->perform($input);
+                        }
+                    };
                 }
+            ) ??
 
-                public function execute(Server $server, Input $input): Output
-                {
-                    return $this->ability->getAbility()->perform($input);
-                }
-            };
-        }
+            /**
+             * Finally, give up
+             */
+            $this->unknownInputCommand();
+    }
 
-        /**
-         * Unknown input
-         */
+    private function unknownInputCommand(): Command
+    {
         return new class implements Command {
             public function execute(Server $server, Input $input): Output
             {
                 return new Output('What was that?');
+            }
+        };
+    }
+
+    private function dispositionCheckFailCommand(): Command
+    {
+        return new class implements Command {
+            public function execute(Server $server, Input $input): Output
+            {
+                return new Output(
+                    sprintf(
+                        'No way! You are %s.',
+                        $input->getMob()->getDisposition()
+                    )
+                );
             }
         };
     }
