@@ -13,6 +13,9 @@ declare(strict_types=1);
 namespace PhpMud\IO;
 
 use PhpMud\Command;
+use PhpMud\Entity\Ability;
+use PhpMud\Noun;
+use PhpMud\Performable;
 use PhpMud\Server;
 use PhpMud\ServiceProvider\Command\BuyCommand;
 use PhpMud\ServiceProvider\Command\DropCommand;
@@ -98,7 +101,7 @@ class Commands
             return new class implements Command {
                 public function execute(Server $server, Input $input): Output
                 {
-                    return new Output(' ');
+                    return new Output('');
                 }
             };
         }
@@ -111,10 +114,50 @@ class Commands
             return $this->container[$command]();
         }
 
+        /** @var Ability $ability */
+        $ability = first(
+            $input->getMob()->getAbilities()->toArray(),
+            function (Ability $ability) use ($input) {
+                return $ability->getAbility() instanceof Performable &&
+                    $input->isAbilityMatch($ability);
+            }
+        );
+
+        if ($ability) {
+            if (!$input->getMob()->getDisposition()->satisfiesMinimumDisposition(
+                $ability->getAbility()->getMinimumDisposition()
+            ))
+            {
+                return new class implements Command {
+                    public function execute(Server $server, Input $input): Output
+                    {
+                        return new Output(
+                            sprintf(
+                                'No way! You are %s.',
+                                $input->getMob()->getDisposition()
+                            )
+                        );
+                    }
+                };
+            }
+
+            return new class($ability) implements Command {
+
+                protected $ability;
+
+                public function __construct($ability)
+                {
+                    $this->ability = $ability;
+                }
+
+                public function execute(Server $server, Input $input): Output
+                {
+                    return $this->ability->getAbility()->perform($input);
+                }
+            };
+        }
+
         return new class implements Command {
-            /**
-             * {@inheritdoc}
-             */
             public function execute(Server $server, Input $input): Output
             {
                 return new Output('What was that?');

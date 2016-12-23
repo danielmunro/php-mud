@@ -27,15 +27,16 @@ class SkillsCommand implements ServiceProviderInterface
                             "Your skills:\n%s",
                             reduce_left(
                                 $input->getMob()->getAbilities()->filter(function (Ability $ability) {
-                                    return $ability instanceof Skill;
+                                    return $ability->getAbility() instanceof Skill;
                                 })->toArray(),
                                 function (Ability $ability, int $index, array $collection, string $reduction) {
                                     return sprintf(
                                         "%s\n%s",
                                         $reduction,
-                                        (string)$ability->getAbility()
+                                        $ability->getName()
                                     );
-                                }
+                                },
+                                ''
                             )
                         )
                     );

@@ -33,7 +33,7 @@ class SpellsCommand implements ServiceProviderInterface
                                     return sprintf(
                                         "%s\n%s",
                                         $reduction,
-                                        (string)$ability->getAbility()
+                                        $ability->getName()
                                     );
                                 }
                             )

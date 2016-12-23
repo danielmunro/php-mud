@@ -11,7 +11,7 @@ class InputTest extends CommandTest
     public function testInput()
     {
         $client = $this->getMockClient();
-        $input = new Input($client, 'roomfact w');
+        $input = new Input('roomfact w', $client);
 
         static::assertEquals(
             [

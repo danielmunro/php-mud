@@ -20,8 +20,10 @@ use PhpMud\Enum\TargetType;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Job\Job;
+use PhpMud\Noun;
+use PhpMud\Performable;
 
-class Bash implements Ability, Skill, CreationGroup
+class Bash implements Ability, Skill, CreationGroup, Performable, Noun
 {
     public function getAvailableJobs(): array
     {
@@ -42,7 +44,14 @@ class Bash implements Ability, Skill, CreationGroup
 
     public function perform(Input $input): Output
     {
-        return new Output('');
+        $target = $input->getSubject();
+        $attacker = $input->getMob();
+
+        //if (!$target && $attacker->getFight()->getTarget()) {
+            // success
+        //}
+
+        return new Output('You bash!');
     }
 
     public function getMinimumDisposition(): Disposition
@@ -53,6 +62,13 @@ class Bash implements Ability, Skill, CreationGroup
     public function getTargetType(): TargetType
     {
         return TargetType::NONE();
+    }
+
+    public function getIdentifiers(): array
+    {
+        return [
+            $this->__toString()
+        ];
     }
 
     public function __toString(): string

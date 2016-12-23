@@ -72,7 +72,7 @@ class Client
 
     public function input(string $input): Input
     {
-        return new Input($this, trim($input));
+        return new Input(trim($input), $this);
     }
 
     public function prompt()

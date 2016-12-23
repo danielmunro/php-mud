@@ -13,12 +13,14 @@ declare(strict_types=1);
 namespace PhpMud\IO;
 
 use PhpMud\Client;
+use PhpMud\Entity\Ability;
 use PhpMud\Entity\Mob;
 use PhpMud\Entity\Room;
 use function Functional\tail;
 use function Functional\select;
 use PhpMud\Enum\Disposition;
 use PhpMud\Noun;
+use PhpMud\Performable;
 
 class Input
 {
@@ -42,7 +44,7 @@ class Input
      */
     protected $subject;
 
-    public function __construct(Client $client, string $input)
+    public function __construct(string $input, Client $client = null)
     {
         $input = trim($input);
         $this->client = $client;
@@ -52,7 +54,7 @@ class Input
         $this->input = $input;
     }
 
-    public function getClient(): Client
+    public function getClient()
     {
         return $this->client;
     }
@@ -70,6 +72,11 @@ class Input
     public function getRoom(): Room
     {
         return $this->client->getMob()->getRoom();
+    }
+
+    public function isAbilityMatch(Ability $ability): bool
+    {
+         return strpos($ability->getName(), $this->input) === 0;
     }
 
     public function isSubjectMatch(Noun $noun): bool

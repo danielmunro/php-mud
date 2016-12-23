@@ -66,7 +66,7 @@ class MoveCommand implements ServiceProviderInterface
 
                 $mob->setRoom($targetDirection->getTargetRoom());
 
-                return $server->getCommands()->execute(new Input($input->getClient(), 'look'));
+                return $server->getCommands()->execute(new Input('look', $input->getClient()));
             }
         };
     }

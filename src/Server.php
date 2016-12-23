@@ -118,7 +118,7 @@ class Server
         $connection->on(
             Client::EVENT_DATA,
             function (string $input) use ($client, $login, $connection) {
-                if ($login->next(new Input($client, $input)) === Login::STATE_COMPLETE) {
+                if ($login->next(new Input($input, $client)) === Login::STATE_COMPLETE) {
                     $client->setMob($login->getMob());
                     $connection->emit(Server::EVENT_LOGIN, ['mob' => $login->getMob()]);
                     $connection->removeAllListeners();

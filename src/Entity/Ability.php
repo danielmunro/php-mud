@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace PhpMud\Entity;
 
+use PhpMud\Ability\AbilityFactory;
 use PhpMud\Enum\Ability as AbilityEnum;
 
 /**
@@ -25,20 +26,31 @@ class Ability
     protected $mob;
 
     /** @Column(type="string") */
-    protected $ability;
+    protected $name;
 
     /** @Column(type="integer") */
     protected $level;
 
+    /** @var AbilityEnum */
+    protected $enum;
+
+    /** @var \PhpMud\Ability\Ability */
+    protected $ability;
+
     public function __construct(Mob $mob, AbilityEnum $ability, int $level)
     {
         $this->mob = $mob;
-        // @todo add enum property and change ability to instance of ability class
-        $this->ability = $ability;
+        $this->name = $ability->getValue();
         $this->level = $level;
+        $this->postLoad($ability);
     }
 
-    public function getAbility(): AbilityEnum
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getAbility(): \PhpMud\Ability\Ability
     {
         return $this->ability;
     }
@@ -56,16 +68,12 @@ class Ability
      * @PostLoad
      * @PostPersist
      */
-    public function postLoad()
+    public function postLoad(AbilityEnum $ability = null)
     {
-        $this->ability = AbilityEnum::fromName((string)$this->ability);
-    }
+        if (!$ability) {
+            $ability = new AbilityEnum($this->name);
+        }
 
-    /**
-     * @PrePersist
-     */
-    public function prePersist()
-    {
-        $this->ability = (string)$this->ability;
+        $this->ability = AbilityFactory::newInstance($ability);
     }
 }

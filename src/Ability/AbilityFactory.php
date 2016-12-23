@@ -30,7 +30,7 @@ use PhpMud\Spell\MagicMissile;
 use PhpMud\Spell\Poison;
 use PhpMud\Spell\Sanctuary;
 
-class AbilityFactory
+abstract class AbilityFactory
 {
     private static $map = [
         AbilityEnum::BASH => Bash::class,

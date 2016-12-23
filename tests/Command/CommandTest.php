@@ -17,7 +17,7 @@ abstract class CommandTest extends \PHPUnit_Framework_TestCase
         $client = $this->getMockBuilder(Client::class)->disableOriginalConstructor()->getMock();
         $client->expects($this->any())->method('getMob')->willReturn(new Mob('foo', new Human()));
         $client->expects($this->any())->method('input')->willReturnCallback(function ($arg) use ($client) {
-            return new Input($client, $arg);
+            return new Input($arg, $client);
         });
 
         return $client;

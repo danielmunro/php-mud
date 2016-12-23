@@ -20,8 +20,9 @@ use PhpMud\Enum\TargetType;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Job\Job;
+use PhpMud\Noun;
 
-class Berserk implements Ability, Skill, CreationGroup
+class Berserk implements Ability, Skill, CreationGroup, Noun
 {
     public function getAvailableJobs(): array
     {
@@ -54,6 +55,13 @@ class Berserk implements Ability, Skill, CreationGroup
     public function getTargetType(): TargetType
     {
         return TargetType::NONE();
+    }
+
+    public function getIdentifiers(): array
+    {
+        return [
+            $this->__toString()
+        ];
     }
 
     public function __toString(): string
