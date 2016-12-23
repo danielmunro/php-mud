@@ -24,5 +24,7 @@ interface Ability
 
     public function getLevel(Job $job): int;
 
+    public function improveDifficultyMultiplier(): int;
+
     public function __toString(): string;
 }

@@ -51,6 +51,11 @@ class Client
         $this->buffer[] = $buffer;
     }
 
+    public function addDelay(int $delay)
+    {
+        $this->delay += $delay;
+    }
+
     public function readBufferIfNotDelayed()
     {
         if (!$this->delay && $this->buffer) {

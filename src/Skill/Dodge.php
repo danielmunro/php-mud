@@ -61,6 +61,11 @@ class Dodge implements Ability, Skill, CreationGroup
         }
     }
 
+    public function improveDifficultyMultiplier(): int
+    {
+        return 6;
+    }
+
     public function perform(Input $input): Output
     {
         return new Output('');

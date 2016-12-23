@@ -51,6 +51,11 @@ class Wand implements Ability, Skill, CreationGroup, Weapon
         return 1;
     }
 
+    public function improveDifficultyMultiplier(): int
+    {
+        return 10;
+    }
+
     public function getMinimumDisposition(): Disposition
     {
         return Disposition::FIGHTING();

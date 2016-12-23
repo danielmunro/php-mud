@@ -30,6 +30,7 @@ class Sword implements Ability, Skill, CreationGroup, Weapon
             Job::THIEF()
         ];
     }
+
     public function getCreationPoints(JobInterface $job): int
     {
         switch ((string)$job) {
@@ -48,6 +49,11 @@ class Sword implements Ability, Skill, CreationGroup, Weapon
     public function getLevel(JobInterface $job): int
     {
         return 1;
+    }
+
+    public function improveDifficultyMultiplier(): int
+    {
+        return 10;
     }
 
     public function getMinimumDisposition(): Disposition

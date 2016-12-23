@@ -76,7 +76,7 @@ class Input
 
     public function isAbilityMatch(Ability $ability): bool
     {
-         return strpos($ability->getName(), $this->input) === 0;
+         return strpos($ability->getName(), $this->command) === 0;
     }
 
     public function isSubjectMatch(Noun $noun): bool

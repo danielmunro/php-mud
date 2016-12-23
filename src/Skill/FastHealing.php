@@ -61,6 +61,11 @@ class FastHealing implements Ability, Skill, CreationGroup
         }
     }
 
+    public function improveDifficultyMultiplier(): int
+    {
+        return 8;
+    }
+
     public function getMinimumDisposition(): Disposition
     {
         return Disposition::SLEEPING();

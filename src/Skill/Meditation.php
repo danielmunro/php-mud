@@ -59,6 +59,11 @@ class Meditation implements Ability, Skill, CreationGroup
         }
     }
 
+    public function improveDifficultyMultiplier(): int
+    {
+        return 8;
+    }
+
     public function perform(Input $input): Output
     {
         return new Output('');

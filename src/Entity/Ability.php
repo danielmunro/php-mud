@@ -60,10 +60,6 @@ class Ability
         return $this->level;
     }
 
-    public function checkImprovement()
-    {
-    }
-
     /**
      * @PostLoad
      * @PostPersist

@@ -116,8 +116,8 @@ class Login
                     $gender = Gender::partialSearch((string)$input);
                     if ($gender) {
                         $this->mob->setGender($gender);
-                        $input->getClient()->write("Done.\n");
-                        $this->state = static::STATE_COMPLETE;
+                        $input->getClient()->write('Ok. Would you like to customize? (y/n) > ');
+                        $this->state = static::STATE_CUSTOMIZE;
                         break;
                     }
 

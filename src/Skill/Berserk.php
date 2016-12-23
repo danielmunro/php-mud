@@ -42,6 +42,11 @@ class Berserk implements Ability, Skill, CreationGroup, Noun
         return 18;
     }
 
+    public function improveDifficultyMultiplier(): int
+    {
+        return 2;
+    }
+
     public function perform(Input $input): Output
     {
         return new Output('');

@@ -39,6 +39,11 @@ class Steal implements Ability, Skill, CreationGroup
         return 5;
     }
 
+    public function improveDifficultyMultiplier(): int
+    {
+        return 2;
+    }
+
     public function perform(Input $input): Output
     {
         return new Output('');

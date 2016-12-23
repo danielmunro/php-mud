@@ -53,6 +53,11 @@ class Sneak implements Ability, Skill, CreationGroup
         }
     }
 
+    public function improveDifficultyMultiplier(): int
+    {
+        return 3;
+    }
+
     public function perform(Input $input): Output
     {
         return new Output('');
