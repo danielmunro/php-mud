@@ -14,34 +14,33 @@ namespace PhpMud\IO;
 
 use PhpMud\Command;
 use PhpMud\Entity\Ability;
-use PhpMud\Noun;
 use PhpMud\Performable;
 use PhpMud\Server;
-use PhpMud\ServiceProvider\Command\BuyCommand;
-use PhpMud\ServiceProvider\Command\DropCommand;
-use PhpMud\ServiceProvider\Command\EquippedCommand;
-use PhpMud\ServiceProvider\Command\GetCommand;
-use PhpMud\ServiceProvider\Command\GossipCommand;
-use PhpMud\ServiceProvider\Command\HelpCommand;
-use PhpMud\ServiceProvider\Command\InventoryCommand;
-use PhpMud\ServiceProvider\Command\KillCommand;
-use PhpMud\ServiceProvider\Command\LevelCommand;
-use PhpMud\ServiceProvider\Command\ListCommand;
-use PhpMud\ServiceProvider\Command\LookCommand;
-use PhpMud\ServiceProvider\Command\MoveCommand;
-use PhpMud\ServiceProvider\Command\NewMobCommand;
-use PhpMud\ServiceProvider\Command\NewRoomCommand;
-use PhpMud\ServiceProvider\Command\QuitCommand;
-use PhpMud\ServiceProvider\Command\RemoveCommand;
-use PhpMud\ServiceProvider\Command\ScoreCommand;
-use PhpMud\ServiceProvider\Command\SellCommand;
-use PhpMud\ServiceProvider\Command\SitCommand;
-use PhpMud\ServiceProvider\Command\SkillsCommand;
-use PhpMud\ServiceProvider\Command\SleepCommand;
-use PhpMud\ServiceProvider\Command\TimeCommand;
-use PhpMud\ServiceProvider\Command\WakeCommand;
-use PhpMud\ServiceProvider\Command\WearCommand;
-use PhpMud\ServiceProvider\Command\WeatherCommand;
+use PhpMud\IO\Command\BuyCommand;
+use PhpMud\IO\Command\DropCommand;
+use PhpMud\IO\Command\EquippedCommand;
+use PhpMud\IO\Command\GetCommand;
+use PhpMud\IO\Command\GossipCommand;
+use PhpMud\IO\Command\HelpCommand;
+use PhpMud\IO\Command\InventoryCommand;
+use PhpMud\IO\Command\KillCommand;
+use PhpMud\IO\Command\LevelCommand;
+use PhpMud\IO\Command\ListCommand;
+use PhpMud\IO\Command\LookCommand;
+use PhpMud\IO\Command\MoveCommand;
+use PhpMud\IO\Command\NewMobCommand;
+use PhpMud\IO\Command\NewRoomCommand;
+use PhpMud\IO\Command\QuitCommand;
+use PhpMud\IO\Command\RemoveCommand;
+use PhpMud\IO\Command\ScoreCommand;
+use PhpMud\IO\Command\SellCommand;
+use PhpMud\IO\Command\SitCommand;
+use PhpMud\IO\Command\SkillsCommand;
+use PhpMud\IO\Command\SleepCommand;
+use PhpMud\IO\Command\TimeCommand;
+use PhpMud\IO\Command\WakeCommand;
+use PhpMud\IO\Command\WearCommand;
+use PhpMud\IO\Command\WeatherCommand;
 use Pimple\Container;
 use function Functional\first;
 
@@ -97,6 +96,9 @@ class Commands
      */
     private function parse(Input $input): Command
     {
+        /**
+         * First, see if the input matches a command.
+         */
         if (!$input->getCommand()) {
             return new class implements Command {
                 public function execute(Server $server, Input $input): Output
@@ -114,6 +116,9 @@ class Commands
             return $this->container[$command]();
         }
 
+        /**
+         * Try parsing for an ability.
+         */
         /** @var Ability $ability */
         $ability = first(
             $input->getMob()->getAbilities()->toArray(),
@@ -157,6 +162,9 @@ class Commands
             };
         }
 
+        /**
+         * Unknown input
+         */
         return new class implements Command {
             public function execute(Server $server, Input $input): Output
             {

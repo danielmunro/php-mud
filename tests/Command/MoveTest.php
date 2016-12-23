@@ -13,7 +13,7 @@ use PhpMud\Entity\Mob;
 use PhpMud\Entity\Room;
 use PhpMud\Direction\Direction as AbstractDirection;
 use PhpMud\Race\Human;
-use PhpMud\ServiceProvider\Command\MoveCommand;
+use PhpMud\IO\Command\MoveCommand;
 
 class MoveTest extends CommandTest
 {

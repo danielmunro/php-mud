@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace PhpMud\ServiceProvider\Command;
+namespace PhpMud\IO\Command;
 
 use PhpMud\Client;
 use PhpMud\Command;

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace PhpMud\ServiceProvider\Command;
+namespace PhpMud\IO\Command;
 
 use PhpMud\Command;
 use PhpMud\Entity\Item;
@@ -12,11 +12,11 @@ use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use function Functional\first;
 
-class GetCommand implements ServiceProviderInterface
+class DropCommand implements ServiceProviderInterface
 {
     public function register(Container $pimple)
     {
-        $pimple['get'] = $pimple->protect(function () {
+        $pimple['drop'] = $pimple->protect(function () {
             return new class implements Command
             {
                 public function execute(Server $server, Input $input): Output
@@ -26,18 +26,18 @@ class GetCommand implements ServiceProviderInterface
                     }
 
                     $item = first(
-                        $input->getRoom()->getInventory()->getItems(),
+                        $input->getMob()->getInventory()->getItems(),
                         function (Item $item) use ($input) {
                             return $input->isSubjectMatch($item);
                         }
                     );
 
                     if ($item) {
-                        $input->getMob()->getInventory()->add($item);
-                        $input->getRoom()->getInventory()->remove($item);
+                        $input->getMob()->getInventory()->remove($item);
+                        $input->getRoom()->getInventory()->add($item);
                         $item->setInventory($input->getMob()->getInventory());
 
-                        return new Output(sprintf('you pick up %s off the ground.', $item->getName()));
+                        return new Output(sprintf('you drop %s.', $item->getName()));
                     }
 
                     return new Output("you can't find it.");

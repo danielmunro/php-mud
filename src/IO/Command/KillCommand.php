@@ -10,7 +10,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace PhpMud\ServiceProvider\Command;
+namespace PhpMud\IO\Command;
 
 use PhpMud\Command;
 use PhpMud\Entity\Mob;

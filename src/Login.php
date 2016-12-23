@@ -19,7 +19,7 @@ use PhpMud\Job\Job;
 use PhpMud\Job\JobFactory;
 use PhpMud\Race\Race;
 use PhpMud\Repository\MobRepository;
-use PhpMud\ServiceProvider\Command\HelpCommand;
+use PhpMud\IO\Command\HelpCommand;
 
 class Login
 {
