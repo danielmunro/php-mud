@@ -53,11 +53,13 @@ class Bash implements Ability, Skill, CreationGroup, Performable, Noun
 
     public function perform(Input $input): Output
     {
+        $base = ($input->getMob()->getLevel() / 10) + 1;
+
         $input
             ->getMob()
             ->getFight()
             ->getTarget()
-            ->modifyHp(-\PhpMud\Dice\dInt(4));
+            ->modifyHp(-random_int($base, $base * 1.5));
 
         return new Output(
             sprintf(
