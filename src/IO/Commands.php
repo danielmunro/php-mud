@@ -140,15 +140,19 @@ class Commands
                         );
 
                         if (!$target) {
-                            return $this->noTargetCommand();
+                            return $this->targetNotFoundCommand();
                         }
                     }
 
                     if ($ability->getAbility()->getTargetType()->equals(TargetType::OFFENSIVE())) {
                         if ($target && $input->getMob()->getFight() && $input->getMob()->getFight()->getTarget() !== $target) {
-                            return $this->tooManyTargetsCommands();
+                            return $this->tooManyTargetsCommand();
                         } elseif ($target && !$input->getMob()->getFight()) {
                             $input->getMob()->setFight(new Fight($input->getMob(), $target));
+                        }
+
+                        if (!$input->getMob()->getFight()) {
+                            return $this->noTargetCommand();
                         }
                     }
 
@@ -173,7 +177,27 @@ class Commands
             $this->unknownInputCommand();
     }
 
-    private function tooManyTargetsCommands(): Command
+    private function noTargetCommand(): Command
+    {
+        return new class implements Command {
+            public function execute(Server $server, Input $input): Output
+            {
+                return new Output('Who do you want to bash?');
+            }
+        };
+    }
+
+    private function targetNotFoundCommand(): Command
+    {
+        return new class implements Command {
+            public function execute(Server $server, Input $input): Output
+            {
+                return new Output("You don't see them here.");
+            }
+        };
+    }
+
+    private function tooManyTargetsCommand(): Command
     {
         return new class implements Command {
             public function execute(Server $server, Input $input): Output
@@ -181,19 +205,9 @@ class Commands
                 return new Output(
                     sprintf(
                         "You're already fighting %s!",
-                        $input->getMob()->getFight()->getTarget()->getName()
+                        $input->getMob()->getFight()->getTarget()
                     )
                 );
-            }
-        };
-    }
-
-    private function noTargetCommand(): Command
-    {
-        return new class implements Command {
-            public function execute(Server $server, Input $input): Output
-            {
-                return new Output("You don't see them here.");
             }
         };
     }

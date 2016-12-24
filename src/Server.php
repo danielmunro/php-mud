@@ -27,22 +27,12 @@ use function Functional\each;
 use function Functional\invoke;
 use function Functional\with;
 use function Functional\filter;
-use function Functional\partial_method;
 
 /**
  * Mud server
  */
 class Server
 {
-    /**
-     * Minimum number of seconds for a tick
-     */
-    const TICK_MIN_SECONDS = 25;
-    /**
-     * Maximum number of seconds for a tick
-     */
-    const TICK_MAX_SECONDS = 50;
-
     const EVENT_CLOSE = 'close';
 
     const EVENT_CONNECTION = 'connection';
@@ -65,6 +55,9 @@ class Server
 
     /** @var Time $time */
     protected $time;
+
+    /** @var array $mobs */
+    protected static $mobs = [];
 
     /**
      * @param EntityManager $em
@@ -137,17 +130,7 @@ class Server
                 $mob->setRoom($this->startRoom);
                 $this->startRoom->getMobs()->add($mob);
                 $client->pushBuffer('look');
-            }
-        );
-
-        $connection->on(
-            static::EVENT_CLOSE,
-            function () use ($client, $connection) {
-                $this->logger->info('logout', [
-                    'ip' => $connection->getRemoteAddress(),
-                    'mob' => $client->getMob()->getName()
-                ]);
-                $this->clients->removeElement($client);
+                self::addMob($mob);
             }
         );
 
@@ -164,10 +147,12 @@ class Server
         each($this->clients->toArray(), function (Client $client) {
             if (!$client->getConnection()->isWritable()) {
                 $this->logger->info('connection not writable, closing', [
-                    'mob' => $client->getMob()->getName()
+                    'ip' => $client->getConnection()->getRemoteAddress()
                 ]);
                 $client->getConnection()->close();
                 $this->clients->removeElement($client);
+
+                return;
             }
             $this->checkBuffer($client);
         });
@@ -185,7 +170,29 @@ class Server
      */
     public function pulse()
     {
-        invoke($this->clients->toArray(), 'pulse');
+        invoke(static::$mobs, 'pulse');
+        each(
+            $this->clients,
+            function (Client $client) {
+                if (!$client->getMob()) {
+                    return;
+                }
+                with(
+                    $client->getMob()->getFight(),
+                    function (Fight $fight) use ($client) {
+
+                        $client->write(
+                            sprintf(
+                                "%s %s.\n%s",
+                                $fight->getTarget()->getName(),
+                                $fight->getTarget()->getCondition(),
+                                $client->prompt()
+                            )
+                        );
+                    }
+                );
+            }
+        );
     }
 
     /**
@@ -194,7 +201,8 @@ class Server
     public function tick()
     {
         $this->logger->info('tick', [
-            'clients' => $this->clients->count()
+            'clients' => $this->clients->count(),
+            'mobs' => count(static::$mobs)
         ]);
 
         $this->time->incrementTime();
@@ -240,5 +248,20 @@ class Server
     public function getClients(): ArrayCollection
     {
         return $this->clients;
+    }
+
+    public static function addMob(Mob $mob)
+    {
+        static::$mobs[] = $mob;
+    }
+
+    public static function removeMob(Mob $mob)
+    {
+        static::$mobs = filter(
+            static::$mobs,
+            function (Mob $m) use ($mob) {
+                return $m->getId() !== $mob->getId();
+            }
+        );
     }
 }

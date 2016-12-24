@@ -18,10 +18,9 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     {
         $server = $this->getMockServer();
         $client = $this->getMockClient($server);
-        $client->pushBuffer('look');
-        static::assertNotEmpty($client->getBuffer());
+        static::assertCount(1, $server->getClients());
         $server->heartbeat();
-        static::assertEmpty($client->getBuffer());
+        static::assertCount(0, $server->getClients());
     }
 
     protected function getMockClient(Server $server): Client

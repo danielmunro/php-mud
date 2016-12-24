@@ -15,7 +15,8 @@ namespace PhpMud\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use PhpMud\Direction\Direction as AbstractDirection;
-use function Functional\reduce_left;
+use function Functional\each;
+use PhpMud\Server;
 
 /**
  * Class Room
@@ -160,5 +161,12 @@ class Room
         $this->mobs = $this->mobs->filter(function (Mob $mob) {
             return !$mob->isPlayer();
         });
+
+        each(
+            $this->mobs->toArray(),
+            function (Mob $mob) {
+                Server::addMob($mob);
+            }
+        );
     }
 }

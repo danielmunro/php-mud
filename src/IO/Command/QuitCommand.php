@@ -10,6 +10,7 @@ use PhpMud\IO\Output;
 use PhpMud\Server;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
+use function Functional\with;
 
 class QuitCommand implements ServiceProviderInterface
 {
@@ -19,9 +20,17 @@ class QuitCommand implements ServiceProviderInterface
             return new class() implements Command {
                 public function execute(Server $server, Input $input): Output
                 {
-                    $server->getClients()->removeElement($input->getClient());
-                    $input->getClient()->getConnection()->close();
-                    $input->getRoom()->getMobs()->removeElement($input->getMob());
+                    with(
+                        $input->getClient(),
+                        function (Client $client) use ($server) {
+                            $server->getClients()->removeElement($client);
+                            if ($client->getMob()) {
+                                Server::removeMob($client->getMob());
+                                $client->getMob()->getRoom()->getMobs()->removeElement($client->getMob());
+                            }
+                            $client->getConnection()->close();
+                        }
+                    );
 
                     return new Output('Alas all good things must come to an end.');
                 }

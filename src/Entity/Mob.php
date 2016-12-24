@@ -26,6 +26,7 @@ use PhpMud\Job\JobFactory;
 use PhpMud\Job\Uninitiated;
 use PhpMud\Noun;
 use PhpMud\Race\Race;
+use PhpMud\Server;
 use PhpMud\Skill\FastHealing;
 use function PhpMud\Dice\d20;
 use function PhpMud\Dice\dInt;
@@ -143,6 +144,9 @@ class Mob implements Noun
     /** @var Client $client */
     protected $client;
 
+    /** @var int $delay */
+    protected $delay = 0;
+
     /**
      * @param string $name
      * @param Race $race
@@ -180,6 +184,17 @@ class Mob implements Noun
                 $this->abilities->add(new Ability($this, $ability, 1));
             }
         );
+    }
+
+    public function pulse()
+    {
+        if ($this->delay > 0) {
+            $this->delay--;
+        }
+
+        if ($this->fight) {
+            $this->fight->turn();
+        }
     }
 
     public function attackRoll(Mob $target): bool
@@ -371,6 +386,30 @@ class Mob implements Noun
         $this->modifyHp($this->hpGain($regenBase));
         $this->modifyMana($this->manaGain($regenBase));
         $this->modifyMv($this->mvGain($regenBase));
+    }
+
+    public function getCondition(): string
+    {
+        $hpPercent = $this->hp / $this->getAttribute('hp');
+
+        switch ($hpPercent) {
+            case $hpPercent >= 1.0:
+                return 'is in excellent condition';
+            case $hpPercent > 0.9:
+                return 'has a few scratches';
+            case $hpPercent > 0.75:
+                return 'has some small wounds and bruises';
+            case $hpPercent > 0.5:
+                return 'has quite a few wounds';
+            case $hpPercent > 0.3:
+                return 'has some big nasty wounds and scratches';
+            case $hpPercent > 0.15:
+                return 'looks pretty hurt';
+            case $hpPercent >= 0.0:
+                return 'is in awful condition';
+            default:
+                return 'is bleeding to death.';
+        }
     }
 
     public function hpGain(float $base): int
@@ -628,6 +667,11 @@ class Mob implements Noun
 
         $this->job = $job;
         $this->abilities->add(new Ability($this, $job->getDefaultWeapon(), 1));
+    }
+
+    public function getDelay(): int
+    {
+        return $this->delay;
     }
 
     /**
