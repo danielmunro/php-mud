@@ -53,47 +53,19 @@ class Bash implements Ability, Skill, CreationGroup, Performable, Noun
 
     public function perform(Input $input): Output
     {
-        $target = $input->getSubject();
-        $attacker = $input->getMob();
-
-        if ($input->getClient()) {
-            $input->getClient()->addDelay(2);
-        }
-
-        if (!$target && !$attacker->getFight()) {
-            return new Output('You bash around!');
-        }
-
-        if (!$target && $attacker->getFight()->getTarget()) {
-            return $this->bash($attacker);
-        }
-
-        return with(
-            first(
-                $attacker->getRoom()->getMobs()->toArray(),
-                function (Mob $mob) use ($input) {
-                    return $input->isSubjectMatch($mob);
-                }
-            ),
-            function (Mob $target) use ($attacker) {
-                $attacker->setFight(new Fight($attacker, $target));
-
-                return $this->bash($attacker);
-            }
-        ) ?? new Output("They aren't here.");
-
-    }
-
-    private function bash(Mob $attacker)
-    {
-        $attacker->getFight()->getTarget()->modifyHp(-\PhpMud\Dice\dInt(4));
+        $input
+            ->getMob()
+            ->getFight()
+            ->getTarget()
+            ->modifyHp(-\PhpMud\Dice\dInt(4));
 
         return new Output(
             sprintf(
                 'You slam into %s and send them flying!',
-                $attacker->getFight()->getTarget()->getName()
+                $input->getMob()->getFight()->getTarget()->getName()
             )
         );
+
     }
 
     public function getMinimumDisposition(): Disposition
@@ -103,7 +75,7 @@ class Bash implements Ability, Skill, CreationGroup, Performable, Noun
 
     public function getTargetType(): TargetType
     {
-        return TargetType::NONE();
+        return TargetType::OFFENSIVE();
     }
 
     public function getIdentifiers(): array

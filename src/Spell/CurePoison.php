@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud\Spell;
 
 use PhpMud\Ability\Ability;
+use PhpMud\Enum\DifficultyModifier;
 use PhpMud\Enum\Disposition;
 use PhpMud\Enum\TargetType;
 use PhpMud\Job\Job;
@@ -36,7 +37,7 @@ class CurePoison implements Spell, Ability
 
     public function improveDifficultyMultiplier(): int
     {
-        return 1;
+        return DifficultyModifier::EASY;
     }
 
     public function __toString(): string

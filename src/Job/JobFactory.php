@@ -12,22 +12,22 @@ declare(strict_types=1);
 
 namespace PhpMud\Job;
 
-use PhpMud\Enum\Job;
+use PhpMud\Enum\Job as JobEnum;
 use PhpMud\Job\Job as JobInterface;
 
 abstract class JobFactory
 {
     public static function matchPartialValue(string $value): JobInterface
     {
-        if (strpos(Job::CLERIC, $value) === 0) {
+        if (strpos(JobEnum::CLERIC, $value) === 0) {
             return new Cleric();
-        } elseif (strpos(Job::MAGE, $value) === 0) {
+        } elseif (strpos(JobEnum::MAGE, $value) === 0) {
             return new Mage();
-        } elseif (strpos(Job::THIEF, $value) === 0) {
+        } elseif (strpos(JobEnum::THIEF, $value) === 0) {
             return new Thief();
-        } elseif (strpos(Job::WARRIOR, $value) === 0) {
+        } elseif (strpos(JobEnum::WARRIOR, $value) === 0) {
             return new Warrior();
-        } elseif (strpos(Job::UNINITIATED, $value) === 0) {
+        } elseif (strpos(JobEnum::UNINITIATED, $value) === 0) {
             return new Uninitiated();
         }
 

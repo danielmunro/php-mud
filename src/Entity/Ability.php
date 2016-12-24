@@ -17,6 +17,7 @@ use PhpMud\Enum\Ability as AbilityEnum;
 
 /**
  * @Entity
+ * @HasLifecycleCallbacks
  */
 class Ability
 {
@@ -42,7 +43,7 @@ class Ability
         $this->mob = $mob;
         $this->name = $ability->getValue();
         $this->level = $level;
-        $this->postLoad($ability);
+        $this->postLoad();
     }
 
     public function getName(): string
@@ -64,12 +65,9 @@ class Ability
      * @PostLoad
      * @PostPersist
      */
-    public function postLoad(AbilityEnum $ability = null)
+    public function postLoad()
     {
-        if (!$ability) {
-            $ability = new AbilityEnum($this->name);
-        }
-
-        $this->ability = AbilityFactory::newInstance($ability);
+        $this->enum = new AbilityEnum($this->name);
+        $this->ability = AbilityFactory::newInstance($this->enum);
     }
 }

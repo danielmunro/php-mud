@@ -14,6 +14,9 @@ namespace PhpMud\IO;
 
 use PhpMud\Command;
 use PhpMud\Entity\Ability;
+use PhpMud\Entity\Mob;
+use PhpMud\Enum\TargetType;
+use PhpMud\Fight;
 use PhpMud\Performable;
 use PhpMud\Server;
 use PhpMud\IO\Command\BuyCommand;
@@ -98,17 +101,9 @@ class Commands
             };
     }
 
-    /**
-     * @param Input $input
-     *
-     * @return Command
-     */
     private function parse(Input $input): Command
     {
         return
-            /**
-             * First check for a command
-             */
             with(
                 first($this->container->keys(), function ($key) use ($input) {
                     return strpos($key, $input->getCommand()) === 0;
@@ -118,9 +113,6 @@ class Commands
                 }
             ) ??
 
-            /**
-             * Next check for a performable ability
-             */
             with(
                 first(
                     $input->getMob()->getAbilities()->toArray(),
@@ -135,6 +127,29 @@ class Commands
                     ))
                     {
                         return $this->dispositionCheckFailCommand();
+                    }
+
+                    $target = null;
+
+                    if ($input->getSubject()) {
+                        $target = first(
+                            $input->getRoom()->getMobs()->toArray(),
+                            function (Mob $mob) use ($input) {
+                                return $input->isSubjectMatch($mob);
+                            }
+                        );
+
+                        if (!$target) {
+                            return $this->noTargetCommand();
+                        }
+                    }
+
+                    if ($ability->getAbility()->getTargetType()->equals(TargetType::OFFENSIVE())) {
+                        if ($target && $input->getMob()->getFight() && $input->getMob()->getFight()->getTarget() !== $target) {
+                            return $this->tooManyTargetsCommands();
+                        } elseif ($target && !$input->getMob()->getFight()) {
+                            $input->getMob()->setFight(new Fight($input->getMob(), $target));
+                        }
                     }
 
                     return new class($ability) implements Command {
@@ -155,10 +170,32 @@ class Commands
                 }
             ) ??
 
-            /**
-             * Finally, give up
-             */
             $this->unknownInputCommand();
+    }
+
+    private function tooManyTargetsCommands(): Command
+    {
+        return new class implements Command {
+            public function execute(Server $server, Input $input): Output
+            {
+                return new Output(
+                    sprintf(
+                        "You're already fighting %s!",
+                        $input->getMob()->getFight()->getTarget()->getName()
+                    )
+                );
+            }
+        };
+    }
+
+    private function noTargetCommand(): Command
+    {
+        return new class implements Command {
+            public function execute(Server $server, Input $input): Output
+            {
+                return new Output("You don't see them here.");
+            }
+        };
     }
 
     private function unknownInputCommand(): Command

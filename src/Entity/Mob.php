@@ -15,7 +15,7 @@ namespace PhpMud\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use PhpMud\Client;
-use PhpMud\Enum\Ability;
+use PhpMud\Enum\Ability as AbilityEnum;
 use PhpMud\Enum\Disposition;
 use PhpMud\Enum\Gender;
 use PhpMud\Enum\Role;
@@ -28,7 +28,6 @@ use PhpMud\Noun;
 use PhpMud\Race\Race;
 use PhpMud\Skill\FastHealing;
 use function PhpMud\Dice\d20;
-use function PhpMud\Dice\d100;
 use function PhpMud\Dice\dInt;
 use function Functional\with;
 use function Functional\each;
@@ -177,8 +176,8 @@ class Mob implements Noun
         $this->abilities = new ArrayCollection();
         each(
             $this->race->getBonusSkills(),
-            function (Ability $ability) {
-                $this->abilities->add(new \PhpMud\Entity\Ability($this, $ability, 1));
+            function (AbilityEnum $ability) {
+                $this->abilities->add(new Ability($this, $ability, 1));
             }
         );
     }
@@ -417,18 +416,18 @@ class Mob implements Noun
         return with(
             first(
                 $this->abilities->toArray(),
-                function (\PhpMud\Entity\Ability $ability) use ($abilityClass) {
+                function (Ability $ability) use ($abilityClass) {
                     return get_class($ability) === $abilityClass;
                 }
             ),
-            function (\PhpMud\Entity\Ability $ability) use ($callable) {
+            function (Ability $ability) use ($callable) {
                 $this->rollAbilityImprovement($ability, $ability->getAbility()->improveDifficultyMultiplier());
                 return $callable($ability);
             }
         );
     }
 
-    public function rollAbilityImprovement(\PhpMud\Entity\Ability $ability, int $multiplier)
+    public function rollAbilityImprovement(Ability $ability, int $multiplier)
     {
         // @todo implement improvement for abilities
     }
@@ -628,7 +627,7 @@ class Mob implements Noun
         }
 
         $this->job = $job;
-        $this->abilities->add(new \PhpMud\Entity\Ability($this, $job->getDefaultWeapon(), 1));
+        $this->abilities->add(new Ability($this, $job->getDefaultWeapon(), 1));
     }
 
     /**
