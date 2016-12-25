@@ -15,8 +15,10 @@ namespace PhpMud\IO;
 use PhpMud\Command;
 use PhpMud\Entity\Ability;
 use PhpMud\Entity\Mob;
+use PhpMud\Enum\Role;
 use PhpMud\Enum\TargetType;
 use PhpMud\Fight;
+use PhpMud\IO\Command\AffectsCommand;
 use PhpMud\Performable;
 use PhpMud\Server;
 use PhpMud\IO\Command\BuyCommand;
@@ -86,6 +88,7 @@ class Commands
         $this->container->register(new HelpCommand());
         $this->container->register(new LevelCommand());
         $this->container->register(new SkillsCommand());
+        $this->container->register(new AffectsCommand());
     }
 
     public function execute(Input $input): Output
@@ -145,6 +148,10 @@ class Commands
                     }
 
                     if ($ability->getAbility()->getTargetType()->equals(TargetType::OFFENSIVE())) {
+                        if ($target && $target->hasRole(Role::SHOPKEEPER())) {
+                            return $this->noAttackingShopkeeperCommand();
+                        }
+
                         if ($target && $input->getMob()->getFight() && $input->getMob()->getFight()->getTarget() !== $target) {
                             return $this->tooManyTargetsCommand();
                         } elseif ($target && !$input->getMob()->getFight()) {
@@ -155,6 +162,8 @@ class Commands
                             return $this->noTargetCommand();
                         }
                     }
+
+                    $input->getMob()->incrementDelay($ability->getAbility()->getDelay());
 
                     return new class($ability) implements Command {
 
@@ -175,6 +184,16 @@ class Commands
             ) ??
 
             $this->unknownInputCommand();
+    }
+
+    private function noAttackingShopkeeperCommand(): Command
+    {
+        return new class implements Command {
+            public function execute(Server $server, Input $input): Output
+            {
+                return new Output("No way! They wouldn't like that.");
+            }
+        };
     }
 
     private function noTargetCommand(): Command

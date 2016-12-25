@@ -18,4 +18,6 @@ use PhpMud\IO\Output;
 interface Performable
 {
     public function perform(Input $input): Output;
+
+    public function getDelay(): int;
 }

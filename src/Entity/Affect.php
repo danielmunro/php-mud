@@ -31,11 +31,21 @@ class Affect
     /** @ManyToOne(targetEntity="Mob", inversedBy="affects") */
     protected $mob;
 
-    public function __construct(string $name, Attributes $attributes, $timeout = 0)
+    public function __construct(string $name, $timeout = 0, Attributes $attributes = null)
     {
         $this->name = $name;
-        $this->attributes = $attributes;
         $this->timeout = $timeout;
+        $this->attributes = $attributes;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getTimeout(): int
+    {
+        return $this->timeout;
     }
 
     public function decrementTimeout(): int

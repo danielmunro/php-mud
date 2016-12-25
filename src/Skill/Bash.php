@@ -14,6 +14,7 @@ namespace PhpMud\Skill;
 
 use PhpMud\Ability\Ability;
 use PhpMud\CreationGroup;
+use PhpMud\Entity\Affect;
 use PhpMud\Entity\Mob;
 use PhpMud\Enum\Disposition;
 use PhpMud\Enum\Job as JobEnum;
@@ -24,8 +25,6 @@ use PhpMud\IO\Output;
 use PhpMud\Job\Job;
 use PhpMud\Noun;
 use PhpMud\Performable;
-use function Functional\with;
-use function Functional\first;
 
 class Bash implements Ability, Skill, CreationGroup, Performable, Noun
 {
@@ -51,8 +50,17 @@ class Bash implements Ability, Skill, CreationGroup, Performable, Noun
         return 1;
     }
 
+    public function getDelay(): int
+    {
+        return 2;
+    }
+
     public function perform(Input $input): Output
     {
+        if (random_int(1, 4) === 1) {
+            $input->getMob()->getFight()->getTarget()->addAffect(new Affect(\PhpMud\Enum\Affect::STUN, random_int(1, 3)));
+        }
+
         $base = (int)floor(($input->getMob()->getLevel() / 10) + 1);
 
         $input

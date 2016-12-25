@@ -26,13 +26,13 @@ use PhpMud\Job\JobFactory;
 use PhpMud\Job\Uninitiated;
 use PhpMud\Noun;
 use PhpMud\Race\Race;
-use PhpMud\Server;
 use PhpMud\Skill\FastHealing;
 use function PhpMud\Dice\d20;
 use function PhpMud\Dice\dInt;
 use function Functional\with;
 use function Functional\each;
 use function Functional\first;
+use function Functional\none;
 use PhpMud\Skill\Meditation;
 
 /**
@@ -178,6 +178,7 @@ class Mob implements Noun
         $this->roles = [];
         $this->disposition = Disposition::STANDING();
         $this->abilities = new ArrayCollection();
+        $this->affects = new ArrayCollection();
         each(
             $this->race->getBonusSkills(),
             function (AbilityEnum $ability) {
@@ -188,6 +189,10 @@ class Mob implements Noun
 
     public function pulse()
     {
+        $this->affects = $this->affects->filter(function (Affect $affect) {
+            return $affect->decrementTimeout() >= 0;
+        });
+
         if ($this->delay > 0) {
             $this->delay--;
         }
@@ -644,6 +649,20 @@ class Mob implements Noun
         return $this->level;
     }
 
+    public function addAffect(Affect $affect)
+    {
+        if (none($this->affects->toArray(), function (Affect $a) use ($affect) {
+            return $a->getName() === $affect->getName();
+        })) {
+            $this->affects->add($affect);
+        }
+    }
+
+    public function getAffects(): Collection
+    {
+        return $this->affects;
+    }
+
     public function addRole(Role $role)
     {
         $this->roles[] = $role->getValue();
@@ -667,6 +686,11 @@ class Mob implements Noun
 
         $this->job = $job;
         $this->abilities->add(new Ability($this, $job->getDefaultWeapon(), 1));
+    }
+
+    public function incrementDelay(int $delay)
+    {
+        $this->delay  += $delay;
     }
 
     public function getDelay(): int
