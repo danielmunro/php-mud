@@ -96,12 +96,7 @@ class Commands
         return
             $input->getCommand() ?
             $this->parse($input)->execute($this->server, $input) :
-            new class implements Command {
-                public function execute(Server $server, Input $input): Output
-                {
-                    return new Output('');
-                }
-            };
+            new Output('');
     }
 
     private function parse(Input $input): Command
@@ -125,148 +120,128 @@ class Commands
                     }
                 ),
                 function (Ability $ability) use ($input) {
-                    if (!$input->getMob()->getDisposition()->satisfiesMinimumDisposition(
-                        $ability->getAbility()->getMinimumDisposition()
-                    ))
-                    {
-                        return $this->dispositionCheckFailCommand();
-                    }
-
-                    $target = null;
-
-                    if ($input->getSubject()) {
-                        $target = first(
-                            $input->getRoom()->getMobs()->toArray(),
-                            function (Mob $mob) use ($input) {
-                                return $input->isSubjectMatch($mob);
-                            }
-                        );
-
-                        if (!$target) {
-                            return $this->targetNotFoundCommand();
-                        }
-                    }
-
-                    if (!$ability->getAbility()->canPerform($input->getMob())) {
-                        return $this->tooTiredCommand();
-                    }
-
-                    if ($ability->getAbility()->getTargetType()->equals(TargetType::OFFENSIVE())) {
-                        if ($target && $target->hasRole(Role::SHOPKEEPER())) {
-                            return $this->noAttackingShopkeeperCommand();
-                        }
-
-                        if ($target && $input->getMob()->getFight() && $input->getMob()->getFight()->getTarget() !== $target) {
-                            return $this->tooManyTargetsCommand();
-                        } elseif ($target && !$input->getMob()->getFight()) {
-                            $input->getMob()->setFight(new Fight($input->getMob(), $target));
-                        }
-
-                        if (!$input->getMob()->getFight()) {
-                            return $this->noTargetCommand();
-                        }
-                    }
-
-                    $input->getMob()->incrementDelay($ability->getAbility()->getDelay());
-                    $ability->getAbility()->applySuccessCost($input->getMob());
-
-                    return new class($ability) implements Command {
-
-                        /** @var Ability $ability */
-                        protected $ability;
-
-                        public function __construct($ability)
-                        {
-                            $this->ability = $ability;
-                        }
-
-                        public function execute(Server $server, Input $input): Output
-                        {
-                            return $this->ability->getAbility()->perform($input);
-                        }
-                    };
+                    return $this->getAbilityCommand($input, $ability);
                 }
             ) ??
 
             $this->unknownInputCommand();
     }
 
+    private function getAbilityCommand(Input $input, Ability $ability): Command
+    {
+        if (!$input->getMob()->getDisposition()->satisfiesMinimumDisposition(
+            $ability->getAbility()->getMinimumDisposition()
+        ))
+        {
+            return $this->dispositionCheckFailCommand();
+        }
+
+        $target = null;
+
+        if ($input->getSubject()) {
+            $target = first(
+                $input->getRoom()->getMobs()->toArray(),
+                function (Mob $mob) use ($input) {
+                    return $input->isSubjectMatch($mob);
+                }
+            );
+
+            if (!$target) {
+                return $this->targetNotFoundCommand();
+            }
+        }
+
+        if (!$ability->getAbility()->canPerform($input->getMob())) {
+            return $this->tooTiredCommand();
+        }
+
+        if ($ability->getAbility()->getTargetType()->equals(TargetType::OFFENSIVE())) {
+            if ($target && $target->hasRole(Role::SHOPKEEPER())) {
+                return $this->noAttackingShopkeeperCommand();
+            }
+
+            if ($target && $input->getTarget() !== $target) {
+                return $this->tooManyTargetsCommand();
+            } elseif ($target && !$input->getMob()->getFight()) {
+                $input->getMob()->setFight(new Fight($input->getMob(), $target));
+            }
+
+            if (!$input->getMob()->getFight()) {
+                return $this->noTargetCommand();
+            }
+        }
+
+        $input->getMob()->incrementDelay($ability->getAbility()->getDelay());
+        $ability->getAbility()->applySuccessCost($input->getMob());
+
+        return static::command(function (Input $input) use ($ability) {
+            return $ability->getAbility()->perform($input);
+        });
+    }
+
     private function tooTiredCommand(): Command
     {
-        return new class implements Command {
-            public function execute(Server $server, Input $input): Output
-            {
-                return new Output('You are too tired.');
-            }
-        };
+        return static::command(function () {
+            return new Output('You are too tired.');
+        });
     }
 
     private function noAttackingShopkeeperCommand(): Command
     {
-        return new class implements Command {
-            public function execute(Server $server, Input $input): Output
-            {
-                return new Output("No way! They wouldn't like that.");
-            }
-        };
+        return static::command(function () {
+            return new Output("No way! They wouldn't like that.");
+        });
     }
 
     private function noTargetCommand(): Command
     {
-        return new class implements Command {
-            public function execute(Server $server, Input $input): Output
-            {
-                return new Output('Who do you want to bash?');
-            }
-        };
+        return static::command(function () {
+            return new Output("You're not fighting anyone.");
+        });
     }
 
     private function targetNotFoundCommand(): Command
     {
-        return new class implements Command {
-            public function execute(Server $server, Input $input): Output
-            {
-                return new Output("You don't see them here.");
-            }
-        };
+        return static::command(function () {
+            return new Output("You don't see them here.");
+        });
     }
 
     private function tooManyTargetsCommand(): Command
     {
-        return new class implements Command {
-            public function execute(Server $server, Input $input): Output
-            {
-                return new Output(
-                    sprintf(
-                        "You're already fighting %s!",
-                        $input->getMob()->getFight()->getTarget()
-                    )
-                );
-            }
-        };
+        return static::command(function (Input $input) {
+            return new Output(sprintf("You're already fighting %s!", $input->getTarget()));
+        });
     }
 
     private function unknownInputCommand(): Command
     {
-        return new class implements Command {
-            public function execute(Server $server, Input $input): Output
-            {
-                return new Output('What was that?');
-            }
-        };
+        return static::command(function () {
+            return new Output('What was that?');
+        });
     }
 
     private function dispositionCheckFailCommand(): Command
     {
-        return new class implements Command {
+        return static::command(function (Input $input) {
+            return new Output(sprintf('No way! You are %s.', $input->getMob()->getDisposition()));
+        });
+    }
+
+    private static function command(callable $callback): Command
+    {
+        return new class($callback) implements Command {
+
+            protected $callback;
+
+            public function __construct(callable $callback)
+            {
+                $this->callback = $callback;
+            }
+
             public function execute(Server $server, Input $input): Output
             {
-                return new Output(
-                    sprintf(
-                        'No way! You are %s.',
-                        $input->getMob()->getDisposition()
-                    )
-                );
+                return ($this->callback)($input);
             }
         };
     }

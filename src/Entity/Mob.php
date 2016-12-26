@@ -732,4 +732,9 @@ class Mob implements Noun
         $this->disposition = (string) $this->disposition;
         $this->ageInSeconds += time() - $this->ageTimer;
     }
+
+    public function __toString(): string
+    {
+        return $this->name;
+    }
 }

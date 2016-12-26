@@ -19,7 +19,6 @@ use PhpMud\Entity\Mob;
 use PhpMud\Enum\Disposition;
 use PhpMud\Enum\Job as JobEnum;
 use PhpMud\Enum\TargetType;
-use PhpMud\Fight;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Job\Job;
@@ -78,23 +77,19 @@ class Bash implements Ability, Skill, CreationGroup, Performable, Noun
     public function perform(Input $input): Output
     {
         if (random_int(1, 4) === 1) {
-            $input->getMob()->getFight()->getTarget()->addAffect(
+            $input->getTarget()->addAffect(
                 new Affect(\PhpMud\Enum\Affect::STUN, random_int(1, 3))
             );
         }
 
         $base = (int)floor(($input->getMob()->getLevel() / 10) + 1);
 
-        $input
-            ->getMob()
-            ->getFight()
-            ->getTarget()
-            ->modifyHp(-random_int($base, (int)floor($base * 1.5)));
+        $input->getTarget()->modifyHp(-random_int($base, (int)floor($base * 1.5)));
 
         return new Output(
             sprintf(
                 'You slam into %s and send them flying!',
-                $input->getMob()->getFight()->getTarget()->getName()
+                (string)$input->getTarget()
             )
         );
 

@@ -20,8 +20,6 @@ use PhpMud\Enum\OutputStatus;
  */
 class Output
 {
-
-
     /**
      * @var string
      */
@@ -57,19 +55,7 @@ class Output
 
     public function writeResponse(Client $client)
     {
-        if ($this->response) {
-            $client->write($this->response."\n ".$client->prompt());
-        }
-
-        /**
-        if ($this->roomMessage) {
-            foreach ($client->getMob()->getRoom()->getMobs() as $m) {
-                if ($m !== $client->getMob()) {
-
-                }
-            }
-        }
-         */
+        $client->write(sprintf('%s%s', $this->response ? $this->response."\n" : '', $client->prompt()));
     }
 
     public function __toString()

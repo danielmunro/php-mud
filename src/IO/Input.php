@@ -64,6 +64,13 @@ class Input
         return $this->client->getMob();
     }
 
+    public function getTarget()
+    {
+        if ($this->client->getMob()->getFight()) {
+            return $this->client->getMob()->getFight()->getTarget();
+        }
+    }
+
     public function getDisposition(): Disposition
     {
         return $this->client->getMob()->getDisposition();
