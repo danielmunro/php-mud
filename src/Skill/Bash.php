@@ -92,7 +92,6 @@ class Bash implements Ability, Skill, CreationGroup, Performable, Noun
                 (string)$input->getTarget()
             )
         );
-
     }
 
     public function getMinimumDisposition(): Disposition

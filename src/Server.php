@@ -171,28 +171,21 @@ class Server
     public function pulse()
     {
         invoke(static::$mobs, 'pulse');
-        each(
-            $this->clients,
-            function (Client $client) {
-                if (!$client->getMob()) {
-                    return;
-                }
-                with(
-                    $client->getMob()->getFight(),
-                    function (Fight $fight) use ($client) {
-
-                        $client->write(
-                            sprintf(
-                                "%s %s.\n%s",
-                                $fight->getTarget()->getName(),
-                                $fight->getTarget()->getCondition(),
-                                $client->prompt()
-                            )
-                        );
-                    }
-                );
+        each($this->clients, function (Client $client) {
+            if (!$client->getMob()) {
+                return;
             }
-        );
+            with($client->getMob()->getFight(), function (Fight $fight) use ($client) {
+                $client->write(
+                    sprintf(
+                        "%s %s.\n%s",
+                        $fight->getTarget()->getName(),
+                        $fight->getTarget()->getCondition(),
+                        $client->prompt()
+                    )
+                );
+            });
+        });
     }
 
     /**
@@ -224,9 +217,6 @@ class Server
             }
         );
 
-        $this->em->persist($this->startRoom);
-        $this->em->flush();
-
         each(
             $this->em->getRepository(Area::class)->findAll(),
             function (Area $area) {
@@ -235,6 +225,16 @@ class Server
                 }
             }
         );
+    }
+
+    public function persist()
+    {
+        $start = microtime(true);
+        $this->em->persist($this->startRoom);
+        $this->em->flush();
+        $this->logger->debug('persist', [
+            'elapsed' => (microtime(true) - $start) * 1000
+        ]);
     }
 
     public function getStartRoom(): Room

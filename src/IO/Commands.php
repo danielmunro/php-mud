@@ -19,6 +19,7 @@ use PhpMud\Enum\Role;
 use PhpMud\Enum\TargetType;
 use PhpMud\Fight;
 use PhpMud\IO\Command\AffectsCommand;
+use PhpMud\IO\Command\RoomCommand;
 use PhpMud\Performable;
 use PhpMud\Server;
 use PhpMud\IO\Command\BuyCommand;
@@ -34,7 +35,7 @@ use PhpMud\IO\Command\ListCommand;
 use PhpMud\IO\Command\LookCommand;
 use PhpMud\IO\Command\MoveCommand;
 use PhpMud\IO\Command\NewMobCommand;
-use PhpMud\IO\Command\NewRoomCommand;
+use PhpMud\IO\Command\BuildCommand;
 use PhpMud\IO\Command\QuitCommand;
 use PhpMud\IO\Command\RemoveCommand;
 use PhpMud\IO\Command\ScoreCommand;
@@ -65,7 +66,7 @@ class Commands
         $this->container = new Container();
         $this->container->register(new MoveCommand());
         $this->container->register(new LookCommand());
-        $this->container->register(new NewRoomCommand());
+        $this->container->register(new BuildCommand());
         $this->container->register(new NewMobCommand());
         $this->container->register(new QuitCommand());
         $this->container->register(new GossipCommand());
@@ -89,6 +90,7 @@ class Commands
         $this->container->register(new LevelCommand());
         $this->container->register(new SkillsCommand());
         $this->container->register(new AffectsCommand());
+        $this->container->register(new RoomCommand());
     }
 
     public function execute(Input $input): Output

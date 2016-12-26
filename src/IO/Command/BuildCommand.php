@@ -14,11 +14,11 @@ use Pimple\ServiceProviderInterface;
 use function Functional\last;
 use function Functional\first;
 
-class NewRoomCommand implements ServiceProviderInterface
+class BuildCommand implements ServiceProviderInterface
 {
     public function register(Container $pimple)
     {
-        $pimple['roomfact'] = $pimple->protect(function () {
+        $pimple['build'] = $pimple->protect(function () {
 
             return new class implements Command {
                 /**
@@ -79,6 +79,8 @@ class NewRoomCommand implements ServiceProviderInterface
                     $newDirection = new Direction($newRoom, $direction->reverse(), $srcRoom);
                     $newRoom->getDirections()->add($newDirection);
                     $srcRoom->getArea()->addRoom($newRoom);
+
+                    $server->persist();
 
                     return new Output(sprintf('A room appears %s', (string)$direction));
                 }
