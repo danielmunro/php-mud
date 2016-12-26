@@ -23,12 +23,6 @@ class Affect extends Enum
 
     public function getWearOffMessage()
     {
-        /**
-        switch ($this->value) {
-
-        }
-         */
-
         return null;
     }
 }

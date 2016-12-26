@@ -208,10 +208,17 @@ class Server
         $this->time->incrementTime();
 
         each(
+            static::$mobs,
+            function (Mob $mob) {
+                $mob->regen();
+                $mob->decrementAffects();
+            }
+        );
+
+        each(
             $this->clients->toArray(),
             function (Client $client) {
                 with($client->getMob(), function () use ($client) {
-                    $client->getMob()->regen();
                     $client->write("\n" . $client->prompt());
                 });
             }
@@ -223,9 +230,9 @@ class Server
         each(
             $this->em->getRepository(Area::class)->findAll(),
             function (Area $area) {
-                with(random_int(1, 4) === 1, function () use ($area) {
+                if (random_int(1, 4) === 1) {
                     $area->setRandomWeather();
-                });
+                }
             }
         );
     }

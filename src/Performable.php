@@ -12,11 +12,20 @@ declare(strict_types=1);
 
 namespace PhpMud;
 
+use PhpMud\Entity\Mob;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 
 interface Performable
 {
+    public function rollDice(): int;
+
+    public function applySuccessCost(Mob $mob);
+
+    public function applyFailCost(Mob $mob);
+
+    public function canPerform(Mob $mob): bool;
+
     public function perform(Input $input): Output;
 
     public function getDelay(): int;

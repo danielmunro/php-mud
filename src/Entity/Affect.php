@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace PhpMud\Entity;
 
+use PhpMud\Enum\Affect as AffectEnum;
+
 /**
  * @Entity
  */
@@ -31,11 +33,15 @@ class Affect
     /** @ManyToOne(targetEntity="Mob", inversedBy="affects") */
     protected $mob;
 
+    /** @var AffectEnum $enum */
+    protected $enum;
+
     public function __construct(string $name, $timeout = 0, Attributes $attributes = null)
     {
         $this->name = $name;
         $this->timeout = $timeout;
         $this->attributes = $attributes;
+        $this->postLoad();
     }
 
     public function getName(): string
@@ -48,8 +54,18 @@ class Affect
         return $this->timeout;
     }
 
-    public function decrementTimeout(): int
+    public function getEnum(): AffectEnum
     {
-        return $this->timeout--;
+        return $this->enum;
+    }
+
+    public function decrementTimeout()
+    {
+        $this->timeout--;
+    }
+
+    public function postLoad()
+    {
+        $this->enum = new AffectEnum($this->name);
     }
 }

@@ -33,6 +33,7 @@ use function Functional\with;
 use function Functional\each;
 use function Functional\first;
 use function Functional\none;
+use function Functional\filter;
 use PhpMud\Skill\Meditation;
 
 /**
@@ -78,7 +79,7 @@ class Mob implements Noun
     /** @Column(type="string") */
     protected $race;
 
-    /** @OneToMany(targetEntity="Affect", mappedBy="mob") */
+    /** @OneToMany(targetEntity="Affect", mappedBy="mob", cascade={"persist"}) */
     protected $affects;
 
     /** @Column(type="integer") */
@@ -187,12 +188,23 @@ class Mob implements Noun
         );
     }
 
-    public function pulse()
+    public function decrementAffects()
     {
         $this->affects = $this->affects->filter(function (Affect $affect) {
-            return $affect->decrementTimeout() >= 0;
-        });
+            $affect->decrementTimeout();
 
+            if ($affect->getTimeout() === 0) {
+                with($affect->getEnum()->getWearOffMessage(), function (string $message) {
+                    $this->notify(new Output($message));
+                });
+            }
+
+            return $affect->getTimeout() > 0;
+        });
+    }
+
+    public function pulse()
+    {
         if ($this->delay > 0) {
             $this->delay--;
         }

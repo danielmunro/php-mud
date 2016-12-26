@@ -55,10 +55,32 @@ class Bash implements Ability, Skill, CreationGroup, Performable, Noun
         return 2;
     }
 
+    public function rollDice(): int
+    {
+        return \PhpMud\Dice\d100();
+    }
+
+    public function applyFailCost(Mob $mob)
+    {
+        $mob->modifyMv(-(int)floor($mob->getMv() / 3));
+    }
+
+    public function applySuccessCost(Mob $mob)
+    {
+        $mob->modifyMv(-(int)floor($mob->getMv() / 2));
+    }
+
+    public function canPerform(Mob $mob): bool
+    {
+        return $mob->getMv() > 40;
+    }
+
     public function perform(Input $input): Output
     {
         if (random_int(1, 4) === 1) {
-            $input->getMob()->getFight()->getTarget()->addAffect(new Affect(\PhpMud\Enum\Affect::STUN, random_int(1, 3)));
+            $input->getMob()->getFight()->getTarget()->addAffect(
+                new Affect(\PhpMud\Enum\Affect::STUN, random_int(1, 3))
+            );
         }
 
         $base = (int)floor(($input->getMob()->getLevel() / 10) + 1);

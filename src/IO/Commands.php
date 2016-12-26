@@ -147,6 +147,10 @@ class Commands
                         }
                     }
 
+                    if (!$ability->getAbility()->canPerform($input->getMob())) {
+                        return $this->tooTiredCommand();
+                    }
+
                     if ($ability->getAbility()->getTargetType()->equals(TargetType::OFFENSIVE())) {
                         if ($target && $target->hasRole(Role::SHOPKEEPER())) {
                             return $this->noAttackingShopkeeperCommand();
@@ -164,6 +168,7 @@ class Commands
                     }
 
                     $input->getMob()->incrementDelay($ability->getAbility()->getDelay());
+                    $ability->getAbility()->applySuccessCost($input->getMob());
 
                     return new class($ability) implements Command {
 
@@ -184,6 +189,16 @@ class Commands
             ) ??
 
             $this->unknownInputCommand();
+    }
+
+    private function tooTiredCommand(): Command
+    {
+        return new class implements Command {
+            public function execute(Server $server, Input $input): Output
+            {
+                return new Output('You are too tired.');
+            }
+        };
     }
 
     private function noAttackingShopkeeperCommand(): Command
