@@ -225,6 +225,8 @@ class Server
                 }
             }
         );
+
+        $this->persist();
     }
 
     public function persist()
@@ -233,7 +235,7 @@ class Server
         $this->em->persist($this->startRoom);
         $this->em->flush();
         $this->logger->debug('persist', [
-            'elapsed' => (microtime(true) - $start) * 1000
+            'elapsed' => sprintf('%dms', round((microtime(true) - $start) * 1000))
         ]);
     }
 
