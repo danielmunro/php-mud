@@ -135,6 +135,11 @@ class Item implements Noun
         $this->level = $level;
     }
 
+    public function __toString(): string
+    {
+        return $this->name;
+    }
+
     /**
      * @PostLoad
      * @PostPersist

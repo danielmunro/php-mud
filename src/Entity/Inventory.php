@@ -143,6 +143,12 @@ class Inventory
         );
     }
 
+    public function hasCapacityToAdd(Item $item): bool
+    {
+        return $this->capacityCount >= $this->items->count() + 1 &&
+            $this->capacityWeight >= $this->getWeight() + $item->getWeight();
+    }
+
     public function getCapacityWeight(): int
     {
         return $this->capacityWeight;

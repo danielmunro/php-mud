@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace PhpMud\Enum;
 
 use MyCLabs\Enum\Enum;
+use PhpMud\Role\Role as RoleInterface;
+use PhpMud\Role\Scavenger;
 
 /**
  * @method static SHOPKEEPER()
@@ -23,10 +25,15 @@ use MyCLabs\Enum\Enum;
 class Role extends Enum
 {
     const SHOPKEEPER = 'shopkeeper';
-
     const SCAVENGER = 'scavenger';
-
     const GUARD = 'guard';
-
     const AGGRESSIVE = 'aggressive';
+
+    public function getRole(): RoleInterface
+    {
+        switch ($this->value) {
+            case self::SCAVENGER:
+                return new Scavenger();
+        }
+    }
 }

@@ -16,6 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use PhpMud\Direction\Direction as AbstractDirection;
 use function Functional\each;
+use PhpMud\IO\Output;
 use PhpMud\Server;
 
 /**
@@ -151,6 +152,18 @@ class Room
     public function getArea(): Area
     {
         return $this->area;
+    }
+
+    public function notify(Mob $mob, Output $message)
+    {
+        each(
+            $this->mobs->toArray(),
+            function (Mob $roomMob) use ($mob, $message) {
+                if ($roomMob->getId() !== $mob->getId()) {
+                    $roomMob->notify($message);
+                }
+            }
+        );
     }
 
     /**

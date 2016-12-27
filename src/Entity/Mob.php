@@ -212,6 +212,12 @@ class Mob implements Noun
         if ($this->fight) {
             $this->fight->turn();
         }
+
+        /** @var Role $scavenger */
+        $scavenger = Role::SCAVENGER();
+        if ($this->hasRole($scavenger)) {
+            $scavenger->getRole()->perform($this);
+        }
     }
 
     public function attackRoll(Mob $target): bool

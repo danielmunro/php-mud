@@ -7,8 +7,10 @@ require_once __DIR__.'/../bootstrap.php';
 use PhpMud\Entity\Room;
 use PhpMud\Server;
 
+$repository = $em->getRepository(Room::class);
+$repository->findAll();
 /** @var Room $room */
-$room = $em->getRepository(Room::class)->find(Room::START);
+$room = $repository->find(Room::START);
 
 if (!$room) {
     $log->error('db fixtures have not been created yet');
@@ -16,3 +18,4 @@ if (!$room) {
 }
 
 (new Server($em, $room, $log))->listen($config['ip'], $config['port']);
+
