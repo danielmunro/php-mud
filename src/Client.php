@@ -21,14 +21,11 @@ class Client
 {
     const EVENT_DATA = 'data';
 
-    /**
-     * @var array
-     */
     protected $buffer = [];
 
-    /**
-     * @var Mob
-     */
+    protected $lastInput = '';
+
+    /** @var Mob $mob */
     protected $mob;
 
     /**
@@ -67,7 +64,13 @@ class Client
 
     public function input(string $input): Input
     {
-        return new Input(trim($input), $this);
+        $input = trim($input);
+        if ($input === '!') {
+            $input = $this->lastInput;
+        } else {
+            $this->lastInput = $input;
+        }
+        return new Input($input, $this);
     }
 
     public function prompt()
