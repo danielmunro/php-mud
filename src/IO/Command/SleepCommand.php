@@ -16,7 +16,7 @@ class SleepCommand implements ServiceProviderInterface
     public function register(Container $pimple)
     {
         $pimple['sleep'] = $pimple->protect(function () {
-            return new class() implements Command
+            return new class implements Command
             {
                 public function execute(Server $server, Input $input): Output
                 {

@@ -105,16 +105,15 @@ class Commands
 
     private function parse(Input $input): Command
     {
-        return
-            with(
-                first($this->container->keys(), function ($key) use ($input) {
-                    return strpos($key, $input->getCommand()) === 0;
-                }),
-                function (string $command) {
-                    return $this->container[$command]();
-                }
-            ) ??
+        $command = first($this->container->keys(), function ($key) use ($input) {
+            return strpos($key, $input->getCommand()) === 0;
+        });
 
+        if ($command) {
+            return $this->container[$command]();
+        }
+
+        return
             with(
                 first(
                     $input->getMob()->getAbilities()->toArray(),

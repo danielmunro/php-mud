@@ -64,6 +64,11 @@ class Affect
         $this->timeout--;
     }
 
+    public function getAttribute(string $attribute): int
+    {
+        return $this->attributes->getAttribute($attribute);
+    }
+
     public function postLoad()
     {
         $this->enum = new AffectEnum($this->name);

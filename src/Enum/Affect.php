@@ -20,9 +20,14 @@ use MyCLabs\Enum\Enum;
 class Affect extends Enum
 {
     const STUN = 'stun';
+    const BERSERK = 'berserk';
 
     public function getWearOffMessage()
     {
+        if ($this->value === static::BERSERK) {
+            return 'You feel your pulse slow down.';
+        }
+
         return null;
     }
 }

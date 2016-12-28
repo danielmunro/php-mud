@@ -14,6 +14,7 @@ namespace PhpMud\Role;
 
 use PhpMud\Entity\Direction;
 use PhpMud\Entity\Mob;
+use PhpMud\Entity\Room;
 use PhpMud\Enum\Role as RoleEnum;
 use PhpMud\IO\Command\MoveCommand;
 use PhpMud\IO\Input;
@@ -21,6 +22,7 @@ use function PhpMud\Dice\d20;
 
 class Mobile implements Role
 {
+    /** @var Room $lastRoom */
     protected $lastRoom;
 
     public function perform(Mob $mob)

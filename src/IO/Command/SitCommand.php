@@ -16,7 +16,7 @@ class SitCommand implements ServiceProviderInterface
     public function register(Container $pimple)
     {
         $pimple['sit'] = $pimple->protect(function () {
-            return new class() implements Command
+            return new class implements Command
             {
                 public function execute(Server $server, Input $input): Output
                 {

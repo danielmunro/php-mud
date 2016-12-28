@@ -15,6 +15,7 @@ namespace PhpMud\Skill;
 use PhpMud\Ability\Ability;
 use PhpMud\CreationGroup;
 use PhpMud\Entity\Affect;
+use PhpMud\Entity\Attributes;
 use PhpMud\Entity\Mob;
 use PhpMud\Enum\Disposition;
 use PhpMud\Enum\Job as JobEnum;
@@ -61,12 +62,12 @@ class Bash implements Ability, Skill, CreationGroup, Performable, Noun
 
     public function applyFailCost(Mob $mob)
     {
-        $mob->modifyMv(-(int)floor($mob->getMv() / 3));
+        $mob->modifyMv(-20);
     }
 
     public function applySuccessCost(Mob $mob)
     {
-        $mob->modifyMv(-(int)floor($mob->getMv() / 2));
+        $mob->modifyMv(-40);
     }
 
     public function canPerform(Mob $mob): bool
@@ -78,7 +79,14 @@ class Bash implements Ability, Skill, CreationGroup, Performable, Noun
     {
         if (random_int(1, 4) === 1) {
             $input->getTarget()->addAffect(
-                new Affect(\PhpMud\Enum\Affect::STUN, random_int(1, 3))
+                new Affect(
+                    \PhpMud\Enum\Affect::STUN,
+                    random_int(1, 3),
+                    new Attributes([
+                        'int' => -1,
+                        'wis' => -1,
+                        'dex' => -1
+                    ]))
             );
         }
 
@@ -109,6 +117,11 @@ class Bash implements Ability, Skill, CreationGroup, Performable, Noun
         return [
             $this->__toString()
         ];
+    }
+
+    public function getLongDescription(): string
+    {
+        return 'Stun and pummel a target.';
     }
 
     public function __toString(): string

@@ -35,6 +35,7 @@ use function Functional\each;
 use function Functional\first;
 use function Functional\none;
 use function Functional\filter;
+use function Functional\reduce_left;
 use PhpMud\Skill\Meditation;
 
 /**
@@ -294,7 +295,13 @@ class Mob implements Noun
      */
     public function getAttribute(string $attribute): int
     {
-        return $this->attributes->getAttribute($attribute);
+        return $this->attributes->getAttribute($attribute) + reduce_left(
+                $this->affects->toArray(),
+                function (Affect $affect, int $index, array $collection, int $reduction) use ($attribute) {
+                    return $reduction + $affect->getAttribute($attribute);
+                },
+                0
+            );
     }
 
     /**
@@ -501,6 +508,17 @@ class Mob implements Noun
     public function isPlayer(): bool
     {
         return $this->isPlayer;
+    }
+
+    public function getGenderPronoun(): string
+    {
+        if ($this->gender === Gender::FEMALE) {
+            return 'her';
+        } elseif ($this->gender === Gender::MALE) {
+            return 'his';
+        } else {
+            return 'its';
+        }
     }
 
     public function getGender(): Gender
