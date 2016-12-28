@@ -45,7 +45,7 @@ class MoveTest extends CommandTest
 
         $output = $commands->execute($client->input((string)$reverse));
         static::assertEquals($room1, $client->getMob()->getRoom());
-        static::assertEquals(MoveCommand::DIRECTION_NOT_FOUND, $output->getResponse());
+        static::assertEquals('Alas, that direction does not exist.', $output->getResponse());
     }
 
     public function moveDataProvider()
