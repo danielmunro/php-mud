@@ -49,6 +49,11 @@ class Input
      */
     protected $subject;
 
+    /**
+     * @var int $skipCount
+     */
+    protected $skipCount = 0;
+
     public function __construct(string $input, Client $client = null)
     {
         $input = trim($input);
@@ -58,8 +63,12 @@ class Input
         }
         $this->args = explode(' ', $input);
         $this->command = $this->args[0];
-        $this->subject = $this->args[1] ?? '';
         $this->input = $input;
+        $this->subject = $this->args[1] ?? '';
+        if (strpos($this->subject, '.') !== false) {
+            list($this->skipCount, $this->subject) = explode('.', $this->subject);
+            $this->skipCount = (int)$this->skipCount;
+        }
     }
 
     public function getClient()
@@ -101,10 +110,16 @@ class Input
 
     public function isSubjectMatch(Noun $noun): bool
     {
-        return count($this->args) > 1 ? !empty(select(
+        return $this->subject ? !empty(select(
             $noun->getIdentifiers(),
             function (string $identifier) {
-                return stripos($identifier, $this->args[1]) === 0;
+                if (stripos($identifier, $this->subject) === 0) {
+                    if ($this->skipCount === 0) {
+                        return true;
+                    } else {
+                        $this->skipCount--;
+                    }
+                }
             }
         )) : false;
     }
