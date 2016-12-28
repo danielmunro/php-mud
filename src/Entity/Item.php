@@ -135,6 +135,11 @@ class Item implements Noun
         $this->level = $level;
     }
 
+    public function getLongDescription(): string
+    {
+        return $this->look ?? '%s is here.';
+    }
+
     public function __toString(): string
     {
         return $this->name;

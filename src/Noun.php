@@ -18,4 +18,6 @@ namespace PhpMud;
 interface Noun
 {
     public function getIdentifiers(): array;
+
+    public function getLongDescription(): string;
 }

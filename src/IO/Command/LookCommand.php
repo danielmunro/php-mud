@@ -6,15 +6,16 @@ namespace PhpMud\IO\Command;
 use PhpMud\Color;
 use PhpMud\Command;
 use PhpMud\Entity\Direction;
-use PhpMud\Entity\Item;
 use PhpMud\Entity\Mob;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
+use PhpMud\Noun;
 use PhpMud\Server;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use function Functional\reduce_left;
-use function Functional\map;
+use function Functional\with;
+use function Functional\first;
 
 class LookCommand implements ServiceProviderInterface
 {
@@ -35,6 +36,24 @@ class LookCommand implements ServiceProviderInterface
                         $room->getVisibility() <=
                         $input->getMob()->getRace()->getVisibilityRequirement()->getValue()) {
                         return new Output("You can't see a thing!");
+                    }
+
+                    if ($input->getSubject()) {
+                        return with(
+                            first(
+                                array_merge(
+                                    $room->getMobs()->toArray(),
+                                    $room->getInventory()->getItems(),
+                                    $input->getMob()->getInventory()->getItems()
+                                ),
+                                function (Noun $noun) use ($input) {
+                                    return $input->isSubjectMatch($noun);
+                                }
+                            ),
+                            function (Noun $noun) {
+                                return new Output(sprintf($noun->getLongDescription(), (string)$noun));
+                            }
+                        ) ?? new Output("You don't see that here.");
                     }
 
                     return new Output(

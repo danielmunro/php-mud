@@ -235,6 +235,11 @@ class Mob implements Noun
         return true;
     }
 
+    public function getLongDescription(): string
+    {
+        return $this->look ?? '%s is here.';
+    }
+
     public function getLook(): string
     {
         return $this->look ?? '%s is here.';
