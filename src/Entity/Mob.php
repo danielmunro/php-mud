@@ -26,6 +26,7 @@ use PhpMud\Job\JobFactory;
 use PhpMud\Job\Uninitiated;
 use PhpMud\Noun;
 use PhpMud\Race\Race;
+use PhpMud\Role\Roles;
 use PhpMud\Skill\FastHealing;
 use function PhpMud\Dice\d20;
 use function PhpMud\Dice\dInt;
@@ -213,11 +214,9 @@ class Mob implements Noun
             $this->fight->turn();
         }
 
-        /** @var Role $scavenger */
-        $scavenger = Role::SCAVENGER();
-        if ($this->hasRole($scavenger)) {
-            $scavenger->getRole()->perform($this);
-        }
+        each ($this->roles, function (string $role) {
+            Roles::getRole($role)->perform($this);
+        });
     }
 
     public function attackRoll(Mob $target): bool
@@ -681,9 +680,24 @@ class Mob implements Noun
         return $this->affects;
     }
 
+    public function getRoles(): array
+    {
+        return $this->roles;
+    }
+
     public function addRole(Role $role)
     {
         $this->roles[] = $role->getValue();
+    }
+
+    public function removeRole(Role $role)
+    {
+        $this->roles = filter(
+            $this->roles,
+            function (string $roleName) use ($role) {
+                return $roleName !== (string)$role;
+            }
+        );
     }
 
     public function hasRole(Role $role): bool

@@ -13,8 +13,10 @@ declare(strict_types=1);
 namespace PhpMud\Enum;
 
 use MyCLabs\Enum\Enum;
+use PhpMud\Role\Mobile;
 use PhpMud\Role\Role as RoleInterface;
 use PhpMud\Role\Scavenger;
+use PhpMud\Role\Shopkeeper;
 
 /**
  * @method static SHOPKEEPER()
@@ -28,12 +30,19 @@ class Role extends Enum
     const SCAVENGER = 'scavenger';
     const GUARD = 'guard';
     const AGGRESSIVE = 'aggressive';
+    const MOBILE = 'mobile';
 
     public function getRole(): RoleInterface
     {
         switch ($this->value) {
             case self::SCAVENGER:
                 return new Scavenger();
+            case self::MOBILE:
+                return new Mobile();
+            case self::SHOPKEEPER:
+                return new Shopkeeper();
+            default:
+                throw new \UnexpectedValueException($this->value);
         }
     }
 }

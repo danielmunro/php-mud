@@ -22,9 +22,7 @@ use function Functional\first;
 
 class MoveCommand implements ServiceProviderInterface
 {
-    const DIRECTION_NOT_FOUND = 'Alas, that direction does not exist';
-
-    protected static function svc(Direction $direction): Command
+    public static function svc(Direction $direction): Command
     {
         return new class($direction) implements Command
         {
@@ -44,31 +42,37 @@ class MoveCommand implements ServiceProviderInterface
              */
             public function execute(Server $server, Input $input): Output
             {
-                if (!$input->getDisposition()->equals(Disposition::STANDING())) {
-                    return $input->getClient()->getDispositionCheckFail();
-                }
-
-                if ($input->getMob()->getFight()) {
-                    return new Output('You are fighting!');
-                }
-
-                $mob = $input->getMob();
-                $targetDirection = first(
-                    $mob->getRoom()->getDirections()->toArray(),
-                    function (DirectionEntity $d) {
-                        return (string)$d->getDirection() === (string)$this->direction;
-                    }
-                );
-
-                if (!$targetDirection) {
-                    return new Output(MoveCommand::DIRECTION_NOT_FOUND);
-                }
-
-                $mob->setRoom($targetDirection->getTargetRoom());
-
-                return $server->getCommands()->execute(new Input('look', $input->getClient()));
+                return MoveCommand::move($input, $this->direction) ??
+                    $server->getCommands()->execute(new Input('look', $input->getClient()));
             }
         };
+    }
+
+    public static function move(Input $input, Direction $direction)
+    {
+        if (!$input->getDisposition()->equals(Disposition::STANDING())) {
+            return $input->getClient()->getDispositionCheckFail();
+        }
+
+        if ($input->getMob()->getFight()) {
+            return new Output('You are fighting!');
+        }
+
+        $mob = $input->getMob();
+        $targetDirection = first(
+            $mob->getRoom()->getDirections()->toArray(),
+            function (DirectionEntity $d) use ($direction) {
+                return (string)$d->getDirection() === (string)$direction;
+            }
+        );
+
+        if (!$targetDirection) {
+            return new Output('Alas, that direction does not exist.');
+        }
+
+        $mob->getRoom()->notify($mob, new Output(sprintf("%s leaves heading %s.\n", (string)$mob, (string)$targetDirection)));
+        $mob->setRoom($targetDirection->getTargetRoom());
+        $mob->getRoom()->notify($mob, new Output(sprintf("%s arrives.\n", (string)$mob)));
     }
 
     public function register(Container $pimple)

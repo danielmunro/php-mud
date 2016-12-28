@@ -19,6 +19,7 @@ use PhpMud\Enum\Role;
 use PhpMud\Enum\TargetType;
 use PhpMud\Fight;
 use PhpMud\IO\Command\AffectsCommand;
+use PhpMud\IO\Command\RoleCommand;
 use PhpMud\IO\Command\RoomCommand;
 use PhpMud\Performable;
 use PhpMud\Server;
@@ -91,6 +92,7 @@ class Commands
         $this->container->register(new SkillsCommand());
         $this->container->register(new AffectsCommand());
         $this->container->register(new RoomCommand());
+        $this->container->register(new RoleCommand());
     }
 
     public function execute(Input $input): Output
@@ -162,7 +164,7 @@ class Commands
                 return $this->noAttackingShopkeeperCommand();
             }
 
-            if ($target && $input->getTarget() !== $target) {
+            if ($target && $input->getTarget() && $input->getTarget() !== $target) {
                 return $this->tooManyTargetsCommand();
             } elseif ($target && !$input->getMob()->getFight()) {
                 $input->getMob()->setFight(new Fight($input->getMob(), $target));

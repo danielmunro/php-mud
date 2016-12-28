@@ -14,13 +14,19 @@ namespace PhpMud\Role;
 
 use PhpMud\Entity\Item;
 use PhpMud\Entity\Mob;
-use function Functional\first;
+use PhpMud\Enum\Role as RoleEnum;
 use PhpMud\IO\Output;
+use function Functional\first;
+use function PhpMud\Dice\d6;
 
 class Scavenger implements Role
 {
     public function perform(Mob $mob)
     {
+        if (d6() !== 1) {
+            return;
+        }
+
         first(
             $mob->getRoom()->getInventory()->getItems(),
             function (Item $item) use ($mob) {
@@ -38,5 +44,10 @@ class Scavenger implements Role
                 return null;
             }
         );
+    }
+
+    public function __toString(): string
+    {
+        return RoleEnum::SCAVENGER;
     }
 }

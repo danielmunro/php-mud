@@ -17,4 +17,6 @@ use PhpMud\Entity\Mob;
 interface Role
 {
     public function perform(Mob $mob);
+
+    public function __toString(): string;
 }

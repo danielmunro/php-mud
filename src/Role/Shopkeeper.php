@@ -10,24 +10,19 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace PhpMud\Dice;
+namespace PhpMud\Role;
 
-function dInt($int): int
-{
-    return random_int(1, $int);
-}
+use PhpMud\Entity\Mob;
+use PhpMud\Enum\Role as RoleEnum;
 
-function d6(): int
+class Shopkeeper implements Role
 {
-    return random_int(1, 6);
-}
+    public function perform(Mob $mob)
+    {
+    }
 
-function d20(): int
-{
-    return random_int(1, 20);
-}
-
-function d100(): int
-{
-    return random_int(1, 100);
+    public function __toString(): string
+    {
+        return RoleEnum::SHOPKEEPER;
+    }
 }

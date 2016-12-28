@@ -30,6 +30,11 @@ class Input
     protected $client;
 
     /**
+     * @var Mob $mob
+     */
+    protected $mob;
+
+    /**
      * @var array $args
      */
     protected $args;
@@ -48,6 +53,9 @@ class Input
     {
         $input = trim($input);
         $this->client = $client;
+        if ($this->client) {
+            $this->mob = $this->client->getMob();
+        }
         $this->args = explode(' ', $input);
         $this->command = $this->args[0];
         $this->subject = $this->args[1] ?? '';
@@ -59,26 +67,31 @@ class Input
         return $this->client;
     }
 
+    public function setMob(Mob $mob)
+    {
+        $this->mob = $mob;
+    }
+
     public function getMob(): Mob
     {
-        return $this->client->getMob();
+        return $this->mob;
     }
 
     public function getTarget()
     {
-        if ($this->client->getMob()->getFight()) {
-            return $this->client->getMob()->getFight()->getTarget();
+        if ($this->mob->getFight()) {
+            return $this->mob->getFight()->getTarget();
         }
     }
 
     public function getDisposition(): Disposition
     {
-        return $this->client->getMob()->getDisposition();
+        return $this->mob->getDisposition();
     }
 
     public function getRoom(): Room
     {
-        return $this->client->getMob()->getRoom();
+        return $this->mob->getRoom();
     }
 
     public function isAbilityMatch(Ability $ability): bool
