@@ -30,6 +30,21 @@ class Warrior implements Job
         ]);
     }
 
+    public function getRandomHpGain(): int
+    {
+        return random_int(11, 15);
+    }
+
+    public function getRandomManaGain(): int
+    {
+        return random_int(8, 12);
+    }
+
+    public function getRandomMvGain(): int
+    {
+        return random_int(15, 25);
+    }
+
     public function getDefaultWeapon(): Ability
     {
         return Ability::SWORD();

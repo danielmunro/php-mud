@@ -48,6 +48,8 @@ class Mob implements Noun
 
     const INITIAL_SILVER = 20;
 
+    const MAX_LEVEL = 51;
+
     /** @Column(type="string") */
     protected $name;
 
@@ -679,12 +681,96 @@ class Mob implements Noun
 
     public function levelUp(): int
     {
-        if (!$this->debitLevels) {
+        if (!$this->debitLevels || $this->level >= self::MAX_LEVEL || !$this->isPlayer()) {
             return $this->level;
         }
 
         $this->debitLevels--;
         $this->level++;
+
+        $this->attributes->modifyAttribute(
+            'hp',
+            with(
+                $this->getAttribute('con'),
+                function (int $stat) {
+                    if ($stat < 15) {
+                        return 0;
+                    } elseif ($stat === 15) {
+                        return 1;
+                    } elseif ($stat <= 17) {
+                        return 2;
+                    } elseif ($stat <= 19) {
+                        return 3;
+                    } elseif ($stat <= 21) {
+                        return 4;
+                    } elseif ($stat === 22) {
+                        return 5;
+                    } elseif ($stat === 23) {
+                        return 6;
+                    } elseif ($stat === 24) {
+                        return 7;
+                    }
+
+                    return 8;
+                }
+            ) + $this->job->getRandomHpGain()
+        );
+
+        $this->attributes->modifyAttribute(
+            'mana',
+            with(
+                $this->getAttribute('wis'),
+                function (int $stat) {
+                    if ($stat < 15) {
+                        return 0;
+                    } elseif ($stat === 15) {
+                        return 1;
+                    } elseif ($stat <= 17) {
+                        return 2;
+                    } elseif ($stat <= 19) {
+                        return 3;
+                    } elseif ($stat <= 21) {
+                        return 4;
+                    } elseif ($stat === 22) {
+                        return 5;
+                    } elseif ($stat === 23) {
+                        return 6;
+                    } elseif ($stat === 24) {
+                        return 7;
+                    }
+
+                    return 8;
+                }
+            ) + $this->job->getRandomManaGain()
+        );
+
+        $this->attributes->modifyAttribute(
+            'mv',
+            with(
+                $this->getAttribute('dex'),
+                function (int $stat) {
+                    if ($stat < 15) {
+                        return 0;
+                    } elseif ($stat === 15) {
+                        return 1;
+                    } elseif ($stat <= 17) {
+                        return 2;
+                    } elseif ($stat <= 19) {
+                        return 3;
+                    } elseif ($stat <= 21) {
+                        return 4;
+                    } elseif ($stat === 22) {
+                        return 5;
+                    } elseif ($stat === 23) {
+                        return 6;
+                    } elseif ($stat === 24) {
+                        return 7;
+                    }
+
+                    return 8;
+                }
+            ) + $this->job->getRandomMvGain()
+        );
 
         return $this->level;
     }

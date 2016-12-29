@@ -21,5 +21,11 @@ interface Job
 
     public function getStartingAttributes(): Attributes;
 
+    public function getRandomHpGain(): int;
+
+    public function getRandomManaGain(): int;
+
+    public function getRandomMvGain(): int;
+
     public function __toString(): string;
 }

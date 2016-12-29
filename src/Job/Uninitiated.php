@@ -25,6 +25,21 @@ class Uninitiated implements Job
         return new Attributes();
     }
 
+    public function getRandomHpGain(): int
+    {
+        return random_int(6, 15);
+    }
+
+    public function getRandomManaGain(): int
+    {
+        return random_int(8, 30);
+    }
+
+    public function getRandomMvGain(): int
+    {
+        return random_int(7, 10);
+    }
+
     public function getDefaultWeapon(): Ability
     {
         return Ability::HAND_TO_HAND();

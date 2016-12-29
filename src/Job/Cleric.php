@@ -31,6 +31,21 @@ class Cleric implements Job
         ]);
     }
 
+    public function getRandomHpGain(): int
+    {
+        return random_int(7, 10);
+    }
+
+    public function getRandomManaGain(): int
+    {
+        return random_int(15, 25);
+    }
+
+    public function getRandomMvGain(): int
+    {
+        return random_int(10, 15);
+    }
+
     public function getDefaultWeapon(): Ability
     {
         return Ability::MACE();

@@ -31,6 +31,21 @@ class Mage implements Job
         ]);
     }
 
+    public function getRandomHpGain(): int
+    {
+        return random_int(6, 8);
+    }
+
+    public function getRandomManaGain(): int
+    {
+        return random_int(20, 30);
+    }
+
+    public function getRandomMvGain(): int
+    {
+        return random_int(8, 12);
+    }
+
     public function getDefaultWeapon(): Ability
     {
         return Ability::WAND();
