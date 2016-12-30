@@ -1,0 +1,22 @@
+#!/usr/bin/env php
+<?php
+declare(strict_types = 1);
+
+require_once __DIR__ . '/../bootstrap.php';
+
+$console = new \Symfony\Component\Console\Application();
+
+$app = new \Pimple\Container();
+$app['db'] = $em->getConnection();
+$app->register(
+    new \Kurl\Silex\Provider\DoctrineMigrationsProvider(),
+    [
+        'migrations.directory' => __DIR__ . '/../src/Migrations',
+        'migrations.namespace' => 'PhpMud\Migrations'
+    ]
+);
+
+$console->setHelperSet($app['migrations.em_helper_set']);
+$console->addCommands($app['migrations.commands']);
+
+$console->run();

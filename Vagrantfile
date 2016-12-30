@@ -7,7 +7,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "shell", inline: <<-SHELL
     apt-get update
-    apt-get install -y php7.0 php7.0-sqlite3
+    apt-get install -y php7.0 php7.0-sqlite3 php7.0-dom php7.0-curl php7.0-mbstring
   SHELL
 
 end
