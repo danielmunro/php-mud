@@ -14,9 +14,10 @@ namespace PhpMud\Job;
 
 use PhpMud\Entity\Attributes;
 use PhpMud\Enum\Ability;
-use PhpMud\Skill\Dagger;
-use PhpMud\Skill\Weapon;
 use PhpMud\Enum\Job as JobEnum;
+use function PhpMud\Dice\d4;
+use function PhpMud\Dice\d6;
+use function PhpMud\Dice\d10;
 
 class Thief implements Job
 {
@@ -33,17 +34,17 @@ class Thief implements Job
 
     public function getRandomHpGain(): int
     {
-        return random_int(8, 13);
+        return 7 + d6();
     }
 
     public function getRandomManaGain(): int
     {
-        return random_int(10, 15);
+        return 8 + d4();
     }
 
     public function getRandomMvGain(): int
     {
-        return random_int(20, 30);
+        return 20 + d10();
     }
 
     public function getDefaultWeapon(): Ability

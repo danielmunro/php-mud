@@ -14,9 +14,9 @@ namespace PhpMud\Job;
 
 use PhpMud\Entity\Attributes;
 use PhpMud\Enum\Ability;
-use PhpMud\Skill\HandToHand;
-use PhpMud\Skill\Weapon;
 use PhpMud\Enum\Job as JobEnum;
+use function PhpMud\Dice\d8;
+use function PhpMud\Dice\d10;
 
 class Uninitiated implements Job
 {
@@ -27,17 +27,17 @@ class Uninitiated implements Job
 
     public function getRandomHpGain(): int
     {
-        return random_int(6, 15);
+        return 8 + d8();
     }
 
     public function getRandomManaGain(): int
     {
-        return random_int(8, 30);
+        return 12 + d10();
     }
 
     public function getRandomMvGain(): int
     {
-        return random_int(7, 10);
+        return 15 + d10();
     }
 
     public function getDefaultWeapon(): Ability

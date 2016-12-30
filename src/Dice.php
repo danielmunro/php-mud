@@ -17,9 +17,24 @@ function dInt($int): int
     return random_int(1, $int);
 }
 
+function d4(): int
+{
+    return random_int(1, 4);
+}
+
 function d6(): int
 {
     return random_int(1, 6);
+}
+
+function d8(): int
+{
+    return random_int(1, 8);
+}
+
+function d10(): int
+{
+    return random_int(1, 10);
 }
 
 function d20(): int
