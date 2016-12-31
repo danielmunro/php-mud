@@ -32,8 +32,8 @@ class BuildCommand implements ServiceProviderInterface
 
                     $srcRoom = $input->getRoom();
                     $newRoom = new Room();
-                    $newRoom->setTitle('A swirling mist');
-                    $newRoom->setDescription('You are engulfed by a mist.');
+                    $newRoom->setTitle($input->getRoom()->getTitle());
+                    $newRoom->setDescription($input->getRoom()->getDescription());
 
                     $direction = \PhpMud\Direction\Direction::matchPartialValue(last($input->getArgs()));
 

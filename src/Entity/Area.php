@@ -56,11 +56,21 @@ class Area
         return $this->weather;
     }
 
+    public function setName(string $name)
+    {
+        $this->name = $name;
+    }
+
     /**
      * @PostLoad
      */
     public function setRandomWeather()
     {
         $this->weather = Weather::getRandom();
+    }
+
+    public function __toString(): string
+    {
+        return $this->name;
     }
 }
