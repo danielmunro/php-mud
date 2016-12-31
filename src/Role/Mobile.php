@@ -19,6 +19,7 @@ use PhpMud\Enum\Role as RoleEnum;
 use PhpMud\IO\Command\MoveCommand;
 use PhpMud\IO\Input;
 use function PhpMud\Dice\d20;
+use function Functional\filter;
 
 class Mobile implements Role
 {
@@ -31,17 +32,24 @@ class Mobile implements Role
             return;
         }
 
-        $directions = $mob->getRoom()->getDirections();
+        $directions = filter(
+            $mob->getRoom()->getDirections()->toArray(),
+            function (Direction $direction) {
+                return $direction->getTargetRoom()->getArea() === $direction->getSourceRoom()->getArea();
+            }
+        );
 
-        if ($directions->count() === 0) {
+        $count = count($directions);
+
+        if ($count === 0) {
             return;
-        } elseif ($directions->count() === 1) {
-            $direction = $directions->first();
+        } elseif ($count === 1) {
+            $direction = $directions[0];
         } else {
-            $direction = $this->getRandomDirection($directions->toArray());
+            $direction = $this->getRandomDirection($directions);
             if ($this->lastRoom) {
                 while ($direction->getTargetRoom()->getId() === $this->lastRoom->getId()) {
-                    $direction = $this->getRandomDirection($directions->toArray());
+                    $direction = $this->getRandomDirection($directions);
                 }
             }
         }
