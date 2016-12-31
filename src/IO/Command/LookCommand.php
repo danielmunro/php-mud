@@ -58,7 +58,7 @@ class LookCommand implements ServiceProviderInterface
 
                     return new Output(
                         sprintf(
-                            "%s\n%s\n\n[%s: %s]%s%s\n",
+                            "%s\n  %s\n\n[%s: %s]%s%s\n",
                             Color::cyan($room->getTitle()),
                             wordwrap($room->getDescription()),
                             Color::white('Exits'),

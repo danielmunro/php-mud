@@ -25,6 +25,8 @@ class Client
 
     protected $lastInput = '';
 
+    protected $quiet = false;
+
     /** @var Mob $mob */
     protected $mob;
 
@@ -80,7 +82,19 @@ class Client
 
     public function write(string $output)
     {
-        $this->connection->write($output);
+        if (!$this->quiet) {
+            $this->connection->write($output);
+        }
+    }
+
+    public function isQuiet(): bool
+    {
+        return $this->quiet;
+    }
+
+    public function setQuiet(bool $quiet)
+    {
+        $this->quiet = $quiet;
     }
 
     public function getMob()
