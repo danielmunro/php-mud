@@ -17,6 +17,11 @@ use PhpMud\Enum\Role as RoleEnum;
 
 class Shopkeeper implements Role
 {
+    public function doesWantToPerformRoll(): bool
+    {
+        return false;
+    }
+
     public function perform(Mob $mob)
     {
     }

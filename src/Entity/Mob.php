@@ -192,6 +192,17 @@ class Mob implements Noun
         );
     }
 
+    public function setName(string $name, array $identifiers = [])
+    {
+        $this->name = $name;
+
+        if (!$identifiers) {
+            $identifiers = explode(' ', $this->name);
+        }
+
+        $this->identifiers = $identifiers;
+    }
+
     public function decrementAffects()
     {
         $this->affects = $this->affects->filter(function (Affect $affect) {
@@ -217,8 +228,11 @@ class Mob implements Noun
             $this->fight->turn();
         }
 
-        each ($this->roles, function (string $role) {
-            Roles::getRole($role)->perform($this);
+        each ($this->roles, function (string $roleName) {
+            $role = Roles::getRole($roleName);
+            if ($role->doesWantToPerformRoll()) {
+                $role->perform($this);
+            }
         });
     }
 

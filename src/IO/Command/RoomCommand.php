@@ -27,9 +27,9 @@ class RoomCommand implements ServiceProviderInterface
                 public function execute(Server $server, Input $input): Output
                 {
                     if (stripos('title', $input->getSubject()) === 0) {
-                        $input->getRoom()->setTitle(implode(' ', array_slice($input->getArgs(), 2)));
+                        $input->getRoom()->setTitle($input->getAssigningValue());
                     } elseif (stripos('description', $input->getSubject()) === 0) {
-                        $input->getRoom()->setDescription(implode(' ', array_slice($input->getArgs(), 2)));
+                        $input->getRoom()->setDescription($input->getAssigningValue());
                     } else {
                         return new Output('Options are: title, description');
                     }

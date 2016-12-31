@@ -124,6 +124,11 @@ class Input
         )) : false;
     }
 
+    public function getAssigningValue(int $start = 2): string
+    {
+        return implode(' ', array_slice($this->args, $start));
+    }
+
     public function getArgs(): array
     {
         return $this->args;
@@ -137,6 +142,11 @@ class Input
     public function getSubject(): string
     {
         return $this->subject;
+    }
+
+    public function getOption(): string
+    {
+        return $this->args[2];
     }
 
     public function __toString()

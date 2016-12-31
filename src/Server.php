@@ -257,6 +257,12 @@ class Server
         return $this->clients;
     }
 
+    public function vanquish(Mob $mob)
+    {
+        $this->em->remove($mob);
+        $this->persist();
+    }
+
     public static function addMob(Mob $mob)
     {
         static::$mobs[] = $mob;

@@ -26,12 +26,13 @@ class Mobile implements Role
     /** @var Room $lastRoom */
     protected $lastRoom;
 
+    public function doesWantToPerformRoll(): bool
+    {
+        return d20() === 1;
+    }
+
     public function perform(Mob $mob)
     {
-        if (d20() !== 1) {
-            return;
-        }
-
         $directions = filter(
             $mob->getRoom()->getDirections()->toArray(),
             function (Direction $direction) {

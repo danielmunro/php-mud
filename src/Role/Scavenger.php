@@ -17,16 +17,17 @@ use PhpMud\Entity\Mob;
 use PhpMud\Enum\Role as RoleEnum;
 use PhpMud\IO\Output;
 use function Functional\first;
-use function PhpMud\Dice\d6;
+use function PhpMud\Dice\d8;
 
 class Scavenger implements Role
 {
+    public function doesWantToPerformRoll(): bool
+    {
+        return d8() === 1;
+    }
+
     public function perform(Mob $mob)
     {
-        if (d6() !== 1) {
-            return;
-        }
-
         first(
             $mob->getRoom()->getInventory()->getItems(),
             function (Item $item) use ($mob) {

@@ -12,11 +12,11 @@ use PhpMud\Server;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
-class NewMobCommand implements ServiceProviderInterface
+class SummonCommand implements ServiceProviderInterface
 {
     public function register(Container $pimple)
     {
-        $pimple['mobfact'] = $pimple->protect(function () {
+        $pimple['summon'] = $pimple->protect(function () {
             return new class implements Command
             {
                 /**
@@ -29,8 +29,6 @@ class NewMobCommand implements ServiceProviderInterface
                     }
 
                     $mob = new Mob('a fresh mob', new Human());
-
-                    $input->getRoom()->getMobs()->add($mob);
                     $mob->setRoom($input->getRoom());
 
                     return new Output('A fresh mob arrives from the mob factory.');
