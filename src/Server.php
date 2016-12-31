@@ -106,7 +106,7 @@ class Server
 
         $client = new Client($connection);
         $this->clients->add($client);
-        $login = new Login($this->em->getRepository(Mob::class));
+        $login = new Login($this->em->getRepository(Mob::class), $this->startRoom);
 
         $connection->on(
             Client::EVENT_DATA,
@@ -127,8 +127,6 @@ class Server
                     'ip' => $connection->getRemoteAddress(),
                     'mob' => $mob->getName()
                 ]);
-                $mob->setRoom($this->startRoom);
-                $this->startRoom->getMobs()->add($mob);
                 $client->pushBuffer('look');
                 self::addMob($mob);
             }

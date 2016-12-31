@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud;
 
 use PhpMud\Entity\Mob;
+use PhpMud\Entity\Room;
 use PhpMud\Enum\Gender;
 use PhpMud\IO\Input;
 use PhpMud\Job\Job;
@@ -30,40 +31,32 @@ class Login
     const STATE_CUSTOMIZE = 'customize';
     const STATE_COMPLETE = 'complete';
 
-    /**
-     * @var int
-     */
+    /** @var int $state */
     protected $state;
 
-    /**
-     * @var string
-     */
+    /** @var string $mobName */
     protected $mobName;
 
-    /**
-     * @var Race
-     */
+    /** @var Race $race */
     protected $race;
 
-    /**
-     * @var Job
-     */
+    /** @var Job $job */
     protected $job;
 
-    /**
-     * @var Mob
-     */
+    /** @var Mob $mob */
     protected $mob;
 
-    /**
-     * @var MobRepository
-     */
+    /** @var MobRepository $mobRepository */
     protected $mobRepository;
 
-    public function __construct(MobRepository $mobRepository)
+    /** @var Room $startRoom */
+    protected $startRoom;
+
+    public function __construct(MobRepository $mobRepository, Room $startRoom)
     {
         $this->state = static::STATE_NAME;
         $this->mobRepository = $mobRepository;
+        $this->startRoom = $startRoom;
     }
 
     public function next(Input $input): string
