@@ -138,7 +138,7 @@ class Item implements Noun
         $this->level = $level;
     }
 
-    public function getCraftedBy(): Mob
+    public function getCraftedBy()
     {
         return $this->craftedBy;
     }
