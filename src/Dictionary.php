@@ -28,7 +28,7 @@ class Dictionary
     public static function nonFunctionWords(string $message): array
     {
         return filter(
-            explode(' ', $message),
+            explode(' ', strtolower($message)),
             function (string $word) {
                 return !in_array($word, static::$functionWords, true);
             }
