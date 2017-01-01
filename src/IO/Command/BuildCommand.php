@@ -82,7 +82,7 @@ class BuildCommand implements ServiceProviderInterface
 
                     $server->persist();
 
-                    return new Output(sprintf('A room appears %s', (string)$direction));
+                    return new Output(sprintf('A room appears %s.', (string)$direction));
                 }
             };
         });

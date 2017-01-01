@@ -54,6 +54,9 @@ class Item implements Noun
     /** @Column(type="integer") */
     protected $level;
 
+    /** @ManyToOne(targetEntity="Mob") */
+    protected $craftedBy;
+
     public function __construct(
         string $name,
         Material $material,
@@ -133,6 +136,16 @@ class Item implements Noun
     public function setLevel(int $level)
     {
         $this->level = $level;
+    }
+
+    public function getCraftedBy(): Mob
+    {
+        return $this->craftedBy;
+    }
+
+    public function setCraftedBy(Mob $craftedBy)
+    {
+        $this->craftedBy = $craftedBy;
     }
 
     public function getLongDescription(): string

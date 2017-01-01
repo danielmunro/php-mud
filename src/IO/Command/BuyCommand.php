@@ -24,6 +24,7 @@ class BuyCommand implements ServiceProviderInterface
             {
                 public function execute(Server $server, Input $input): Output
                 {
+                    /** @var Mob $shopkeeper */
                     $shopkeeper = first(
                         $input->getRoom()->getMobs()->toArray(),
                         function (Mob $mob) {
@@ -35,6 +36,7 @@ class BuyCommand implements ServiceProviderInterface
                         return new Output("They aren't here.");
                     }
 
+                    /** @var Item $item */
                     $item = first(
                         $shopkeeper->getInventory()->getItems(),
                         function (Item $item) use ($input) {
@@ -53,6 +55,10 @@ class BuyCommand implements ServiceProviderInterface
                                 $item->getName()
                             )
                         );
+                    }
+
+                    if ($item->getCraftedBy() === $shopkeeper) {
+                        $shopkeeper->getInventory()->add(clone $item);
                     }
 
                     $input->getMob()->getInventory()->purchase($item);

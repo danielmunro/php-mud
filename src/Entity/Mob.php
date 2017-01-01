@@ -160,7 +160,6 @@ class Mob implements Noun
     {
         $this->name = $name;
         $this->identifiers = explode(' ', $name);
-        $this->race = $race;
         $this->creationPoints = $race->getCreationPoints();
         $this->job = new Uninitiated();
         $this->attributes = $race->getStartingAttributes();
@@ -184,6 +183,12 @@ class Mob implements Noun
         $this->disposition = Disposition::STANDING();
         $this->abilities = new ArrayCollection();
         $this->affects = new ArrayCollection();
+        $this->setRace($race);
+    }
+
+    public function setRace(Race $race)
+    {
+        $this->race = $race;
         each(
             $this->race->getBonusSkills(),
             function (AbilityEnum $ability) {
