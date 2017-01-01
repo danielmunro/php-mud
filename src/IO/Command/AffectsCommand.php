@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace PhpMud\IO\Command;
 
-use PhpMud\Command;
+use PhpMud\Enum\AccessLevel;
+use PhpMud\IO\Command\Command;
 use PhpMud\Entity\Affect;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
@@ -38,6 +39,11 @@ class AffectsCommand implements ServiceProviderInterface
                             )
                         )
                     );
+                }
+
+                public function getRequiredAccessLevel(): AccessLevel
+                {
+                    return AccessLevel::MOB();
                 }
             };
         });

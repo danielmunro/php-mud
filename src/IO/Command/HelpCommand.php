@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace PhpMud\IO\Command;
 
-use PhpMud\Command;
+use PhpMud\Enum\AccessLevel;
+use PhpMud\IO\Command\Command;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Server;
@@ -26,6 +27,11 @@ class HelpCommand implements ServiceProviderInterface
                 public function execute(Server $server, Input $input): Output
                 {
                     return HelpCommand::getHelpOutput($input->getSubject());
+                }
+
+                public function getRequiredAccessLevel(): AccessLevel
+                {
+                    return AccessLevel::MOB();
                 }
             };
         });

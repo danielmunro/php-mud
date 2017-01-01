@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace PhpMud\IO\Command;
 
-use PhpMud\Command;
+use PhpMud\Enum\AccessLevel;
+use PhpMud\IO\Command\Command;
 use PhpMud\Direction\Down;
 use PhpMud\Direction\East;
 use PhpMud\Direction\North;
@@ -44,6 +45,11 @@ class MoveCommand implements ServiceProviderInterface
             {
                 return MoveCommand::move($input, $this->direction) ??
                     $server->getCommands()->execute(new Input('look', $input->getClient()));
+            }
+
+            public function getRequiredAccessLevel(): AccessLevel
+            {
+                return AccessLevel::MOB();
             }
         };
     }

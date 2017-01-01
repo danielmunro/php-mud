@@ -4,7 +4,8 @@ declare(strict_types=1);
 namespace PhpMud\IO\Command;
 
 use PhpMud\Client;
-use PhpMud\Command;
+use PhpMud\Enum\AccessLevel;
+use PhpMud\IO\Command\Command;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Server;
@@ -33,6 +34,11 @@ class QuitCommand implements ServiceProviderInterface
                     );
 
                     return new Output('Alas all good things must come to an end.');
+                }
+
+                public function getRequiredAccessLevel(): AccessLevel
+                {
+                    return AccessLevel::MOB();
                 }
             };
         });

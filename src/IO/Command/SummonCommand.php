@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace PhpMud\IO\Command;
 
-use PhpMud\Command;
+use PhpMud\Enum\AccessLevel;
+use PhpMud\IO\Command\Command;
 use PhpMud\Entity\Mob;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
@@ -32,6 +33,11 @@ class SummonCommand implements ServiceProviderInterface
                     $mob->setRoom($input->getRoom());
 
                     return new Output('A fresh mob arrives from the mob factory.');
+                }
+
+                public function getRequiredAccessLevel(): AccessLevel
+                {
+                    return AccessLevel::BUILDER();
                 }
             };
         });

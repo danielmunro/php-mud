@@ -10,10 +10,12 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace PhpMud;
+namespace PhpMud\IO\Command;
 
+use PhpMud\Enum\AccessLevel;
 use PhpMud\IO\Output;
 use PhpMud\IO\Input;
+use PhpMud\Server;
 
 /**
  * A command
@@ -26,4 +28,6 @@ interface Command
      * @return Output
      */
     public function execute(Server $server, Input $input): Output;
+
+    public function getRequiredAccessLevel(): AccessLevel;
 }

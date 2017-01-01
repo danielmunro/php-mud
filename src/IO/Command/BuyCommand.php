@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace PhpMud\IO\Command;
 
-use PhpMud\Command;
 use PhpMud\Entity\Item;
 use PhpMud\Entity\Mob;
+use PhpMud\Enum\AccessLevel;
 use PhpMud\Enum\Role;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
@@ -13,7 +13,6 @@ use PhpMud\Server;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use function Functional\first;
-use function Functional\with;
 
 class BuyCommand implements ServiceProviderInterface
 {
@@ -69,6 +68,11 @@ class BuyCommand implements ServiceProviderInterface
                             $item->getName()
                         )
                     );
+                }
+
+                public function getRequiredAccessLevel(): AccessLevel
+                {
+                    return AccessLevel::MOB();
                 }
             };
         });

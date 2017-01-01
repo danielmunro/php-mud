@@ -17,6 +17,7 @@ use Doctrine\Common\Collections\Collection;
 use PhpMud\Client;
 use PhpMud\Dictionary;
 use PhpMud\Enum\Ability as AbilityEnum;
+use PhpMud\Enum\AccessLevel;
 use PhpMud\Enum\Disposition;
 use PhpMud\Enum\Gender;
 use PhpMud\Enum\Role;
@@ -135,6 +136,9 @@ class Mob implements Noun
     /** @Column(type="integer")  */
     protected $creationPoints;
 
+    /** @Column(type="string")  */
+    protected $accessLevel;
+
     /**
      * @OneToMany(targetEntity="Ability", mappedBy="mob", cascade={"persist"})
      * @var ArrayCollection $abilities
@@ -184,7 +188,13 @@ class Mob implements Noun
         $this->disposition = Disposition::STANDING();
         $this->abilities = new ArrayCollection();
         $this->affects = new ArrayCollection();
+        $this->accessLevel = AccessLevel::MOB();
         $this->setRace($race);
+    }
+
+    public function getAccessLevel(): AccessLevel
+    {
+        return $this->accessLevel;
     }
 
     public function setRace(Race $race)
@@ -868,6 +878,7 @@ class Mob implements Noun
         $this->race = Race::fromValue((string)$this->race);
         $this->disposition = new Disposition($this->disposition);
         $this->gender = new Gender((string)$this->gender);
+        $this->accessLevel = new AccessLevel((string)$this->accessLevel);
         $this->job = JobFactory::matchPartialValue((string)$this->job);
         $this->ageTimer = time();
     }
@@ -880,6 +891,7 @@ class Mob implements Noun
         $this->race = (string) $this->race;
         $this->disposition = (string) $this->disposition;
         $this->ageInSeconds += time() - $this->ageTimer;
+        $this->accessLevel = (string) $this->accessLevel;
     }
 
     public function __toString(): string

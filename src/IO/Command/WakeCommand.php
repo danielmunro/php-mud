@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace PhpMud\IO\Command;
 
-use PhpMud\Command;
+use PhpMud\Enum\AccessLevel;
+use PhpMud\IO\Command\Command;
 use PhpMud\Enum\Disposition;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
@@ -27,6 +28,11 @@ class WakeCommand implements ServiceProviderInterface
                     $input->getMob()->setDisposition(Disposition::STANDING());
 
                     return new Output('You stand up.');
+                }
+
+                public function getRequiredAccessLevel(): AccessLevel
+                {
+                    return AccessLevel::MOB();
                 }
             };
         });

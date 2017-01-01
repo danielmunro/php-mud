@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace PhpMud\IO\Command;
 
-use PhpMud\Command;
+use PhpMud\Enum\AccessLevel;
+use PhpMud\IO\Command\Command;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Server;
@@ -30,6 +31,11 @@ class QuietCommand implements ServiceProviderInterface
                             $input->getClient()->isQuiet() ? 'enable' : 'disable'
                         )
                     );
+                }
+
+                public function getRequiredAccessLevel(): AccessLevel
+                {
+                    return AccessLevel::BUILDER();
                 }
             };
         });

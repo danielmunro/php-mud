@@ -12,7 +12,8 @@ declare(strict_types=1);
 
 namespace PhpMud\IO\Command;
 
-use PhpMud\Command;
+use PhpMud\Enum\AccessLevel;
+use PhpMud\IO\Command\Command;
 use PhpMud\Entity\Mob;
 use PhpMud\Enum\Role;
 use PhpMud\Fight;
@@ -64,6 +65,11 @@ class KillCommand implements ServiceProviderInterface
                     $attacker->setFight(new Fight($attacker, $target));
 
                     return new Output('You scream and attack!');
+                }
+
+                public function getRequiredAccessLevel(): AccessLevel
+                {
+                    return AccessLevel::MOB();
                 }
             };
         });

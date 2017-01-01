@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace PhpMud\IO\Command;
 
-use PhpMud\Command;
+use PhpMud\Enum\AccessLevel;
+use PhpMud\IO\Command\Command;
 use PhpMud\Enum\Disposition;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
@@ -31,6 +32,11 @@ class SleepCommand implements ServiceProviderInterface
                     $input->getMob()->setDisposition(Disposition::SLEEPING());
 
                     return new Output('You lay down and go to sleep.');
+                }
+
+                public function getRequiredAccessLevel(): AccessLevel
+                {
+                    return AccessLevel::MOB();
                 }
             };
         });

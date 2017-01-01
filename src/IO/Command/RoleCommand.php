@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace PhpMud\IO\Command;
 
-use PhpMud\Command;
+use PhpMud\Enum\AccessLevel;
+use PhpMud\IO\Command\Command;
 use PhpMud\Entity\Item;
 use PhpMud\Entity\Mob;
 use PhpMud\Enum\Role;
@@ -48,6 +49,11 @@ class RoleCommand implements ServiceProviderInterface
                         }
                     ) ??
                         new Output("You can't find them.");
+                }
+
+                public function getRequiredAccessLevel(): AccessLevel
+                {
+                    return AccessLevel::BUILDER();
                 }
             };
         });

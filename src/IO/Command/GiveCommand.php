@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace PhpMud\IO\Command;
 
-use PhpMud\Command;
+use PhpMud\Enum\AccessLevel;
+use PhpMud\IO\Command\Command;
 use PhpMud\Entity\Item;
 use PhpMud\Entity\Mob;
 use PhpMud\IO\Input;
@@ -56,6 +57,11 @@ class GiveCommand implements ServiceProviderInterface
                             (string)$receiver
                         )
                     );
+                }
+
+                public function getRequiredAccessLevel(): AccessLevel
+                {
+                    return AccessLevel::MOB();
                 }
             };
         });

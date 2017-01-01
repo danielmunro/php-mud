@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace PhpMud\IO\Command;
 
-use PhpMud\Command;
+use PhpMud\Enum\AccessLevel;
+use PhpMud\IO\Command\Command;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Server;
@@ -70,6 +71,11 @@ class ScoreCommand implements ServiceProviderInterface
                             $mob->getExperienceToLevel()
                         )
                     );
+                }
+
+                public function getRequiredAccessLevel(): AccessLevel
+                {
+                    return AccessLevel::MOB();
                 }
             };
         });

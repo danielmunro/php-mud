@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace PhpMud\IO\Command;
 
-use PhpMud\Command;
+use PhpMud\Enum\AccessLevel;
+use PhpMud\IO\Command\Command;
 use PhpMud\Entity\Mob;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
@@ -43,6 +44,11 @@ class VanquishCommand implements ServiceProviderInterface
                             );
                         }
                     ) ?? new Output("You can't find them.");
+                }
+
+                public function getRequiredAccessLevel(): AccessLevel
+                {
+                    return AccessLevel::BUILDER();
                 }
             };
         });

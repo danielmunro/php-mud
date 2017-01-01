@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace PhpMud\IO\Command;
 
-use PhpMud\Command;
+use PhpMud\Enum\AccessLevel;
+use PhpMud\IO\Command\Command;
 use PhpMud\Entity\Item;
 use PhpMud\Enum\Position;
 use PhpMud\IO\Input;
@@ -44,6 +45,11 @@ class RemoveCommand implements ServiceProviderInterface
                             $item->getName()
                         )
                     );
+                }
+
+                public function getRequiredAccessLevel(): AccessLevel
+                {
+                    return AccessLevel::MOB();
                 }
             };
         });

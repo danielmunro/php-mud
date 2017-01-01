@@ -4,7 +4,8 @@ declare(strict_types=1);
 namespace PhpMud\IO\Command;
 
 use PhpMud\Color;
-use PhpMud\Command;
+use PhpMud\Enum\AccessLevel;
+use PhpMud\IO\Command\Command;
 use PhpMud\Entity\Affect;
 use PhpMud\Entity\Area;
 use PhpMud\IO\Input;
@@ -48,6 +49,11 @@ class AreaCommand implements ServiceProviderInterface
                             return new Output('Area command not understood.');
                     }
 
+                }
+
+                public function getRequiredAccessLevel(): AccessLevel
+                {
+                    return AccessLevel::BUILDER();
                 }
             };
         });

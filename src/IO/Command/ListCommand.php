@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace PhpMud\IO\Command;
 
-use PhpMud\Command;
+use PhpMud\Enum\AccessLevel;
+use PhpMud\IO\Command\Command;
 use PhpMud\Entity\Item;
 use PhpMud\Entity\Mob;
 use PhpMud\Enum\Role;
@@ -69,6 +70,11 @@ class ListCommand implements ServiceProviderInterface
                     }
 
                     return $output;
+                }
+
+                public function getRequiredAccessLevel(): AccessLevel
+                {
+                    return AccessLevel::MOB();
                 }
             };
         });

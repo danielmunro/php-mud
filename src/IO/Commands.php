@@ -12,7 +12,8 @@ declare(strict_types=1);
 
 namespace PhpMud\IO;
 
-use PhpMud\Command;
+use PhpMud\Enum\AccessLevel;
+use PhpMud\IO\Command\Command;
 use PhpMud\Entity\Ability;
 use PhpMud\Entity\Mob;
 use PhpMud\Enum\Role;
@@ -111,20 +112,31 @@ class Commands
 
     public function execute(Input $input): Output
     {
-        return
-            $input->getCommand() ?
-            $this->parse($input)->execute($this->server, $input) :
-            new Output('');
+        try {
+            return
+                $input->getCommand() ?
+                    $this->parse($input)->execute($this->server, $input) :
+                    new Output('');
+        } catch (\InvalidArgumentException $e) {
+            return new Output($e->getMessage());
+        }
     }
 
     private function parse(Input $input): Command
     {
-        $command = first($this->container->keys(), function ($key) use ($input) {
+        /** @var string $commandName */
+        $commandName = first($this->container->keys(), function ($key) use ($input) {
             return strpos($key, $input->getCommand()) === 0;
         });
 
-        if ($command) {
-            return $this->container[$command]();
+        if ($commandName) {
+            /** @var Command $command */
+            $command = $this->container[$commandName]();
+            if ($input->getMob()->getAccessLevel()->satisfies($command->getRequiredAccessLevel())) {
+                return $command;
+            }
+
+            throw new \InvalidArgumentException("You don't have access to that.");
         }
 
         return
@@ -259,6 +271,11 @@ class Commands
             public function execute(Server $server, Input $input): Output
             {
                 return ($this->callback)($input);
+            }
+
+            public function getRequiredAccessLevel(): AccessLevel
+            {
+                return AccessLevel::MOB();
             }
         };
     }

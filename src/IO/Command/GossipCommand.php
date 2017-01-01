@@ -4,7 +4,8 @@ declare(strict_types=1);
 namespace PhpMud\IO\Command;
 
 use PhpMud\Client;
-use PhpMud\Command;
+use PhpMud\Enum\AccessLevel;
+use PhpMud\IO\Command\Command;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Server;
@@ -43,6 +44,11 @@ class GossipCommand implements ServiceProviderInterface
                     );
 
                     return new Output(sprintf("You gossip, \"%s\"\n", $message));
+                }
+
+                public function getRequiredAccessLevel(): AccessLevel
+                {
+                    return AccessLevel::MOB();
                 }
             };
         });

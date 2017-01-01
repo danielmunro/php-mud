@@ -4,7 +4,8 @@ declare(strict_types=1);
 namespace PhpMud\IO\Command;
 
 use PhpMud\Color;
-use PhpMud\Command;
+use PhpMud\Enum\AccessLevel;
+use PhpMud\IO\Command\Command;
 use PhpMud\Entity\Item;
 use PhpMud\Entity\Mob;
 use PhpMud\IO\Input;
@@ -86,6 +87,11 @@ class MobCommand implements ServiceProviderInterface
                                 }
                             }
                         ) ?? new Output("You can't find them.");
+                }
+
+                public function getRequiredAccessLevel(): AccessLevel
+                {
+                    return AccessLevel::BUILDER();
                 }
             };
         });

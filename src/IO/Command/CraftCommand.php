@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace PhpMud\IO\Command;
 
-use PhpMud\Command;
+use PhpMud\Enum\AccessLevel;
+use PhpMud\IO\Command\Command;
 use PhpMud\Entity\Item;
 use PhpMud\Enum\Material;
 use PhpMud\IO\Input;
@@ -34,6 +35,11 @@ class CraftCommand implements ServiceProviderInterface
                     $input->getMob()->getInventory()->add($item);
 
                     return new Output(sprintf('You craft %s.', (string)$item));
+                }
+
+                public function getRequiredAccessLevel(): AccessLevel
+                {
+                    return AccessLevel::BUILDER();
                 }
             };
         });

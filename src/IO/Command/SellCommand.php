@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace PhpMud\IO\Command;
 
-use PhpMud\Command;
+use PhpMud\Enum\AccessLevel;
+use PhpMud\IO\Command\Command;
 use PhpMud\Entity\Item;
 use PhpMud\Entity\Mob;
 use PhpMud\Enum\Role;
@@ -59,6 +60,11 @@ class SellCommand implements ServiceProviderInterface
                     $shopkeeper->getInventory()->purchase($item);
 
                     return new Output(sprintf('You sell %s.', $item->getName()));
+                }
+
+                public function getRequiredAccessLevel(): AccessLevel
+                {
+                    return AccessLevel::MOB();
                 }
             };
         });

@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 namespace PhpMud\IO\Command;
 
+use PhpMud\Enum\AccessLevel;
 use PhpMud\Server;
-use PhpMud\Command;
+use PhpMud\IO\Command\Command;
 use PhpMud\Entity\Direction;
 use PhpMud\Entity\Room;
 use PhpMud\IO\Input;
@@ -83,6 +84,11 @@ class BuildCommand implements ServiceProviderInterface
                     $server->persist();
 
                     return new Output(sprintf('A room appears %s.', (string)$direction));
+                }
+
+                public function getRequiredAccessLevel(): AccessLevel
+                {
+                    return AccessLevel::BUILDER();
                 }
             };
         });
