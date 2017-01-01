@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace PhpMud\Entity;
 
+use PhpMud\Dictionary;
 use PhpMud\Enum\Material;
 use PhpMud\Enum\Position;
 use PhpMud\Noun;
@@ -60,10 +61,13 @@ class Item implements Noun
     public function __construct(
         string $name,
         Material $material,
-        array $identifiers,
+        array $identifiers = [],
         float $weight = 0.0,
         float $value = 0.0
     ) {
+        if (!$identifiers) {
+            $identifiers = Dictionary::nonFunctionWords($name);
+        }
         $this->name = $name;
         $this->material = $material;
         $this->identifiers = $identifiers;

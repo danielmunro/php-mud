@@ -20,6 +20,9 @@ use PhpMud\Enum\TargetType;
 use PhpMud\Fight;
 use PhpMud\IO\Command\AffectsCommand;
 use PhpMud\IO\Command\AreaCommand;
+use PhpMud\IO\Command\CraftCommand;
+use PhpMud\IO\Command\GiveCommand;
+use PhpMud\IO\Command\ItemCommand;
 use PhpMud\IO\Command\MobCommand;
 use PhpMud\IO\Command\QuietCommand;
 use PhpMud\IO\Command\RoleCommand;
@@ -101,6 +104,9 @@ class Commands
         $this->container->register(new RoleCommand());
         $this->container->register(new AreaCommand());
         $this->container->register(new QuietCommand());
+        $this->container->register(new CraftCommand());
+        $this->container->register(new ItemCommand());
+        $this->container->register(new GiveCommand());
     }
 
     public function execute(Input $input): Output

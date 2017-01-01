@@ -15,6 +15,7 @@ namespace PhpMud\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use PhpMud\Client;
+use PhpMud\Dictionary;
 use PhpMud\Enum\Ability as AbilityEnum;
 use PhpMud\Enum\Disposition;
 use PhpMud\Enum\Gender;
@@ -202,7 +203,7 @@ class Mob implements Noun
         $this->name = $name;
 
         if (!$identifiers) {
-            $identifiers = explode(' ', $this->name);
+            $identifiers = Dictionary::nonFunctionWords($this->name);
         }
 
         $this->identifiers = $identifiers;

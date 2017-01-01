@@ -72,7 +72,7 @@ class MobCommand implements ServiceProviderInterface
                                         );
                                         return new Output(
                                             sprintf(
-                                                "%s's inventory set.",
+                                                "%s's inventory is set.",
                                                 (string)$mob
                                             )
                                         );

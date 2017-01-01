@@ -124,6 +124,22 @@ class Input
         )) : false;
     }
 
+    public function isOptionMatch(Noun $noun): bool
+    {
+        return $this->getOption() ? !empty(select(
+            $noun->getIdentifiers(),
+            function (string $identifier) {
+                if (stripos($identifier, $this->getOption()) === 0) {
+                    if ($this->skipCount === 0) {
+                        return true;
+                    } else {
+                        $this->skipCount--;
+                    }
+                }
+            }
+        )) : false;
+    }
+
     public function getAssigningValue(int $start = 2): string
     {
         return implode(' ', array_slice($this->args, $start));
