@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace PhpMud\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use PhpMud\Dictionary;
 use PhpMud\Enum\Material;
 use PhpMud\Enum\Position;
@@ -39,6 +40,9 @@ class Item implements Noun
 
     /** @Column(type="array") */
     protected $identifiers;
+
+    /** @OneToMany(targetEntity="Affect", mappedBy="item") */
+    protected $affects;
 
     /** @Column(type="decimal") */
     protected $weight;
@@ -75,6 +79,11 @@ class Item implements Noun
         $this->value = $value;
         $this->level = 1;
         $this->vNum = Uuid::uuid4()->toString();
+    }
+    
+    public function getAffects(): Collection
+    {
+        return $this->affects;
     }
 
     public function setInventory(Inventory $inventory)

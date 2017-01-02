@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace PhpMud\IO\Command;
 
 use PhpMud\Enum\AccessLevel;
+use PhpMud\Enum\Affect;
 use PhpMud\IO\Command\Command;
 use PhpMud\Entity\Item;
 use PhpMud\IO\Input;
@@ -14,6 +15,7 @@ use Pimple\ServiceProviderInterface;
 use function Functional\with;
 use function Functional\first;
 use function Functional\last;
+use function Functional\filter;
 
 class ItemCommand implements ServiceProviderInterface
 {
@@ -42,6 +44,33 @@ class ItemCommand implements ServiceProviderInterface
                                             $item->getValue()
                                         )
                                     );
+                                case 'affect':
+                                    $affectEnum = new Affect($input->getAssigningValue(3));
+                                    $currentAffect = filter(
+                                        $item->getAffects(),
+                                        function (\PhpMud\Entity\Affect $affect) use ($affectEnum) {
+                                            return $affect->getEnum()->equals($affectEnum);
+                                        }
+                                    );
+                                    if ($currentAffect) {
+                                        $item->getAffects()->removeElement($currentAffect);
+                                        return new Output(
+                                            sprintf(
+                                                '%s loses affect: %s.',
+                                                (string)$item,
+                                                $affectEnum->getValue()
+                                            )
+                                        );
+                                    } else {
+                                        $item->getAffects()->add(new \PhpMud\Entity\Affect($affectEnum->getValue()));
+                                        return new Output(
+                                            sprintf(
+                                                '%s gains affect: %s.',
+                                                (string)$item,
+                                                $affectEnum->getValue()
+                                            )
+                                        );
+                                    }
                                 case '':
                                 default:
                                     return new Output('TBD');

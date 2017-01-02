@@ -16,11 +16,14 @@ use MyCLabs\Enum\Enum;
 
 /**
  * @method static STUN()
+ * @method static BERSERK()
+ * @method static GLOW()
  */
 class Affect extends Enum
 {
     const STUN = 'stun';
     const BERSERK = 'berserk';
+    const GLOW = 'glow';
 
     public function getWearOffMessage()
     {

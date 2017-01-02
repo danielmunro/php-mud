@@ -33,6 +33,9 @@ class Affect
     /** @ManyToOne(targetEntity="Mob", inversedBy="affects") */
     protected $mob;
 
+    /** @ManyToOne(targetEntity="Item", inversedBy="affects") */
+    protected $item;
+
     /** @var AffectEnum $enum */
     protected $enum;
 
