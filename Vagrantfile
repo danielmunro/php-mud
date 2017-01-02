@@ -9,7 +9,6 @@ Vagrant.configure("2") do |config|
     export DEBIAN_FRONTEND=noninteractive
     apt-get update
     apt-get install -q -y php7.0 php7.0-dom php7.0-curl php7.0-mbstring php7.0-mysqli mysql-server mysql-client
-
   SHELL
 
 end
