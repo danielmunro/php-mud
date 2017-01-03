@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud\IO\Command;
 
 use PhpMud\Enum\AccessLevel;
+use PhpMud\Experience;
 use PhpMud\IO\Command\Command;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
@@ -29,16 +30,16 @@ class LevelCommand implements ServiceProviderInterface
             {
                 public function execute(Server $server, Input $input): Output
                 {
-                    if (!$input->getMob()->getDebitLevels()) {
-                        return new Output("You have no debit levels.\n");
+                    try {
+                        return new Output(
+                            sprintf(
+                                'You level up! You are now level %d.',
+                                (new Experience($input->getMob()))->levelUp()
+                            )
+                        );
+                    } catch (\RuntimeException $e) {
+                        return new Output($e->getMessage());
                     }
-
-                    return new Output(
-                        sprintf(
-                            "You level up! You are now level %d.\n",
-                            $input->getMob()->levelUp()
-                        )
-                    );
                 }
 
                 public function getRequiredAccessLevel(): AccessLevel

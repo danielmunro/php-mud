@@ -11,6 +11,10 @@ engines:
         enabled: false
       Naming/LongVariable:
         enabled: false
+      Naming/ShortMethodName:
+        enabled: false
+      Naming/LongMethodName:
+        enabled: false
     config:
       file_extensions: "php"
       rulesets: "unusedcode,codesize,naming,design,controversial,phpmd.xml"

@@ -15,6 +15,7 @@ namespace PhpMud;
 use PhpMud\Entity\Mob;
 use PhpMud\IO\Output;
 use function PhpMud\Dice\dInt;
+use function PhpMud\Dice\d20;
 
 /**
  * A fight
@@ -41,7 +42,7 @@ class Fight
             return;
         }
 
-        if ($this->attacker->attackRoll($this->target)) {
+        if (static::attackRoll($this->attacker, $this->target)) {
             $this->target->modifyHp(-dInt($this->attacker->getAttribute('dam')));
             $this->target->notify(new Output($this->attacker->getName() . "'s clumsy punch hits you.\n"));
             $this->attacker->notify(new Output('Your clumsy punch hits ' . $this->target->getName() . ".\n"));
@@ -51,7 +52,7 @@ class Fight
         }
 
         if ($this->isContinuing() && $this->target->getFight() === $this) {
-            if ($this->target->attackRoll($this->attacker)) {
+            if (static::attackRoll($this->target, $this->attacker)) {
                 $this->attacker->modifyHp(-dInt($this->attacker->getAttribute('dam')));
                 $this->attacker->notify(new Output($this->target->getName() . "'s clumsy punch hits you.\n"));
                 $this->target->notify(new Output('Your clumsy punch hits ' . $this->target->getName() . "\n"));
@@ -70,6 +71,22 @@ class Fight
         if (!$this->target->getFight()) {
             $this->target->setFight($this);
         }
+    }
+
+    protected static function attackRoll(Mob $attacker, Mob $target): bool
+    {
+        $hitRoll = d20();
+        if ($hitRoll === 1) {
+            return false;
+        } elseif ($hitRoll < 20) {
+            $hitRoll += $attacker->getAttribute('hit') + $target->getAttribute('str');
+
+            if ($hitRoll <= $target->getAttribute('acBash')) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function isContinuing(): bool
@@ -103,7 +120,7 @@ class Fight
                 sprintf(
                     "You killed %s!\nYou gained %d experience.\n",
                     $victim->getName(),
-                    $killer->getXpFromKill($victim)
+                    (new Experience($killer))->applyFromKill($victim)
                 )
             )
         );

@@ -21,6 +21,7 @@ use PhpMud\Enum\AccessLevel;
 use PhpMud\Enum\Disposition;
 use PhpMud\Enum\Gender;
 use PhpMud\Enum\Role;
+use PhpMud\Experience;
 use PhpMud\Fight;
 use PhpMud\IO\Output;
 use PhpMud\Job\Job;
@@ -82,7 +83,10 @@ class Mob implements Noun
     /** @OneToOne(targetEntity="Inventory", cascade={"persist"}) */
     protected $equipped;
 
-    /** @Column(type="string") */
+    /**
+     * @Column(type="string")
+     * @var Race $race
+     */
     protected $race;
 
     /** @OneToMany(targetEntity="Affect", mappedBy="mob", cascade={"persist"}) */
@@ -197,7 +201,7 @@ class Mob implements Noun
         return $this->accessLevel;
     }
 
-    public function setRace(Race $race)
+    public function setRace(Race $race): void
     {
         $this->race = $race;
         each(
@@ -208,7 +212,7 @@ class Mob implements Noun
         );
     }
 
-    public function setName(string $name, array $identifiers = [])
+    public function setName(string $name, array $identifiers = []): void
     {
         $this->name = $name;
 
@@ -219,7 +223,7 @@ class Mob implements Noun
         $this->identifiers = $identifiers;
     }
 
-    public function decrementAffects()
+    public function decrementAffects(): void
     {
         $this->affects = $this->affects->filter(function (Affect $affect) {
             $affect->decrementTimeout();
@@ -234,7 +238,7 @@ class Mob implements Noun
         });
     }
 
-    public function pulse()
+    public function pulse(): void
     {
         if ($this->delay > 0) {
             $this->delay--;
@@ -244,28 +248,12 @@ class Mob implements Noun
             $this->fight->turn();
         }
 
-        each ($this->roles, function (string $roleName) {
+        each($this->roles, function (string $roleName) {
             $role = Roles::getRole($roleName);
             if ($role->doesWantToPerformRoll()) {
                 $role->perform($this);
             }
         });
-    }
-
-    public function attackRoll(Mob $target): bool
-    {
-        $hitRoll = d20();
-        if ($hitRoll === 1) {
-            return false;
-        } elseif ($hitRoll < 20) {
-            $hitRoll += $this->attributes->getAttribute('hit') + $this->attributes->getAttribute('str');
-
-            if ($hitRoll <= $target->getAttribute('acBash')) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     public function getLongDescription(): string
@@ -278,7 +266,7 @@ class Mob implements Noun
         return $this->look ?? '%s is here.';
     }
 
-    public function setLook(string $look)
+    public function setLook(string $look): void
     {
         $this->look = $look;
     }
@@ -296,7 +284,7 @@ class Mob implements Noun
         return $this->disposition;
     }
 
-    public function setDisposition(Disposition $disposition)
+    public function setDisposition(Disposition $disposition): void
     {
         $this->disposition = $disposition;
     }
@@ -312,7 +300,7 @@ class Mob implements Noun
     /**
      * @param Room $room
      */
-    public function setRoom(Room $room)
+    public function setRoom(Room $room): void
     {
         if ($this->room) {
             $this->room->getMobs()->removeElement($this);
@@ -368,7 +356,7 @@ class Mob implements Noun
     /**
      * @return Fight
      */
-    public function getFight()
+    public function getFight(): ?Fight
     {
         return $this->fight;
     }
@@ -376,23 +364,23 @@ class Mob implements Noun
     /**
      * @param Fight $fight
      */
-    public function setFight(Fight $fight)
+    public function setFight(Fight $fight): void
     {
         $this->fight = $fight;
     }
 
-    public function resolveFight()
+    public function resolveFight(): void
     {
         $this->fight = null;
     }
 
-    public function setClient(Client $client)
+    public function setClient(Client $client): void
     {
         $this->client = $client;
         $this->isPlayer = true;
     }
 
-    public function notify(Output $output)
+    public function notify(Output $output): void
     {
         if ($this->client) {
             $this->client->write((string) $output);
@@ -414,7 +402,7 @@ class Mob implements Noun
         return $this->mv;
     }
 
-    public function modifyHp(int $amount)
+    public function modifyHp(int $amount): void
     {
         $this->hp += $amount;
 
@@ -423,7 +411,7 @@ class Mob implements Noun
         }
     }
 
-    public function modifyMana(int $amount)
+    public function modifyMana(int $amount): void
     {
         $this->mana += $amount;
 
@@ -432,7 +420,7 @@ class Mob implements Noun
         }
     }
 
-    public function modifyMv(int $amount)
+    public function modifyMv(int $amount): void
     {
         $this->mv += $amount;
 
@@ -441,7 +429,7 @@ class Mob implements Noun
         }
     }
 
-    public function regen()
+    public function regen(): void
     {
         if (!$this->room) {
             return;
@@ -558,7 +546,7 @@ class Mob implements Noun
         return $this->gender;
     }
 
-    public function setGender(Gender $gender)
+    public function setGender(Gender $gender): void
     {
         $this->gender = $gender;
     }
@@ -608,95 +596,23 @@ class Mob implements Noun
         return $this->experience;
     }
 
-    public function getExperiencePerLevel(): int
+    public function addExperience(int $experience): void
     {
-        $exp = 1000;
-        $cp = $this->creationPoints;
+        $this->experience += $experience;
 
-        if ($cp < 40) {
-            return (int)floor($exp * $this->race->getJobExpMultiplier($this->job) / 100);
+        if ($this->getExperienceToLevel() < 0) {
+            $this->debitLevels++;
         }
-
-        $increment = 500;
-        $cp -= 40;
-
-        while ($cp > 9) {
-            $exp += $increment;
-            $cp -= 10;
-            if ($cp > 9) {
-                $exp += $increment;
-                $increment *= 2;
-                $cp -= 10;
-            }
-        }
-
-        $exp += $cp * $increment / 10;
-        $exp *= $this->race->getJobExpMultiplier($this->job) / 100;
-
-        return $exp > 411000 ? 411000 : $exp;
     }
 
     public function getExperienceToLevel(): int
     {
-        return $this->getExperiencePerLevel() - (int)floor($this->experience / $this->level);
+        return (new Experience($this))->getExperiencePerLevel() - (int)floor($this->experience / $this->level);
     }
 
     public function getCreationPoints(): int
     {
         return $this->creationPoints;
-    }
-
-    public function getXpFromKill(Mob $victim): int
-    {
-        if ($this->debitLevels) {
-            return 0;
-        }
-
-        $diff = $victim->getLevel() - $this->level;
-
-        if ($diff < -8) {
-            $xpGain = 0;
-        } elseif ($diff > 5) {
-            $xpGain = 320 + 30 * ($diff - 5);
-        } else {
-            $xpGain = [
-                -8 => 2,
-                -7 => 7,
-                -6 => 13,
-                -5 => 20,
-                -4 => 26,
-                -3 => 40,
-                -2 => 60,
-                -1 => 80,
-                0 => 100,
-                1 => 140,
-                2 => 180,
-                3 => 220,
-                4 => 280,
-                5 => 320
-            ][$diff];
-        }
-
-        $xpGain += ($this->alignment > $victim->getAlignment() ?
-            $this->alignment - $victim->getAlignment() : $victim->getAlignment() - $this->alignment) / 20;
-
-        if ($this->level < 11) {
-            $xpGain += 15 * $xpGain / ($this->level + 4);
-        } elseif ($this->level > 40) {
-            $xpGain += 40 * $xpGain / ($this->level - 1);
-        }
-
-        $xpGain = random_int((int)floor($xpGain * 0.8), (int)ceil($xpGain * 1.2));
-
-        $xpGain = (int)floor(100 + $this->getAttribute('wis') * $xpGain / 100);
-
-        $this->experience += $xpGain;
-
-        if ($this->getExperienceToLevel() < 0) {
-            $this->debitLevels++;
-        }
-
-        return $xpGain;
     }
 
     public function getLevel(): int
@@ -709,103 +625,21 @@ class Mob implements Noun
         return $this->debitLevels;
     }
 
-    public function levelUp(): int
+    public function levelUp(): void
     {
-        if (!$this->debitLevels || $this->level >= self::MAX_LEVEL || !$this->isPlayer()) {
-            return $this->level;
+        if (!$this->debitLevels) {
+            throw new \RuntimeException('No debit levels available!');
+        }
+
+        if (!$this->level >= self::MAX_LEVEL) {
+            throw new \RuntimeException('Cannot level beyond the max level!');
         }
 
         $this->debitLevels--;
         $this->level++;
-
-        $this->attributes->modifyAttribute(
-            'hp',
-            with(
-                $this->getAttribute('con'),
-                function (int $stat) {
-                    if ($stat < 15) {
-                        return 0;
-                    } elseif ($stat === 15) {
-                        return 1;
-                    } elseif ($stat <= 17) {
-                        return 2;
-                    } elseif ($stat <= 19) {
-                        return 3;
-                    } elseif ($stat <= 21) {
-                        return 4;
-                    } elseif ($stat === 22) {
-                        return 5;
-                    } elseif ($stat === 23) {
-                        return 6;
-                    } elseif ($stat === 24) {
-                        return 7;
-                    }
-
-                    return 8;
-                }
-            ) + $this->job->getRandomHpGain()
-        );
-
-        $this->attributes->modifyAttribute(
-            'mana',
-            with(
-                $this->getAttribute('wis'),
-                function (int $stat) {
-                    if ($stat < 15) {
-                        return 0;
-                    } elseif ($stat === 15) {
-                        return 1;
-                    } elseif ($stat <= 17) {
-                        return 2;
-                    } elseif ($stat <= 19) {
-                        return 3;
-                    } elseif ($stat <= 21) {
-                        return 4;
-                    } elseif ($stat === 22) {
-                        return 5;
-                    } elseif ($stat === 23) {
-                        return 6;
-                    } elseif ($stat === 24) {
-                        return 7;
-                    }
-
-                    return 8;
-                }
-            ) + $this->job->getRandomManaGain()
-        );
-
-        $this->attributes->modifyAttribute(
-            'mv',
-            with(
-                $this->getAttribute('dex'),
-                function (int $stat) {
-                    if ($stat < 15) {
-                        return 0;
-                    } elseif ($stat === 15) {
-                        return 1;
-                    } elseif ($stat <= 17) {
-                        return 2;
-                    } elseif ($stat <= 19) {
-                        return 3;
-                    } elseif ($stat <= 21) {
-                        return 4;
-                    } elseif ($stat === 22) {
-                        return 5;
-                    } elseif ($stat === 23) {
-                        return 6;
-                    } elseif ($stat === 24) {
-                        return 7;
-                    }
-
-                    return 8;
-                }
-            ) + $this->job->getRandomMvGain()
-        );
-
-        return $this->level;
     }
 
-    public function addAffect(Affect $affect)
+    public function addAffect(Affect $affect): void
     {
         if (none($this->affects->toArray(), function (Affect $a) use ($affect) {
             return $a->getName() === $affect->getName();
@@ -824,12 +658,12 @@ class Mob implements Noun
         return $this->roles;
     }
 
-    public function addRole(Role $role)
+    public function addRole(Role $role): void
     {
         $this->roles[] = $role->getValue();
     }
 
-    public function removeRole(Role $role)
+    public function removeRole(Role $role): void
     {
         $this->roles = filter(
             $this->roles,
@@ -849,7 +683,7 @@ class Mob implements Noun
         return $this->job;
     }
 
-    public function setJob(Job $job)
+    public function setJob(Job $job): void
     {
         if (!$this->job instanceof Uninitiated) {
             throw new \RuntimeException('Cannot change jobs');
@@ -859,7 +693,7 @@ class Mob implements Noun
         $this->abilities->add(new Ability($this, $job->getDefaultWeapon(), 1));
     }
 
-    public function incrementDelay(int $delay)
+    public function incrementDelay(int $delay): void
     {
         $this->delay  += $delay;
     }
@@ -873,7 +707,7 @@ class Mob implements Noun
      * @PostLoad
      * @PostPersist
      */
-    public function postLoad()
+    public function postLoad(): void
     {
         $this->race = Race::fromValue((string)$this->race);
         $this->disposition = new Disposition($this->disposition);
@@ -886,7 +720,7 @@ class Mob implements Noun
     /**
      * @PrePersist
      */
-    public function prePersist()
+    public function prePersist(): void
     {
         $this->race = (string) $this->race;
         $this->disposition = (string) $this->disposition;
