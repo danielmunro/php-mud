@@ -430,15 +430,15 @@ class Mob implements Noun
         } else {
             $this->disposition = Disposition::DEAD();
             $this->deathTimer = 0;
-            $this->hp = $this->getAttribute('hp');
-            $this->mana = $this->getAttribute('mana');
-            $this->mv = $this->getAttribute('mv');
         }
     }
 
     public function respawn()
     {
         $this->disposition = Disposition::STANDING();
+        $this->hp = $this->getAttribute('hp');
+        $this->mana = $this->getAttribute('mana');
+        $this->mv = $this->getAttribute('mv');
     }
 
     public function incrementDeathTimer(): int
