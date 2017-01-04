@@ -31,7 +31,6 @@ use PhpMud\Noun;
 use PhpMud\Race\Race;
 use PhpMud\Role\Roles;
 use PhpMud\Skill\FastHealing;
-use function PhpMud\Dice\d20;
 use function PhpMud\Dice\dInt;
 use function Functional\with;
 use function Functional\each;
@@ -149,6 +148,11 @@ class Mob implements Noun
      */
     protected $abilities;
 
+    /**
+     * @ManyToOne(targetEntity="Room")
+     */
+    protected $startRoom;
+
     /** @var int $ageTimer */
     protected $ageTimer;
 
@@ -161,14 +165,16 @@ class Mob implements Noun
     /** @var int $delay */
     protected $delay = 0;
 
+    /** @var int $deathTimer */
+    protected $deathTimer;
+
     /**
      * @param string $name
      * @param Race $race
      */
     public function __construct(string $name, Race $race)
     {
-        $this->name = $name;
-        $this->identifiers = explode(' ', $name);
+        $this->setName($name);
         $this->creationPoints = $race->getCreationPoints();
         $this->job = new Uninitiated();
         $this->attributes = $race->getStartingAttributes();
@@ -240,6 +246,10 @@ class Mob implements Noun
 
     public function pulse(): void
     {
+        if ($this->disposition->equals(Disposition::DEAD())) {
+            return;
+        }
+
         if ($this->delay > 0) {
             $this->delay--;
         }
@@ -258,17 +268,46 @@ class Mob implements Noun
 
     public function getLongDescription(): string
     {
-        return $this->look ?? '%s is here.';
+        return $this->look ?? sprintf(
+                '%s the %s %s.',
+                (string)$this,
+                (string)$this->race,
+                $this->getCondition()
+            );
     }
 
     public function getLook(): string
     {
-        return $this->look ?? '%s is here.';
+        return $this->look ?? sprintf('%s is here.', (string)$this);
     }
 
     public function setLook(string $look): void
     {
         $this->look = $look;
+    }
+
+    public function getCondition(): string
+    {
+        $hpPercent = $this->hp / $this->getAttribute('hp');
+
+        switch ($hpPercent) {
+            case $hpPercent >= 1.0:
+                return 'is in excellent condition';
+            case $hpPercent > 0.9:
+                return 'has a few scratches';
+            case $hpPercent > 0.75:
+                return 'has some small wounds and bruises';
+            case $hpPercent > 0.5:
+                return 'has quite a few wounds';
+            case $hpPercent > 0.3:
+                return 'has some big nasty wounds and scratches';
+            case $hpPercent > 0.15:
+                return 'looks pretty hurt';
+            case $hpPercent >= 0.0:
+                return 'is in awful condition';
+            default:
+                return 'is bleeding to death';
+        }
     }
 
     /**
@@ -302,6 +341,9 @@ class Mob implements Noun
      */
     public function setRoom(Room $room): void
     {
+        if (!$this->startRoom) {
+            $this->startRoom = $room;
+        }
         if ($this->room) {
             $this->room->getMobs()->removeElement($this);
         }
@@ -350,7 +392,7 @@ class Mob implements Noun
      */
     public function getIdentifiers(): array
     {
-        return $this->identifiers ?? [$this->name];
+        return $this->identifiers;
     }
 
     /**
@@ -372,6 +414,36 @@ class Mob implements Noun
     public function resolveFight(): void
     {
         $this->fight = null;
+    }
+
+    public function died()
+    {
+        $this->room->getMobs()->removeElement($this);
+        $this->startRoom->getMobs()->add($this);
+        $this->room = $this->startRoom;
+
+        $this->affects = new ArrayCollection();
+
+        if ($this->isPlayer()) {
+            $this->hp = 1;
+            $this->disposition = Disposition::SITTING();
+        } else {
+            $this->disposition = Disposition::DEAD();
+            $this->deathTimer = 0;
+            $this->hp = $this->getAttribute('hp');
+            $this->mana = $this->getAttribute('mana');
+            $this->mv = $this->getAttribute('mv');
+        }
+    }
+
+    public function respawn()
+    {
+        $this->disposition = Disposition::STANDING();
+    }
+
+    public function incrementDeathTimer(): int
+    {
+        return $this->deathTimer++;
     }
 
     public function setClient(Client $client): void
@@ -440,63 +512,6 @@ class Mob implements Noun
         $this->modifyHp($this->hpGain($regenBase));
         $this->modifyMana($this->manaGain($regenBase));
         $this->modifyMv($this->mvGain($regenBase));
-    }
-
-    public function getCondition(): string
-    {
-        $hpPercent = $this->hp / $this->getAttribute('hp');
-
-        switch ($hpPercent) {
-            case $hpPercent >= 1.0:
-                return 'is in excellent condition';
-            case $hpPercent > 0.9:
-                return 'has a few scratches';
-            case $hpPercent > 0.75:
-                return 'has some small wounds and bruises';
-            case $hpPercent > 0.5:
-                return 'has quite a few wounds';
-            case $hpPercent > 0.3:
-                return 'has some big nasty wounds and scratches';
-            case $hpPercent > 0.15:
-                return 'looks pretty hurt';
-            case $hpPercent >= 0.0:
-                return 'is in awful condition';
-            default:
-                return 'is bleeding to death.';
-        }
-    }
-
-    public function hpGain(float $base): int
-    {
-        $amount = max(3, $base * $this->attributes->getAttribute('hp'));
-        $amount += max(0, 15 - $this->attributes->getAttribute('con'));
-        $amount += $this->level / 2;
-        $amount += $this->withAbility(FastHealing::class, function () {
-            return dInt($this->level);
-        });
-
-        return (int)floor($amount);
-    }
-
-    public function manaGain(float $base): int
-    {
-        $amount = max(3, $base * $this->attributes->getAttribute('hp'));
-        $amount += random_int(1, $this->attributes->getAttribute('wis'));
-        $amount += $this->level / 2;
-        $amount += $this->withAbility(Meditation::class, function () {
-            return dInt($this->level);
-        });
-
-        return (int)floor($amount);
-    }
-
-    public function mvGain(float $base): int
-    {
-        $amount = max(3, $base * $this->attributes->getAttribute('hp'));
-        $amount += random_int(1, $this->attributes->getAttribute('wis'));
-        $amount += $this->level / 2;
-
-        return (int)floor($amount);
     }
 
     public function getAbilities(): Collection
@@ -731,5 +746,39 @@ class Mob implements Noun
     public function __toString(): string
     {
         return $this->name;
+    }
+
+    private function hpGain(float $base): int
+    {
+        $amount = max(3, $base * $this->attributes->getAttribute('hp'));
+        $amount += max(0, 15 - $this->attributes->getAttribute('con'));
+        $amount += $this->level / 2;
+        $amount += $this->withAbility(FastHealing::class, function () {
+            return dInt($this->level);
+        });
+
+        return (int)floor($amount);
+    }
+
+    private function manaGain(float $base): int
+    {
+        $amount = max(3, $base * $this->attributes->getAttribute('hp'));
+        $amount += random_int(1, $this->attributes->getAttribute('wis')) / 2;
+        $amount += random_int(1, $this->attributes->getAttribute('int')) / 3;
+        $amount += $this->level / 2;
+        $amount += $this->withAbility(Meditation::class, function () {
+            return dInt($this->level);
+        });
+
+        return (int)floor($amount);
+    }
+
+    private function mvGain(float $base): int
+    {
+        $amount = max(3, $base * $this->attributes->getAttribute('hp'));
+        $amount += random_int(1, $this->attributes->getAttribute('wis'));
+        $amount += $this->level / 2;
+
+        return (int)floor($amount);
     }
 }

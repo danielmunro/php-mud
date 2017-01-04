@@ -5,6 +5,7 @@ namespace PhpMud\IO\Command;
 
 use PhpMud\Color;
 use PhpMud\Enum\AccessLevel;
+use PhpMud\Enum\Disposition;
 use PhpMud\IO\Command\Command;
 use PhpMud\Entity\Direction;
 use PhpMud\Entity\Mob;
@@ -52,7 +53,7 @@ class LookCommand implements ServiceProviderInterface
                                 }
                             ),
                             function (Noun $noun) {
-                                return new Output(sprintf($noun->getLongDescription(), (string)$noun));
+                                return new Output($noun->getLongDescription());
                             }
                         ) ?? new Output("You don't see that here.");
                     }
@@ -87,7 +88,7 @@ class LookCommand implements ServiceProviderInterface
                             reduce_left(
                                 $room->getMobs(),
                                 function (Mob $mob, $index, $collection, $reduction) use ($input) {
-                                    return $mob !== $input->getMob() ?
+                                    return $mob !== $input->getMob() && !$mob->getDisposition()->equals(Disposition::DEAD()) ?
                                         sprintf(
                                             "%s\n".$mob->getLook(),
                                             $reduction,

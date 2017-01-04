@@ -21,6 +21,7 @@ use MyCLabs\Enum\Enum;
  * @method static SLEEPING()
  * @method static STUNNED()
  * @method static INCAPACITATED()
+ * @method static DEAD()
  */
 class Disposition extends Enum
 {

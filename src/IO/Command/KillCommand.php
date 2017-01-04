@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud\IO\Command;
 
 use PhpMud\Enum\AccessLevel;
+use PhpMud\Enum\Disposition;
 use PhpMud\IO\Command\Command;
 use PhpMud\Entity\Mob;
 use PhpMud\Enum\Role;
@@ -54,7 +55,7 @@ class KillCommand implements ServiceProviderInterface
                         }
                     );
 
-                    if (!$target) {
+                    if (!$target || $target->getDisposition()->equals(Disposition::DEAD())) {
                         return new Output("They aren't here.");
                     }
 

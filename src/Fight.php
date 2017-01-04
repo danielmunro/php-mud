@@ -42,25 +42,7 @@ class Fight
             return;
         }
 
-        if (static::attackRoll($this->attacker, $this->target)) {
-            $this->target->modifyHp(-dInt($this->attacker->getAttribute('dam')));
-            $this->target->notify(new Output($this->attacker->getName() . "'s clumsy punch hits you.\n"));
-            $this->attacker->notify(new Output('Your clumsy punch hits ' . $this->target->getName() . ".\n"));
-        } else {
-            $this->target->notify(new Output($this->attacker->getName() . "'s clumsy punch misses you.\n"));
-            $this->attacker->notify(new Output('Your clumsy punch misses ' . $this->target->getName() . ".\n"));
-        }
-
-        if ($this->isContinuing() && $this->target->getFight() === $this) {
-            if (static::attackRoll($this->target, $this->attacker)) {
-                $this->attacker->modifyHp(-dInt($this->attacker->getAttribute('dam')));
-                $this->attacker->notify(new Output($this->target->getName() . "'s clumsy punch hits you.\n"));
-                $this->target->notify(new Output('Your clumsy punch hits ' . $this->target->getName() . "\n"));
-            } else {
-                $this->attacker->notify(new Output($this->target->getName() . "'s clumsy punch misses you.\n"));
-                $this->target->notify(new Output('Your clumsy punch misses ' . $this->attacker->getName() . ".\n"));
-            }
-        }
+        $this->multiAttack($this->attacker, $this->target);
 
         if (!$this->isContinuing()) {
             $this->resolve();
@@ -69,8 +51,27 @@ class Fight
         }
 
         if (!$this->target->getFight()) {
-            $this->target->setFight($this);
+            $this->target->setFight(new Fight($this->target, $this->attacker));
         }
+    }
+
+    protected function multiAttack(Mob $attacker, Mob $target)
+    {
+        $this->attack('Reg', $attacker, $target);
+        // 2nd
+        // 3rd
+        // haste
+    }
+
+    protected function attack(string $attackName, Mob $attacker, Mob $target)
+    {
+        if (static::attackRoll($attacker, $target)) {
+            $amount = $attacker->getAttribute('dam');
+            $target->modifyHp(-dInt($amount));
+        } else {
+            $amount = 0;
+        }
+        self::damageMessage($attacker, $target, $attackName, $amount);
     }
 
     protected static function attackRoll(Mob $attacker, Mob $target): bool
@@ -114,6 +115,7 @@ class Fight
     protected static function kill(Mob $killer, Mob $victim)
     {
         $victim->notify(new Output('You have been KILLED!'));
+        $victim->died();
         $debitLevels = $killer->getDebitLevels();
         $killer->notify(
             new Output(
@@ -127,5 +129,44 @@ class Fight
         if ($killer->getDebitLevels() > $debitLevels) {
             $killer->notify(new Output("You qualify for a level!\n"));
         }
+    }
+
+    protected static function damageMessage(Mob $attacker, Mob $target, string $attackName, int $amount)
+    {
+        if ($amount === 0) {
+            static::notify($attacker, $target, $attackName, 'clumsy', 'misses', ' harmlessly.');
+        } elseif ($amount <= 4) {
+            static::notify($attacker, $target, $attackName, 'clumsy', Color::cyan('gives'), ' a bruise.');
+        } elseif ($amount <= 8) {
+            static::notify($attacker, $target, $attackName, 'wobbly', Color::cyan('hits'), ' causing scrapes.');
+        }
+    }
+
+    protected static function notify(Mob $attacker, Mob $target, string $attackName, $msg1, $msg2, $msg3)
+    {
+        $attacker->notify(
+            new Output(
+                sprintf(
+                    "(%s) Your %s strike %s %s%s\n",
+                    $attackName,
+                    $msg1,
+                    $msg2,
+                    (string)$target,
+                    $msg3
+                )
+            )
+        );
+
+        $target->notify(
+            new Output(
+                sprintf(
+                    "%s's %s strike %s you%s\n",
+                    (string)$attacker,
+                    $msg1,
+                    $msg2,
+                    $msg3
+                )
+            )
+        );
     }
 }

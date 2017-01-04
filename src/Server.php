@@ -18,6 +18,7 @@ use Monolog\Logger;
 use PhpMud\Entity\Area;
 use PhpMud\Entity\Mob;
 use PhpMud\Entity\Room;
+use PhpMud\Enum\Disposition;
 use PhpMud\IO\Commands;
 use PhpMud\IO\Input;
 use Pimple\Container;
@@ -27,6 +28,7 @@ use function Functional\each;
 use function Functional\invoke;
 use function Functional\with;
 use function Functional\filter;
+use function Functional\map;
 
 /**
  * Mud server
@@ -113,6 +115,7 @@ class Server
             function (string $input) use ($client, $login, $connection) {
                 if ($login->next(new Input($input, $client)) === Login::STATE_COMPLETE) {
                     $client->setMob($login->getMob());
+                    $login->getMob()->getRoom()->getMobs()->add($login->getMob());
                     $connection->emit(Server::EVENT_LOGIN, ['mob' => $login->getMob()]);
                     $connection->removeAllListeners();
                     $connection->on(Client::EVENT_DATA, [$client, 'pushBuffer']);
@@ -176,7 +179,7 @@ class Server
             with($client->getMob()->getFight(), function (Fight $fight) use ($client) {
                 $client->write(
                     sprintf(
-                        "%s %s.\n%s",
+                        "%s %s.\n\n%s",
                         $fight->getTarget()->getName(),
                         $fight->getTarget()->getCondition(),
                         $client->prompt()
@@ -206,11 +209,13 @@ class Server
             }
         );
 
-        each(
+        $areas = filter(
             $this->clients->toArray(),
             function (Client $client) {
-                with($client->getMob(), function () use ($client) {
+                return with($client->getMob(), function (Mob $mob) use ($client) {
                     $client->write("\n" . $client->prompt());
+
+                    return $mob->getRoom()->getArea()->getName();
                 });
             }
         );
@@ -220,6 +225,21 @@ class Server
             function (Area $area) {
                 if (random_int(1, 4) === 1) {
                     $area->setRandomWeather();
+                }
+            }
+        );
+
+        each(
+            $this->em->getRepository(Mob::class)->findBy([
+                'disposition' => Disposition::DEAD
+            ]),
+            function (Mob $mob) use ($areas) {
+                if (in_array($mob->getRoom()->getArea()->getName(), $areas, true)) {
+                    if ($mob->incrementDeathTimer() > 5) {
+                        $mob->respawn();
+                    }
+                } else {
+                    $mob->respawn();
                 }
             }
         );
