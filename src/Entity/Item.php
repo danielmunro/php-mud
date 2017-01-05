@@ -41,7 +41,7 @@ class Item implements Noun
     /** @Column(type="array") */
     protected $identifiers;
 
-    /** @OneToMany(targetEntity="Affect", mappedBy="item") */
+    /** @OneToMany(targetEntity="Affect", mappedBy="item", cascade={"persist"}) */
     protected $affects;
 
     /** @Column(type="decimal") */

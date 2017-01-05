@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud\IO;
 
 use PhpMud\Enum\AccessLevel;
+use PhpMud\IO\Command\AsCommand;
 use PhpMud\IO\Command\Command;
 use PhpMud\Entity\Ability;
 use PhpMud\Entity\Mob;
@@ -108,6 +109,7 @@ class Commands
         $this->container->register(new CraftCommand());
         $this->container->register(new ItemCommand());
         $this->container->register(new GiveCommand());
+        $this->container->register(new AsCommand());
     }
 
     public function execute(Input $input): Output
@@ -132,7 +134,7 @@ class Commands
         if ($commandName) {
             /** @var Command $command */
             $command = $this->container[$commandName]();
-            if ($input->getMob()->getAccessLevel()->satisfies($command->getRequiredAccessLevel())) {
+            if ($input->getClient()->getMob()->getAccessLevel()->satisfies($command->getRequiredAccessLevel())) {
                 return $command;
             }
 

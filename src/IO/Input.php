@@ -54,11 +54,13 @@ class Input
      */
     protected $skipCount = 0;
 
-    public function __construct(string $input, Client $client = null)
+    public function __construct(string $input, Client $client = null, Mob $mob = null)
     {
         $input = trim($input);
         $this->client = $client;
-        if ($this->client) {
+        if ($mob) {
+            $this->mob = $mob;
+        } elseif ($this->client) {
             $this->mob = $this->client->getMob();
         }
         $this->args = explode(' ', $input);
@@ -160,9 +162,9 @@ class Input
         return $this->subject;
     }
 
-    public function getOption(): string
+    public function getOption(): ?string
     {
-        return $this->args[2];
+        return $this->args[2] ?? null;
     }
 
     public function __toString()

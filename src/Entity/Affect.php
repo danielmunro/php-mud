@@ -76,4 +76,9 @@ class Affect
     {
         $this->enum = new AffectEnum($this->name);
     }
+
+    public function __toString(): string
+    {
+        return $this->name;
+    }
 }

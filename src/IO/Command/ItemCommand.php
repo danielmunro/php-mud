@@ -5,7 +5,6 @@ namespace PhpMud\IO\Command;
 
 use PhpMud\Enum\AccessLevel;
 use PhpMud\Enum\Affect;
-use PhpMud\IO\Command\Command;
 use PhpMud\Entity\Item;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
@@ -16,6 +15,7 @@ use function Functional\with;
 use function Functional\first;
 use function Functional\last;
 use function Functional\filter;
+use function Functional\reduce_left;
 
 class ItemCommand implements ServiceProviderInterface
 {
@@ -71,9 +71,22 @@ class ItemCommand implements ServiceProviderInterface
                                             )
                                         );
                                     }
-                                case '':
+                                case null:
                                 default:
-                                    return new Output('TBD');
+                                    return new Output(
+                                        sprintf(
+                                            "%s:\nvalue: %d\naffects: %s",
+                                            (string)$item,
+                                            $item->getValue(),
+                                            reduce_left(
+                                                $item->getAffects()->toArray(),
+                                                function (\PhpMud\Entity\Affect $affect, int $index, array $collection, string $reduction) {
+                                                    return ($reduction ? $reduction . ', ' : '') . (string)$affect;
+                                                },
+                                                ''
+                                            )
+                                        )
+                                    );
                             }
                         }
                     );
