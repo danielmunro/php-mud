@@ -4,7 +4,7 @@ debug: true
 persist:
   driver: pdo_mysql
   user: root
-  password: ""
+  password: semaphoredb
   dbname: phpmud
 log:
   name: phpmud
