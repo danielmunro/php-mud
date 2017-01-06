@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace PhpMud\SpellGroup;
 
-use PhpMud\CreationGroup;
+use PhpMud\Ability\CreationGroup;
 use PhpMud\Enum\Job as JobEnum;
 use PhpMud\Job\Job;
 use PhpMud\Spell\MagicMissile;

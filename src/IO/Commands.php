@@ -31,7 +31,7 @@ use PhpMud\IO\Command\RoleCommand;
 use PhpMud\IO\Command\RoomCommand;
 use PhpMud\IO\Command\SummonCommand;
 use PhpMud\IO\Command\VanquishCommand;
-use PhpMud\Performable;
+use PhpMud\Ability\Performable;
 use PhpMud\Server;
 use PhpMud\IO\Command\BuyCommand;
 use PhpMud\IO\Command\DropCommand;

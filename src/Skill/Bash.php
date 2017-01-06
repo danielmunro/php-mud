@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace PhpMud\Skill;
 
 use PhpMud\Ability\Ability;
-use PhpMud\CreationGroup;
+use PhpMud\Ability\CreationGroup;
 use PhpMud\Entity\Affect;
 use PhpMud\Entity\Attributes;
 use PhpMud\Entity\Mob;
@@ -24,7 +24,7 @@ use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Job\Job;
 use PhpMud\Noun;
-use PhpMud\Performable;
+use PhpMud\Ability\Performable;
 
 class Bash implements Ability, Skill, CreationGroup, Performable, Noun
 {

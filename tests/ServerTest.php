@@ -17,6 +17,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testHeartbeat()
     {
         $server = $this->getMockServer();
+        $this->getMockClient($server);
         static::assertCount(1, $server->getClients());
         $server->heartbeat();
         static::assertCount(0, $server->getClients());

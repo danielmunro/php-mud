@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace PhpMud\Skill;
 
 use PhpMud\Ability\Ability;
-use PhpMud\CreationGroup;
+use PhpMud\Ability\CreationGroup;
 use PhpMud\Enum\Disposition;
 use PhpMud\Enum\Job;
 use PhpMud\Enum\TargetType;

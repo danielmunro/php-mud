@@ -20,7 +20,7 @@ use function Functional\tail;
 use function Functional\select;
 use PhpMud\Enum\Disposition;
 use PhpMud\Noun;
-use PhpMud\Performable;
+use PhpMud\Ability\Performable;
 
 class Input
 {
