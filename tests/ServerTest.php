@@ -17,7 +17,6 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testHeartbeat()
     {
         $server = $this->getMockServer();
-        $client = $this->getMockClient($server);
         static::assertCount(1, $server->getClients());
         $server->heartbeat();
         static::assertCount(0, $server->getClients());
@@ -25,8 +24,9 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     protected function getMockClient(Server $server): Client
     {
-        $connection = $this->getMockBuilder(Connection::class)->disableOriginalConstructor()->getMock();
-        $client = $server->addConnection($connection);
+        $client = $server->addConnection(
+            $this->getMockBuilder(Connection::class)->disableOriginalConstructor()->getMock()
+        );
         $client->setMob((new MobFixture(new Mob('mob', new Human())))->modifySilver(20)->getInstance());
         $client->getMob()->setRoom($server->getStartRoom());
 

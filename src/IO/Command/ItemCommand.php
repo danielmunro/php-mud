@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 namespace PhpMud\IO\Command;
 
+use PhpMud\Entity\Affect;
 use PhpMud\Enum\AccessLevel;
-use PhpMud\Enum\Affect;
+use PhpMud\Enum\Affect as AffectEnum;
 use PhpMud\Entity\Item;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
@@ -45,10 +46,10 @@ class ItemCommand implements ServiceProviderInterface
                                         )
                                     );
                                 case 'affect':
-                                    $affectEnum = new Affect($input->getAssigningValue(3));
+                                    $affectEnum = new AffectEnum($input->getAssigningValue(3));
                                     $currentAffect = filter(
                                         $item->getAffects(),
-                                        function (\PhpMud\Entity\Affect $affect) use ($affectEnum) {
+                                        function (Affect $affect) use ($affectEnum) {
                                             return $affect->getEnum()->equals($affectEnum);
                                         }
                                     );
@@ -62,7 +63,7 @@ class ItemCommand implements ServiceProviderInterface
                                             )
                                         );
                                     } else {
-                                        $item->getAffects()->add(new \PhpMud\Entity\Affect($affectEnum->getValue()));
+                                        $item->getAffects()->add(new Affect($affectEnum->getValue()));
                                         return new Output(
                                             sprintf(
                                                 '%s gains affect: %s.',
@@ -72,7 +73,6 @@ class ItemCommand implements ServiceProviderInterface
                                         );
                                     }
                                 case null:
-                                default:
                                     return new Output(
                                         sprintf(
                                             "%s:\nvalue: %d\naffects: %s",
@@ -80,13 +80,20 @@ class ItemCommand implements ServiceProviderInterface
                                             $item->getValue(),
                                             reduce_left(
                                                 $item->getAffects()->toArray(),
-                                                function (\PhpMud\Entity\Affect $affect, int $index, array $collection, string $reduction) {
+                                                function (
+                                                    Affect $affect,
+                                                    int $index,
+                                                    array $collection,
+                                                    string $reduction
+                                                ) {
                                                     return ($reduction ? $reduction . ', ' : '') . (string)$affect;
                                                 },
                                                 ''
                                             )
                                         )
                                     );
+                                default:
+                                    return new Output('Not understood, options are: value, affect');
                             }
                         }
                     );

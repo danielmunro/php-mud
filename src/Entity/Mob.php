@@ -269,11 +269,11 @@ class Mob implements Noun
     public function getLongDescription(): string
     {
         return $this->look ?? sprintf(
-                '%s the %s %s.',
-                (string)$this,
-                (string)$this->race,
-                $this->getCondition()
-            );
+            '%s the %s %s.',
+            (string)$this,
+            (string)$this->race,
+            $this->getCondition()
+        );
     }
 
     public function getLook(): string
@@ -358,12 +358,12 @@ class Mob implements Noun
     public function getAttribute(string $attribute): int
     {
         return $this->attributes->getAttribute($attribute) + reduce_left(
-                $this->affects->toArray(),
-                function (Affect $affect, int $index, array $collection, int $reduction) use ($attribute) {
-                    return $reduction + $affect->getAttribute($attribute);
-                },
-                0
-            );
+            $this->affects->toArray(),
+            function (Affect $affect, int $index, array $collection, int $reduction) use ($attribute) {
+                return $reduction + $affect->getAttribute($attribute);
+            },
+            0
+        );
     }
 
     /**

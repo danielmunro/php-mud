@@ -76,7 +76,10 @@ class MoveCommand implements ServiceProviderInterface
             return new Output('Alas, that direction does not exist.');
         }
 
-        $mob->getRoom()->notify($mob, new Output(sprintf("%s leaves heading %s.\n", (string)$mob, (string)$targetDirection)));
+        $mob->getRoom()->notify(
+            $mob,
+            new Output(sprintf("%s leaves heading %s.\n", (string)$mob, (string)$targetDirection))
+        );
         $mob->setRoom($targetDirection->getTargetRoom());
         $mob->getRoom()->notify($mob, new Output(sprintf("%s arrives.\n", (string)$mob)));
     }

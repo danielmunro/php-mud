@@ -5,15 +5,12 @@ namespace PhpMud\IO\Command;
 
 use PhpMud\Color;
 use PhpMud\Enum\AccessLevel;
-use PhpMud\IO\Command\Command;
-use PhpMud\Entity\Affect;
 use PhpMud\Entity\Area;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Server;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-use function Functional\reduce_left;
 
 class AreaCommand implements ServiceProviderInterface
 {
@@ -48,7 +45,6 @@ class AreaCommand implements ServiceProviderInterface
                         default:
                             return new Output('Area command not understood.');
                     }
-
                 }
 
                 public function getRequiredAccessLevel(): AccessLevel

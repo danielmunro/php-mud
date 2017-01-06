@@ -27,6 +27,5 @@ CREATE INDEX IDX_C6DAB09DA856391C ON Mob (startRoom_id);');
     public function down(Schema $schema)
     {
         // this down() migration is auto-generated, please modify it to your needs
-
     }
 }

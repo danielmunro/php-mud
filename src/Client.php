@@ -30,9 +30,7 @@ class Client
     /** @var Mob $mob */
     protected $mob;
 
-    /**
-     * @var Connection $connection
-     */
+    /** @var Connection $connection */
     protected $connection;
 
     public function __construct(Connection $connection)

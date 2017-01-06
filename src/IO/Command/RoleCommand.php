@@ -34,7 +34,7 @@ class RoleCommand implements ServiceProviderInterface
                         ),
                         function (Mob $mob) use ($input) {
                             switch ($input->getArgs()[2] ?? '') {
-                                case 'rm';
+                                case 'rm':
                                     $mob->removeRole(new Role($input->getArgs()[3]));
                                     return new Output(sprintf('Role removed from %s.', (string)$mob));
                                 case 'add':
@@ -42,7 +42,14 @@ class RoleCommand implements ServiceProviderInterface
                                     return new Output(sprintf('Role added to %s.', (string)$mob));
                                 case 'list':
                                 case '':
-                                    return new Output(sprintf("%s's roles: %s.", (string)$mob, implode(', ', $mob->getRoles())));
+                                    return new Output(
+                                        sprintf(
+                                            "%s's roles: %s.",
+                                            (string)$mob,
+                                            implode(', ', $mob->getRoles()
+                                            )
+                                        )
+                                    );
                                 default:
                                     return new Output('Not understood. Options are: list, rm, add');
                             }
