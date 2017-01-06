@@ -15,6 +15,11 @@ $ git clone https://github.com/danielmunro/php-mud.git
 $ cd php-mud
 ```
 
+Copy the config distributable:
+```
+$ cp config.yaml-dist config.yaml
+```
+
 Vagrant up:
 
 ```
