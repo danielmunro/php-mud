@@ -37,7 +37,7 @@ class AreaCommand implements ServiceProviderInterface
                         case '':
                             return new Output(
                                 sprintf(
-                                    'Area name is %s.',
+                                    'You are in %s.',
                                     Color::cyan((string)$input->getRoom()->getArea())
                                 )
                             );

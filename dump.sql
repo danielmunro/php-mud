@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.16, for osx10.12 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.16, for Linux (x86_64)
 --
 -- Host: localhost    Database: phpmud
 -- ------------------------------------------------------
--- Server version	5.7.16
+-- Server version	5.7.16-0ubuntu0.16.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -64,7 +64,7 @@ CREATE TABLE `Affect` (
   CONSTRAINT `FK_2A5DD6D2126F525E` FOREIGN KEY (`item_id`) REFERENCES `Item` (`id`),
   CONSTRAINT `FK_2A5DD6D216E57E11` FOREIGN KEY (`mob_id`) REFERENCES `Mob` (`id`),
   CONSTRAINT `FK_2A5DD6D2BAAF4009` FOREIGN KEY (`attributes_id`) REFERENCES `Attributes` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -73,6 +73,7 @@ CREATE TABLE `Affect` (
 
 LOCK TABLES `Affect` WRITE;
 /*!40000 ALTER TABLE `Affect` DISABLE KEYS */;
+INSERT INTO `Affect` VALUES (1,NULL,NULL,NULL,'glow',0),(2,NULL,NULL,NULL,'glow',0);
 /*!40000 ALTER TABLE `Affect` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -96,7 +97,7 @@ CREATE TABLE `Area` (
 
 LOCK TABLES `Area` WRITE;
 /*!40000 ALTER TABLE `Area` DISABLE KEYS */;
-INSERT INTO `Area` VALUES (1,'Dark Woods'),(2,'Dark Woods');
+INSERT INTO `Area` VALUES (1,'Midgaard'),(2,'Dark Woods');
 /*!40000 ALTER TABLE `Area` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -155,7 +156,7 @@ CREATE TABLE `Direction` (
   KEY `IDX_BCBB53106B93493C` (`targetRoom_id`),
   CONSTRAINT `FK_BCBB53106B93493C` FOREIGN KEY (`targetRoom_id`) REFERENCES `Room` (`id`),
   CONSTRAINT `FK_BCBB5310D4668B6A` FOREIGN KEY (`sourceRoom_id`) REFERENCES `Room` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -164,7 +165,7 @@ CREATE TABLE `Direction` (
 
 LOCK TABLES `Direction` WRITE;
 /*!40000 ALTER TABLE `Direction` DISABLE KEYS */;
-INSERT INTO `Direction` VALUES (1,'east',1,2),(2,'west',2,1),(3,'east',2,3),(4,'west',3,2),(5,'south',2,4),(6,'north',4,2),(7,'south',4,5),(8,'north',5,4),(9,'south',5,7),(10,'north',6,7),(11,'north',7,5),(12,'south',7,6),(13,'west',5,8),(14,'east',8,5),(15,'east',5,9),(16,'west',9,5),(17,'north',2,10),(18,'south',10,2),(19,'north',10,11),(20,'south',11,10),(21,'north',11,12),(22,'south',12,11),(23,'east',4,13),(24,'west',13,4),(25,'north',13,14),(26,'south',14,13);
+INSERT INTO `Direction` VALUES (1,'east',1,2),(2,'west',2,1),(3,'east',2,3),(4,'west',3,2),(5,'south',2,4),(6,'north',4,2),(7,'south',4,5),(8,'north',5,4),(9,'south',5,7),(10,'north',6,7),(11,'north',7,5),(12,'south',7,6),(13,'west',5,8),(14,'east',8,5),(15,'east',5,9),(16,'west',9,5),(17,'north',2,10),(18,'south',10,2),(19,'north',10,11),(20,'south',11,10),(21,'north',11,12),(22,'south',12,11),(23,'east',4,13),(24,'west',13,4),(25,'north',13,14),(26,'south',14,13),(27,'east',13,15),(28,'west',15,13),(29,'west',4,16),(30,'east',16,4),(31,'west',16,17),(32,'east',17,16),(33,'west',17,18),(34,'east',18,17),(35,'east',9,19),(36,'west',19,9),(37,'east',19,20),(38,'west',20,19),(39,'north',20,21),(40,'south',21,20),(41,'east',15,22),(42,'west',22,15),(43,'north',21,23),(44,'south',23,21),(45,'east',22,23),(46,'west',23,22),(47,'north',23,24),(48,'south',24,23),(49,'south',6,25),(50,'north',25,6),(51,'west',25,26),(52,'east',26,25),(53,'east',25,27),(54,'west',27,25),(55,'south',25,28),(56,'north',28,25);
 /*!40000 ALTER TABLE `Direction` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -182,7 +183,7 @@ CREATE TABLE `Inventory` (
   `capacityWeight` int(11) NOT NULL,
   `capacityCount` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -191,7 +192,7 @@ CREATE TABLE `Inventory` (
 
 LOCK TABLES `Inventory` WRITE;
 /*!40000 ALTER TABLE `Inventory` DISABLE KEYS */;
-INSERT INTO `Inventory` VALUES (1,0,20,500,250),(2,0,0,500,250),(3,0,0,500,250),(4,0,0,500,250),(5,0,0,500,250),(6,0,0,500,250),(7,0,0,500,250),(8,0,0,500,250),(9,0,0,500,250),(10,0,85,500,250),(11,0,0,500,250),(12,0,0,500,250),(13,0,0,500,250),(14,0,0,500,250),(15,0,0,500,250),(16,0,0,500,250),(17,0,0,500,250),(18,0,0,500,250),(19,0,0,500,250),(20,0,0,500,250),(21,0,0,500,250),(22,0,0,500,250),(23,0,0,500,250),(24,0,0,500,250),(25,100,15,500,250),(26,0,0,500,250);
+INSERT INTO `Inventory` VALUES (1,0,20,500,250),(2,0,0,500,250),(3,0,0,500,250),(4,0,0,500,250),(5,0,0,500,250),(6,0,0,500,250),(7,0,0,500,250),(8,0,0,500,250),(9,0,0,500,250),(10,0,70,500,250),(11,0,0,500,250),(12,0,0,500,250),(13,0,0,500,250),(14,0,0,500,250),(15,0,0,500,250),(16,0,0,500,250),(17,0,0,500,250),(18,0,0,500,250),(19,0,0,500,250),(20,0,0,500,250),(21,0,0,500,250),(22,0,0,500,250),(23,0,0,500,250),(24,0,0,500,250),(25,100,30,500,250),(26,0,0,500,250),(27,0,0,500,250),(28,0,0,500,250),(29,0,0,500,250),(30,0,0,500,250),(31,0,0,500,250),(32,0,0,500,250),(33,0,0,500,250),(34,0,0,500,250),(35,0,0,500,250),(36,0,0,500,250),(37,0,0,500,250),(38,0,0,500,250),(39,0,0,500,250),(40,0,0,500,250);
 /*!40000 ALTER TABLE `Inventory` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -221,7 +222,7 @@ CREATE TABLE `Item` (
   KEY `vnum_idx` (`vNum`),
   CONSTRAINT `FK_BF298A205CFE4DBC` FOREIGN KEY (`craftedBy_id`) REFERENCES `Mob` (`id`),
   CONSTRAINT `FK_BF298A209EEA759` FOREIGN KEY (`inventory_id`) REFERENCES `Inventory` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -230,7 +231,7 @@ CREATE TABLE `Item` (
 
 LOCK TABLES `Item` WRITE;
 /*!40000 ALTER TABLE `Item` DISABLE KEYS */;
-INSERT INTO `Item` VALUES (1,3,'a small brass key',NULL,'brass','a:3:{i:0;s:5:\"small\";i:1;s:5:\"brass\";i:2;s:3:\"key\";}',0,20,'',1,'9c4b540e-d4b4-4b4f-9a5e-a356a4551e26',NULL),(2,5,'a loaf of bread',NULL,'food','a:2:{i:0;s:4:\"loaf\";i:1;s:5:\"bread\";}',0,4,'',1,'e39b41cd-69e5-4ec3-8d0f-3b27677ce22a',NULL),(3,3,'a copper teapot',NULL,'copper','a:2:{i:0;s:6:\"copper\";i:1;s:6:\"teapot\";}',1,0,'',1,'bcc89181-b70b-4370-8883-d11006034b33',NULL),(4,3,'a wooden sword',NULL,'wood','a:2:{i:0;s:6:\"wooden\";i:1;s:5:\"sword\";}',4,0,'wielded',1,'ff5c8d1b-6d76-4ffb-85e2-1ed6fad8d4be',NULL),(5,3,'a wooden mace',NULL,'wood','a:2:{i:0;s:6:\"wooden\";i:1;s:4:\"mace\";}',5,0,'wielded',1,'64befce1-aea0-40ef-a394-e3a866650432',NULL),(6,10,'a wooden torch',NULL,'wood','a:2:{i:1;s:6:\"wooden\";i:2;s:5:\"torch\";}',0,15,'',1,'cc11a12f-8281-4469-949e-964fc4c22a2c',6),(7,25,'a wooden torch',NULL,'wood','a:2:{i:1;s:6:\"wooden\";i:2;s:5:\"torch\";}',0,15,'',1,'cc11a12f-8281-4469-949e-964fc4c22a2c',6);
+INSERT INTO `Item` VALUES (1,3,'a small brass key',NULL,'brass','a:3:{i:0;s:5:\"small\";i:1;s:5:\"brass\";i:2;s:3:\"key\";}',0,20,'',1,'9c4b540e-d4b4-4b4f-9a5e-a356a4551e26',NULL),(2,5,'a loaf of bread',NULL,'food','a:2:{i:0;s:4:\"loaf\";i:1;s:5:\"bread\";}',0,4,'',1,'e39b41cd-69e5-4ec3-8d0f-3b27677ce22a',NULL),(3,3,'a copper teapot',NULL,'copper','a:2:{i:0;s:6:\"copper\";i:1;s:6:\"teapot\";}',1,0,'',1,'bcc89181-b70b-4370-8883-d11006034b33',NULL),(4,3,'a wooden sword',NULL,'wood','a:2:{i:0;s:6:\"wooden\";i:1;s:5:\"sword\";}',4,0,'wielded',1,'ff5c8d1b-6d76-4ffb-85e2-1ed6fad8d4be',NULL),(5,3,'a wooden mace',NULL,'wood','a:2:{i:0;s:6:\"wooden\";i:1;s:4:\"mace\";}',5,0,'wielded',1,'64befce1-aea0-40ef-a394-e3a866650432',NULL),(6,10,'a wooden torch',NULL,'wood','a:2:{i:1;s:6:\"wooden\";i:2;s:5:\"torch\";}',0,15,'',1,'cc11a12f-8281-4469-949e-964fc4c22a2c',6),(7,10,'a wooden torch',NULL,'wood','a:2:{i:1;s:6:\"wooden\";i:2;s:5:\"torch\";}',0,15,'',1,'cc11a12f-8281-4469-949e-964fc4c22a2c',6),(8,25,'a wooden torch',NULL,'wood','a:2:{i:1;s:6:\"wooden\";i:2;s:5:\"torch\";}',0,15,'',1,'cc11a12f-8281-4469-949e-964fc4c22a2c',6);
 /*!40000 ALTER TABLE `Item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -269,13 +270,16 @@ CREATE TABLE `Mob` (
   `alignment` int(11) NOT NULL,
   `creationPoints` int(11) NOT NULL,
   `accessLevel` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `startRoom_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_C6DAB09DBAAF4009` (`attributes_id`),
   UNIQUE KEY `UNIQ_C6DAB09D9EEA759` (`inventory_id`),
   UNIQUE KEY `UNIQ_C6DAB09DBDC3019B` (`equipped_id`),
   KEY `IDX_C6DAB09D54177093` (`room_id`),
+  KEY `IDX_C6DAB09DA856391C` (`startRoom_id`),
   CONSTRAINT `FK_C6DAB09D54177093` FOREIGN KEY (`room_id`) REFERENCES `Room` (`id`),
   CONSTRAINT `FK_C6DAB09D9EEA759` FOREIGN KEY (`inventory_id`) REFERENCES `Inventory` (`id`),
+  CONSTRAINT `FK_C6DAB09DA856391C` FOREIGN KEY (`startRoom_id`) REFERENCES `Room` (`id`),
   CONSTRAINT `FK_C6DAB09DBAAF4009` FOREIGN KEY (`attributes_id`) REFERENCES `Attributes` (`id`),
   CONSTRAINT `FK_C6DAB09DBDC3019B` FOREIGN KEY (`equipped_id`) REFERENCES `Inventory` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -287,7 +291,7 @@ CREATE TABLE `Mob` (
 
 LOCK TABLES `Mob` WRITE;
 /*!40000 ALTER TABLE `Mob` DISABLE KEYS */;
-INSERT INTO `Mob` VALUES (1,1,1,1,2,'A dwarven armorer','A stout dwarf totters around, stinking up the place.','standing','a:3:{i:0;s:1:\"A\";i:1;s:7:\"dwarven\";i:2;s:7:\"armorer\";}','dwarf',20,100,100,0,'neutral',0,1,0,1482544959,'a:1:{i:0;s:10:\"shopkeeper\";}',0,0,0,'uninitiated',0,9,'mob'),(2,12,2,3,4,'a janitor',NULL,'standing','a:2:{i:0;s:1:\"a\";i:1;s:7:\"janitor\";}','human',20,100,100,0,'neutral',0,1,0,1482544959,'a:2:{i:0;s:9:\"scavenger\";i:1;s:6:\"mobile\";}',0,0,0,'uninitiated',0,5,'mob'),(3,3,3,5,6,'a baker','standing behind the counter, %s wipes flour from his forehead.','standing','a:2:{i:0;s:1:\"a\";i:1;s:5:\"baker\";}','human',20,100,100,0,'neutral',0,1,0,1482544959,'a:1:{i:0;s:10:\"shopkeeper\";}',0,0,0,'uninitiated',0,5,'mob'),(4,14,4,10,11,'dan',NULL,'standing','a:1:{i:0;s:3:\"dan\";}','dwarf',20,100,100,1,'neutral',2058,2,1,1482565030,'a:0:{}',0,0,0,'warrior',0,9,'mob'),(6,14,6,25,26,'a grocer',NULL,'standing','a:2:{i:0;s:1:\"a\";i:1;s:6:\"grocer\";}','elf',20,100,100,0,'neutral',0,1,0,1483211321,'a:1:{i:0;s:10:\"shopkeeper\";}',0,0,0,'uninitiated',0,5,'mob');
+INSERT INTO `Mob` VALUES (1,1,1,1,2,'A dwarven armorer','A stout dwarf totters around, stinking up the place.','standing','a:3:{i:0;s:1:\"A\";i:1;s:7:\"dwarven\";i:2;s:7:\"armorer\";}','dwarf',20,100,100,0,'neutral',0,1,0,1482544959,'a:1:{i:0;s:10:\"shopkeeper\";}',0,0,0,'uninitiated',0,9,'mob',NULL),(2,13,2,3,4,'a janitor',NULL,'standing','a:2:{i:0;s:1:\"a\";i:1;s:7:\"janitor\";}','human',20,100,100,0,'neutral',0,1,0,1482544959,'a:2:{i:0;s:9:\"scavenger\";i:1;s:6:\"mobile\";}',0,0,0,'uninitiated',0,5,'mob',10),(3,3,3,5,6,'a baker','standing behind the counter, %s wipes flour from his forehead.','standing','a:2:{i:0;s:1:\"a\";i:1;s:5:\"baker\";}','human',20,100,100,0,'neutral',0,1,0,1482544959,'a:1:{i:0;s:10:\"shopkeeper\";}',0,0,0,'uninitiated',0,5,'mob',NULL),(4,7,4,10,11,'dan',NULL,'standing','a:1:{i:0;s:3:\"dan\";}','dwarf',20,100,100,1,'neutral',2058,2,1,1482565030,'a:0:{}',0,0,0,'warrior',0,9,'immortal',12),(6,14,6,25,26,'a grocer',NULL,'standing','a:2:{i:0;s:1:\"a\";i:1;s:6:\"grocer\";}','elf',20,100,100,0,'neutral',0,1,0,1483211321,'a:1:{i:0;s:10:\"shopkeeper\";}',0,0,0,'uninitiated',0,5,'mob',NULL);
 /*!40000 ALTER TABLE `Mob` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -312,7 +316,7 @@ CREATE TABLE `Room` (
   KEY `IDX_D2ADFEA5BD0F409C` (`area_id`),
   CONSTRAINT `FK_D2ADFEA59EEA759` FOREIGN KEY (`inventory_id`) REFERENCES `Inventory` (`id`),
   CONSTRAINT `FK_D2ADFEA5BD0F409C` FOREIGN KEY (`area_id`) REFERENCES `Area` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -321,8 +325,31 @@ CREATE TABLE `Room` (
 
 LOCK TABLES `Room` WRITE;
 /*!40000 ALTER TABLE `Room` DISABLE KEYS */;
-INSERT INTO `Room` VALUES (1,9,1,'Arms and Armour','A cramped armory is filled with cheap but sturdy training equipment. A red-hot forge and workshop consume the back half of the already small space. A silhouette of a dwarf can be seen in front of the forge, hammering out new weapons and armor.',0.1,1,0),(2,8,1,'Midgaard Town Center','Before you is the town center.',0.1,1,0),(3,7,1,'A bakery','  A bakery shop is here.',0.1,1,0),(4,12,1,'Midgaard Commons','Standing at the center of a large square, you can see shops and people moving in all directions.',0.1,1,0),(5,13,1,'The South Gate','You are engulfed by a mist.',0.1,1,0),(6,14,1,'A Small Path Leading To Dark Woods','You are engulfed by a mist.',0.1,1,0),(7,15,1,'Outside The South Gate','You are engulfed by a mist.',0.1,1,0),(8,16,1,'Wall Road','An impenetrable wall spans high into the sky. Crafted from enormous stone, strong and resilient, the wall has stood the test of time. A cobblestone path leads around the inside perimeter of the wall.',0.1,1,0),(9,17,1,'Wall Road','You are engulfed by a mist.',0.1,1,0),(10,18,1,'The Temple Square','An immense square with an equally grand temple to the north.',0.1,1,0),(11,19,1,'The Temple of Midgaard','An immense square with an equally grand temple to the north.',0.1,1,0),(12,20,1,'A Sacrifical Pit','An immense square with an equally grand temple to the north.',0.1,1,0),(13,21,1,'Midgaard Commons Road','A narrow and worn road traverses through a chaotic and busy array of shops and merchants.',0.1,1,0),(14,22,1,'A Grocery Store','A grocery store is here.',0.1,1,0);
+INSERT INTO `Room` VALUES (1,9,1,'Arms and Armour','A cramped armory is filled with cheap but sturdy training equipment. A red-hot forge and workshop consume the back half of the already small space. A silhouette of a dwarf can be seen in front of the forge, hammering out new weapons and armor.',0.1,1,0),(2,8,1,'Midgaard Town Center','Before you is the town center.',0.1,1,0),(3,7,1,'A bakery','  A bakery shop is here.',0.1,1,0),(4,12,1,'Midgaard Commons','Standing at the center of a large square, you can see shops and people moving in all directions.',0.1,1,0),(5,13,1,'The South Gate','You are engulfed by a mist.',0.1,1,0),(6,14,2,'A Small Path Leading To Dark Woods','You are engulfed by a mist.',0.1,1,0),(7,15,1,'Outside The South Gate','You are engulfed by a mist.',0.1,1,0),(8,16,1,'Wall Road','An impenetrable wall spans high into the sky. Crafted from enormous stone, strong and resilient, the wall has stood the test of time. A cobblestone path leads around the inside perimeter of the wall.',0.1,1,0),(9,17,1,'Wall Road','You are engulfed by a mist.',0.1,1,0),(10,18,1,'The Temple Square','An immense square with an equally grand temple to the north.',0.1,1,0),(11,19,1,'The Temple of Midgaard','An immense square with an equally grand temple to the north.',0.1,1,0),(12,20,1,'A Sacrifical Pit','An immense square with an equally grand temple to the north.',0.1,1,0),(13,21,1,'Midgaard Commons Road','A narrow and worn road traverses through a chaotic and busy array of shops and merchants.',0.1,1,0),(14,22,1,'A Grocery Store','A grocery store is here.',0.1,1,0),(15,27,1,'Midgaard Commons Road','A narrow and worn road traverses through a chaotic and busy array of shops and merchants.',0.1,1,0),(16,28,1,'Midgaard Commons Road','A narrow and worn road traverses through a chaotic and busy array of shops and merchants.',0.1,1,0),(17,29,1,'Midgaard Commons Road','A narrow and worn road traverses through a chaotic and busy array of shops and merchants.',0.1,1,0),(18,30,1,'Midgaard Commons Road','A narrow and worn road traverses through a chaotic and busy array of shops and merchants.',0.1,1,0),(19,31,1,'Wall Road','You are engulfed by a mist.',0.1,1,0),(20,32,1,'Wall Road','You are engulfed by a mist.',0.1,1,0),(21,33,1,'Wall Road','You are engulfed by a mist.',0.1,1,0),(22,34,1,'Midgaard Commons Road','A narrow and worn road traverses through a chaotic and busy array of shops and merchants.',0.1,1,0),(23,35,1,'The East Gate','You are engulfed by a mist.',0.1,1,0),(24,36,1,'The East Gate','You are engulfed by a mist.',0.1,1,0),(25,37,2,'A Small Path In Dark Woods','A poorly maintained trail winds through uneven terrain. A massive, old-growth forest is interspersed with clumps of heavy vegetation.',0.1,1,0),(26,38,2,'A Small Path In Dark Woods','A poorly maintained trail winds through uneven terrain. A massive, old-growth forest is interspersed with clumps of heavy vegetation.',0.1,1,0),(27,39,2,'A Small Path In Dark Woods','A poorly maintained trail winds through uneven terrain. A massive, old-growth forest is interspersed with clumps of heavy vegetation.',0.1,1,0),(28,40,2,'A Small Path In Dark Woods','A poorly maintained trail winds through uneven terrain. A massive, old-growth forest is interspersed with clumps of heavy vegetation.',0.1,1,0);
 /*!40000 ALTER TABLE `Room` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `migration_versions`
+--
+
+DROP TABLE IF EXISTS `migration_versions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `migration_versions` (
+  `version` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`version`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `migration_versions`
+--
+
+LOCK TABLES `migration_versions` WRITE;
+/*!40000 ALTER TABLE `migration_versions` DISABLE KEYS */;
+INSERT INTO `migration_versions` VALUES ('20170103085307');
+/*!40000 ALTER TABLE `migration_versions` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -334,4 +361,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-01-02  0:25:55
+-- Dump completed on 2017-01-07 20:01:11

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace PhpMud\IO\Command;
 
+use PhpMud\Entity\Area;
 use PhpMud\Entity\Direction;
 use PhpMud\Enum\AccessLevel;
 use PhpMud\Server;
@@ -28,6 +29,21 @@ class RoomCommand implements ServiceProviderInterface
                 public function execute(Server $server, Input $input): Output
                 {
                     switch ($input->getSubject()) {
+                        case 'area':
+                            $areaName = strtolower(implode(' ', array_slice($input->getArgs(), 2)));
+                            return with(
+                                first(
+                                    $server->getAreas(),
+                                    function (Area $area) use ($areaName) {
+                                        return strtolower($area->getName()) === $areaName;
+                                    }
+                                ),
+                                function (Area $area) use ($input) {
+                                   $input->getRoom()->setArea($area);
+
+                                   return new Output('Room area updated.');
+                                }
+                            ) ?? new Output('Unknown area.');
                         case 'title':
                             $input->getRoom()->setTitle($input->getAssigningValue());
                             return new Output('Room title updated.');
@@ -52,10 +68,10 @@ class RoomCommand implements ServiceProviderInterface
                         case null:
                             return new Output(
                                 sprintf(
-                                    "%s\nArea: %s\n, ID: %d",
+                                    "(%d) %s\n%s",
+                                    $input->getRoom()->getId(),
                                     $input->getRoom()->getTitle(),
-                                    (string)$input->getRoom()->getArea(),
-                                    $input->getRoom()->getId()
+                                    (string)$input->getRoom()->getArea()
                                 )
                             );
                         default:

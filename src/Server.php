@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace PhpMud;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
 use PhpMud\Entity\Area;
@@ -281,6 +282,11 @@ class Server
     {
         $this->em->remove($mob);
         $this->persist();
+    }
+
+    public function getAreas(): array
+    {
+        return $this->em->getRepository(Area::class)->findAll();
     }
 
     public function getRoom(int $id): ?Room
