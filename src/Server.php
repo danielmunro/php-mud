@@ -288,13 +288,6 @@ class Server
         return $this->em->getRepository(Room::class)->find($id);
     }
 
-    public function removeRoom(Direction $direction, Room $room): void
-    {
-        $this->em->remove($direction);
-        $this->em->remove($room);
-        $this->em->flush();
-    }
-
     public static function addMob(Mob $mob)
     {
         static::$mobs[] = $mob;

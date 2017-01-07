@@ -49,28 +49,6 @@ class RoomCommand implements ServiceProviderInterface
                                     );
                                 }
                             ) ?? new Output('Rooms linked.');
-                        case 'destroy':
-                            $directionEnum = \PhpMud\Direction\Direction::fromValue(
-                                \PhpMud\Direction\Direction::matchPartialValue($input->getOption())
-                            );
-
-                            return with(
-                                first(
-                                    $input->getRoom()->getDirections()->toArray(),
-                                    function (Direction $direction) use ($directionEnum, $input, $server) {
-                                        if ((string)$direction->getDirection() === (string)$directionEnum) {
-                                            $input->getRoom()->getDirections()->removeElement($direction);
-                                            $server->removeRoom($direction, $direction->getTargetRoom());
-
-                                            return true;
-                                        }
-
-                                        return null;
-                                    }
-                                ),
-                                function (Room $room) use ($server) {
-                                }
-                            ) ?? new Output('Room destroyed.');
                         case null:
                             return new Output(
                                 sprintf(
