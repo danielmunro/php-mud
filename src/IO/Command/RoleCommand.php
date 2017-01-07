@@ -46,16 +46,14 @@ class RoleCommand implements ServiceProviderInterface
                                         sprintf(
                                             "%s's roles: %s.",
                                             (string)$mob,
-                                            implode(', ', $mob->getRoles()
-                                            )
+                                            implode(', ', $mob->getRoles())
                                         )
                                     );
                                 default:
                                     return new Output('Not understood. Options are: list, rm, add');
                             }
                         }
-                    ) ??
-                        new Output("You can't find them.");
+                    ) ?? new Output("You can't find them.");
                 }
 
                 public function getRequiredAccessLevel(): AccessLevel

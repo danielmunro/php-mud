@@ -86,7 +86,8 @@ class Bash implements Ability, Skill, CreationGroup, Performable, Noun
                         'int' => -1,
                         'wis' => -1,
                         'dex' => -1
-                    ]))
+                    ])
+                )
             );
         }
 

@@ -23,7 +23,7 @@ abstract class Direction
     const UP = 'up';
     const DOWN = 'down';
 
-    public static function matchPartialValue(string $value)
+    public static function matchPartialValue(string $value): ?string
     {
         return first(
             [

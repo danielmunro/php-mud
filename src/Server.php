@@ -16,6 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
 use PhpMud\Entity\Area;
+use PhpMud\Entity\Direction;
 use PhpMud\Entity\Mob;
 use PhpMud\Entity\Room;
 use PhpMud\Enum\Disposition;
@@ -28,7 +29,6 @@ use function Functional\each;
 use function Functional\invoke;
 use function Functional\with;
 use function Functional\filter;
-use function Functional\map;
 
 /**
  * Mud server
@@ -281,6 +281,18 @@ class Server
     {
         $this->em->remove($mob);
         $this->persist();
+    }
+
+    public function getRoom(int $id): ?Room
+    {
+        return $this->em->getRepository(Room::class)->find($id);
+    }
+
+    public function removeRoom(Direction $direction, Room $room): void
+    {
+        $this->em->remove($direction);
+        $this->em->remove($room);
+        $this->em->flush();
     }
 
     public static function addMob(Mob $mob)
