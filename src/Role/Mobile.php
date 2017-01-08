@@ -19,7 +19,7 @@ use PhpMud\Enum\Role as RoleEnum;
 use PhpMud\IO\Command\MoveCommand;
 use PhpMud\IO\Input;
 use function PhpMud\Dice\d20;
-use function Functional\filter;
+use function Functional\{filter, first};
 
 class Mobile implements Role
 {
@@ -45,7 +45,7 @@ class Mobile implements Role
         if ($count === 0) {
             return;
         } elseif ($count === 1) {
-            $direction = $directions[0];
+            $direction = first($directions);
         } else {
             $direction = $this->getRandomDirection($directions);
             if ($this->lastRoom) {

@@ -159,6 +159,11 @@ class Inventory
         return $this->capacityCount;
     }
 
+    public function __clone()
+    {
+        $this->id = null;
+    }
+
     public function __toString(): string
     {
         return reduce_left(

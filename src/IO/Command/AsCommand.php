@@ -32,7 +32,7 @@ class AsCommand implements ServiceProviderInterface
                         function (Mob $mob) use ($server, $input) {
                             return $server->getCommands()->execute(
                                 new Input(
-                                    implode(' ', array_slice($input->getArgs(), 2)),
+                                    $input->getAssigningValue(),
                                     $input->getClient(),
                                     $mob
                                 )

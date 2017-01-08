@@ -33,7 +33,7 @@ class Attributes
     /** @Column(type="integer") */
     protected $str;
 
-    /** @Column(type="integer") */
+    /** @Column(type="integer", name="`int`") */
     protected $int;
 
     /** @Column(type="integer") */
@@ -91,5 +91,10 @@ class Attributes
     public function getAttribute(string $attribute): int
     {
         return $this->$attribute ?? 0;
+    }
+
+    public function __clone()
+    {
+        $this->id = null;
     }
 }

@@ -718,6 +718,14 @@ class Mob implements Noun
         return $this->delay;
     }
 
+    public function __clone()
+    {
+        $this->id = null;
+        $this->attributes = clone $this->attributes;
+        $this->inventory = clone $this->inventory;
+        $this->equipped = clone $this->equipped;
+    }
+
     /**
      * @PostLoad
      * @PostPersist
