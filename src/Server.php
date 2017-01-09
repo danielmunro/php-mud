@@ -23,6 +23,7 @@ use PhpMud\Entity\Room;
 use PhpMud\Enum\Disposition;
 use PhpMud\IO\Commands;
 use PhpMud\IO\Input;
+use PhpMud\IO\Output;
 use Pimple\Container;
 use React\EventLoop\Factory;
 use React\Socket\Connection;
@@ -268,9 +269,9 @@ class Server
         return $this->time;
     }
 
-    public function getCommands(): Commands
+    public function execute(Input $input): Output
     {
-        return $this->commands;
+        return $this->commands->execute($input);
     }
 
     public function getClients(): ArrayCollection

@@ -71,7 +71,7 @@ class RoomCommand implements ServiceProviderInterface
                                     "(%d) %s\n%s",
                                     $input->getRoom()->getId(),
                                     $input->getRoom()->getTitle(),
-                                    (string)$input->getRoom()->getArea()
+                                    (string)$input->getArea()
                                 )
                             );
                         default:

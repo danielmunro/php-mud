@@ -14,6 +14,7 @@ namespace PhpMud\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use PhpMud\Enum\Visibility;
 use PhpMud\Enum\Weather;
 
 /**
@@ -33,11 +34,30 @@ class Area
     /** @var Weather $weather */
     protected $weather;
 
-    public function __construct(string $name)
+    /** @var Visibility $visibility */
+    protected $visibility;
+
+    public function __construct(string $name, Visibility $visibility = null)
     {
         $this->name = $name;
         $this->weather = Weather::getRandom();
         $this->rooms = new ArrayCollection();
+        $this->visibility = $visibility ?? Visibility::AVERAGE();
+    }
+
+    public function getCalculatedVisibility(): int
+    {
+        return $this->visibility->getValue() + $this->weather->getVisibility();
+    }
+
+    public function getVisibility(): Visibility
+    {
+        return $this->visibility;
+    }
+
+    public function setVisibility(Visibility $visibility)
+    {
+        $this->visibility = $visibility;
     }
 
     public function addRoom(Room $room)
@@ -72,6 +92,14 @@ class Area
     public function setRandomWeather()
     {
         $this->weather = Weather::getRandom();
+    }
+
+    /**
+     * @PostLoad
+     */
+    public function reloadVisibilityEnum()
+    {
+        $this->visibility = new Visibility($this->visibility ?? Visibility::AVERAGE);
     }
 
     public function __toString(): string

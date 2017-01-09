@@ -25,7 +25,7 @@ class GiveCommand implements ServiceProviderInterface
                 {
                     /** @var Item $item */
                     $item = first(
-                        $input->getMob()->getInventory()->getItems(),
+                        $input->getMob()->getItems(),
                         function (Item $item) use ($input) {
                             return $input->isSubjectMatch($item);
                         }
@@ -36,12 +36,9 @@ class GiveCommand implements ServiceProviderInterface
                     }
 
                     /** @var Mob $receiver */
-                    $receiver = first(
-                        $input->getRoom()->getMobs()->toArray(),
-                        function (Mob $mob) use ($input) {
-                            return $input->isOptionMatch($mob);
-                        }
-                    );
+                    $receiver = $input->getRoomMob(function (Mob $mob) use ($input) {
+                        return $input->isOptionMatch($mob);
+                    });
 
                     if (!$receiver) {
                         return new Output("They aren't here.");

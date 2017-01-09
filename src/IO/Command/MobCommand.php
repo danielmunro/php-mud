@@ -32,12 +32,9 @@ class MobCommand implements ServiceProviderInterface
                 public function execute(Server $server, Input $input): Output
                 {
                     return with(
-                        first(
-                            $input->getRoom()->getMobs()->toArray(),
-                            function (Mob $mob) use ($input) {
-                                return $input->isSubjectMatch($mob);
-                            }
-                        ),
+                        $input->getRoomMob(function (Mob $mob) use ($input) {
+                            return $input->isSubjectMatch($mob);
+                        }),
                         function (Mob $mob) use ($input) {
                             switch ($input->getOption()) {
                                 case 'clone':
@@ -84,7 +81,7 @@ class MobCommand implements ServiceProviderInterface
                                     );
                                 case 'shop':
                                     each(
-                                        $mob->getInventory()->getItems(),
+                                        $mob->getItems(),
                                         function (Item $item) use ($mob) {
                                             $item->setCraftedBy($mob);
                                         }
@@ -100,7 +97,10 @@ class MobCommand implements ServiceProviderInterface
                                     return new Output('TBD');
                                 default:
                                     if (property_exists($mob->getAttributes(), $input->getOption())) {
-                                        $mob->getAttributes()->modifyAttribute($input->getOption(), last($input->getArgs()));
+                                        $mob->getAttributes()->modifyAttribute(
+                                            $input->getOption(),
+                                            last($input->getArgs())
+                                        );
                                         return new Output('Attribute set.');
                                     }
                                     return new Output(

@@ -23,14 +23,11 @@ class AsCommand implements ServiceProviderInterface
                 public function execute(Server $server, Input $input): Output
                 {
                     return with(
-                        first(
-                            $input->getRoom()->getMobs()->toArray(),
-                            function (Mob $mob) use ($input) {
-                                return $input->isSubjectMatch($mob);
-                            }
-                        ),
+                        $input->getRoomMob(function (Mob $mob) use ($input) {
+                            return $input->isSubjectMatch($mob);
+                        }),
                         function (Mob $mob) use ($server, $input) {
-                            return $server->getCommands()->execute(
+                            return $server->execute(
                                 new Input(
                                     $input->getAssigningValue(),
                                     $input->getClient(),

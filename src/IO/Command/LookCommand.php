@@ -34,9 +34,9 @@ class LookCommand implements ServiceProviderInterface
                     }
 
                     if ($server->getTime()->getVisibility() +
-                        $room->getArea()->getWeather()->getVisibility() +
-                        $room->getVisibility() <=
-                        $input->getMob()->getRace()->getVisibilityRequirement()->getValue()) {
+                        $room->getCalculatedVisibility() <=
+                        $input->getMob()->getRace()->getVisibilityRequirement()->getValue()
+                    ) {
                         return new Output("You can't see a thing!");
                     }
 
@@ -46,7 +46,7 @@ class LookCommand implements ServiceProviderInterface
                                 array_merge(
                                     $room->getMobs()->toArray(),
                                     $room->getInventory()->getItems(),
-                                    $input->getMob()->getInventory()->getItems()
+                                    $input->getMob()->getItems()
                                 ),
                                 function (Noun $noun) use ($input) {
                                     return $input->isSubjectMatch($noun);
@@ -88,7 +88,7 @@ class LookCommand implements ServiceProviderInterface
                             reduce_left(
                                 $room->getMobs(),
                                 function (Mob $mob, $index, $collection, $reduction) use ($input) {
-                                    return $mob !== $input->getMob() && !$mob->getDisposition()->equals(Disposition::DEAD()) ?
+                                    return $mob !== $input->getMob() && $mob->isAlive() ?
                                         sprintf(
                                             "%s\n".$mob->getLook(),
                                             $reduction,

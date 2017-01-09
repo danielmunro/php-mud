@@ -14,13 +14,13 @@ namespace PhpMud\IO;
 
 use PhpMud\Client;
 use PhpMud\Entity\Ability;
+use PhpMud\Entity\Area;
 use PhpMud\Entity\Mob;
 use PhpMud\Entity\Room;
-use function Functional\tail;
+use function Functional\first;
 use function Functional\select;
 use PhpMud\Enum\Disposition;
 use PhpMud\Noun;
-use PhpMud\Ability\Performable;
 
 class Input
 {
@@ -103,6 +103,16 @@ class Input
     public function getRoom(): Room
     {
         return $this->mob->getRoom();
+    }
+
+    public function getArea(): Area
+    {
+        return $this->mob->getRoom()->getArea();
+    }
+
+    public function getRoomMob(callable $fn): Mob
+    {
+        return first($this->mob->getRoom()->getMobs()->toArray(), $fn);
     }
 
     public function isAbilityMatch(Ability $ability): bool

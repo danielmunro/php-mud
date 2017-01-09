@@ -27,7 +27,7 @@ class WearCommand implements ServiceProviderInterface
                 {
                     /** @var Item $item */
                     $item = first(
-                        $input->getMob()->getInventory()->getItems(),
+                        $input->getMob()->getItems(),
                         function (Item $item) use ($input) {
                             return $input->isSubjectMatch($item);
                         }

@@ -56,7 +56,10 @@ class Room
     /** @Column(type="integer") */
     protected $visibility;
 
-    /** @ManyToOne(targetEntity="Area", inversedBy="rooms", cascade={"persist"}) */
+    /**
+     * @ManyToOne(targetEntity="Area", inversedBy="rooms", cascade={"persist"})
+     * @var Area $area
+     */
     protected $area;
 
     public function __construct(string $title = '', string $description = '')
@@ -142,6 +145,11 @@ class Room
     public function getVisibility(): int
     {
         return $this->visibility;
+    }
+
+    public function getCalculatedVisibility(): int
+    {
+        return $this->visibility + $this->area->getCalculatedVisibility();
     }
 
     public function setArea(Area $area)

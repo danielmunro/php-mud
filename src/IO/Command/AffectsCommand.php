@@ -26,7 +26,7 @@ class AffectsCommand implements ServiceProviderInterface
                         sprintf(
                             "You are affected by:\n%s",
                             reduce_left(
-                                $input->getMob()->getAffects()->toArray(),
+                                $input->getMob()->getAffects(),
                                 function (Affect $affect, int $index, array $collection, string $reduction) {
                                     return sprintf(
                                         "%s\n%s     %d ticks left",

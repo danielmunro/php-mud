@@ -246,7 +246,7 @@ class Mob implements Noun
 
     public function pulse(): void
     {
-        if ($this->disposition->equals(Disposition::DEAD())) {
+        if (!$this->isAlive()) {
             return;
         }
 
@@ -328,6 +328,11 @@ class Mob implements Noun
         $this->disposition = $disposition;
     }
 
+    public function isAlive(): bool
+    {
+        return !$this->disposition->equals(Disposition::DEAD());
+    }
+
     /**
      * @return Room
      */
@@ -366,20 +371,19 @@ class Mob implements Noun
         );
     }
 
-    /**
-     * @return Attributes
-     */
     public function getAttributes(): Attributes
     {
         return $this->attributes;
     }
 
-    /**
-     * @return Inventory
-     */
     public function getInventory(): Inventory
     {
         return $this->inventory;
+    }
+
+    public function getItems(): array
+    {
+        return $this->inventory->getItems();
     }
 
     public function getEquipped(): Inventory
@@ -387,9 +391,6 @@ class Mob implements Noun
         return $this->equipped;
     }
 
-    /**
-     * @return array
-     */
     public function getIdentifiers(): array
     {
         return $this->identifiers;
@@ -663,9 +664,9 @@ class Mob implements Noun
         }
     }
 
-    public function getAffects(): Collection
+    public function getAffects(): array
     {
-        return $this->affects;
+        return $this->affects->toArray();
     }
 
     public function getRoles(): array

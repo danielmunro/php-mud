@@ -27,18 +27,15 @@ class ListCommand implements ServiceProviderInterface
                 public function execute(Server $server, Input $input): Output
                 {
                     $output = with(
-                        first(
-                            $input->getRoom()->getMobs()->toArray(),
-                            function (Mob $mob) {
-                                return $mob->hasRole(Role::SHOPKEEPER());
-                            }
-                        ),
+                        $input->getRoomMob(function (Mob $mob) {
+                            return $mob->hasRole(Role::SHOPKEEPER());
+                        }),
                         function (Mob $shopkeeper) {
                             return new Output(
                                 sprintf(
                                     '[Lv Price Qty] Item %s',
                                     reduce_left(
-                                        $shopkeeper->getInventory()->getItems(),
+                                        $shopkeeper->getItems(),
                                         function (Item $item, int $index, array $collection, string $reduction) {
                                             return sprintf(
                                                 "%s\n[%s %d %s] %s",

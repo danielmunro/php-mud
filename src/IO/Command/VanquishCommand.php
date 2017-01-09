@@ -27,12 +27,9 @@ class VanquishCommand implements ServiceProviderInterface
                 public function execute(Server $server, Input $input): Output
                 {
                     return with(
-                        first(
-                            $input->getRoom()->getMobs()->toArray(),
-                            function (Mob $mob) use ($input) {
-                                return $input->isSubjectMatch($mob);
-                            }
-                        ),
+                        $input->getRoomMob(function (Mob $mob) use ($input) {
+                            return $input->isSubjectMatch($mob);
+                        }),
                         function (Mob $mob) use ($server) {
                             $server->vanquish($mob);
 

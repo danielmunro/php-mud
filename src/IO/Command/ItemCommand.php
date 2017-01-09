@@ -29,7 +29,7 @@ class ItemCommand implements ServiceProviderInterface
                 {
                     return with(
                         first(
-                            $input->getMob()->getInventory()->getItems(),
+                            $input->getMob()->getItems(),
                             function (Item $item) use ($input) {
                                 return $input->isSubjectMatch($item);
                             }
@@ -72,6 +72,8 @@ class ItemCommand implements ServiceProviderInterface
                                             )
                                         );
                                     }
+
+                                    return new Output('Affect changed.');
                                 case null:
                                     return new Output(
                                         sprintf(

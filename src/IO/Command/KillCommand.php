@@ -48,14 +48,11 @@ class KillCommand implements ServiceProviderInterface
                     }
 
                     /** @var Mob $target */
-                    $target = first(
-                        $input->getRoom()->getMobs()->toArray(),
-                        function (Mob $mob) use ($input) {
-                            return $input->isSubjectMatch($mob);
-                        }
-                    );
+                    $target = $input->getRoomMob(function (Mob $mob) use ($input) {
+                        return $input->isSubjectMatch($mob);
+                    });
 
-                    if (!$target || $target->getDisposition()->equals(Disposition::DEAD())) {
+                    if (!$target || !$target->isAlive()) {
                         return new Output("They aren't here.");
                     }
 

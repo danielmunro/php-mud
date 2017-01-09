@@ -44,7 +44,7 @@ class MoveCommand implements ServiceProviderInterface
             public function execute(Server $server, Input $input): Output
             {
                 return MoveCommand::move($input, $this->direction) ??
-                    $server->getCommands()->execute(new Input('look', $input->getClient()));
+                    $server->execute(new Input('look', $input->getClient()));
             }
 
             public function getRequiredAccessLevel(): AccessLevel

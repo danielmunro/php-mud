@@ -24,7 +24,7 @@ class WeatherCommand implements ServiceProviderInterface
                         return new Output("You are indoors and can't see the weather.");
                     }
 
-                    $weather = $input->getRoom()->getArea()->getWeather();
+                    $weather = $input->getArea()->getWeather();
 
                     return new Output(
                         sprintf(
@@ -33,7 +33,7 @@ class WeatherCommand implements ServiceProviderInterface
                             $server->getTime()->getVisibility() +
                             $weather->getVisibility() +
                             $input->getRoom()->getVisibility() <=
-                                $input->getMob()->getRace()->getVisibilityDeficit() ? 'low' : 'adequate'
+                                $input->getMob()->getRace()->getVisibilityRequirement()->getValue() ? 'low' : 'adequate'
                         )
                     );
                 }

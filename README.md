@@ -49,9 +49,7 @@ $ ./bin/run-world
 Telnet to the running instance:
 
 ```
-$ telnet localhost 9000
-Trying ::1...
-telnet: connect to address ::1: Connection refused
+$ danmunro$ telnet 127.0.0.1 9000
 Trying 127.0.0.1...
 Connected to localhost.
 Escape character is '^]'.

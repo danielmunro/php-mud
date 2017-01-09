@@ -25,19 +25,16 @@ class SellCommand implements ServiceProviderInterface
             {
                 public function execute(Server $server, Input $input): Output
                 {
-                    $shopkeeper = first(
-                        $input->getRoom()->getMobs()->toArray(),
-                        function (Mob $mob) {
-                            return $mob->hasRole(Role::SHOPKEEPER());
-                        }
-                    );
+                    $shopkeeper = $input->getRoomMob(function (Mob $mob) {
+                        return $mob->hasRole(Role::SHOPKEEPER());
+                    });
 
                     if (!$shopkeeper) {
                         return new Output("They aren't here.");
                     }
 
                     $item = first(
-                        $input->getMob()->getInventory()->getItems(),
+                        $input->getMob()->getItems(),
                         function (Item $item) use ($input) {
                             return $input->isSubjectMatch($item);
                         }

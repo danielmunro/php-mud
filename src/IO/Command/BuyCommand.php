@@ -24,12 +24,9 @@ class BuyCommand implements ServiceProviderInterface
                 public function execute(Server $server, Input $input): Output
                 {
                     /** @var Mob $shopkeeper */
-                    $shopkeeper = first(
-                        $input->getRoom()->getMobs()->toArray(),
-                        function (Mob $mob) {
-                            return $mob->hasRole(Role::SHOPKEEPER());
-                        }
-                    );
+                    $shopkeeper = $input->getRoomMob(function (Mob $mob) {
+                        return $mob->hasRole(Role::SHOPKEEPER());
+                    });
 
                     if (!$shopkeeper) {
                         return new Output("They aren't here.");
@@ -37,7 +34,7 @@ class BuyCommand implements ServiceProviderInterface
 
                     /** @var Item $item */
                     $item = first(
-                        $shopkeeper->getInventory()->getItems(),
+                        $shopkeeper->getItems(),
                         function (Item $item) use ($input) {
                             return $input->isSubjectMatch($item);
                         }
