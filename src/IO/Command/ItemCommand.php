@@ -3,10 +3,12 @@ declare(strict_types=1);
 
 namespace PhpMud\IO\Command;
 
+use PhpMud\Color;
 use PhpMud\Entity\Affect;
 use PhpMud\Enum\AccessLevel;
 use PhpMud\Enum\Affect as AffectEnum;
 use PhpMud\Entity\Item;
+use PhpMud\Enum\Position;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Server;
@@ -45,6 +47,24 @@ class ItemCommand implements ServiceProviderInterface
                                             $item->getValue()
                                         )
                                     );
+                                case 'position':
+                                    try {
+                                        $item->setPosition(new Position($input->getAssigningValue(3)));
+                                    } catch (\UnexpectedValueException $e) {
+                                        return new Output(
+                                            sprintf(
+                                                'Not a valid position, positions are: %s',
+                                                implode(', ', Position::values())
+                                            )
+                                        );
+                                    }
+                                    return new Output(
+                                        sprintf(
+                                            "%s's position set to %s.",
+                                            Color::cyan((string)$item),
+                                            Color::white((string)$item->getPosition())
+                                        )
+                                    );
                                 case 'affect':
                                     $affectEnum = new AffectEnum($input->getAssigningValue(3));
                                     $currentAffect = filter(
@@ -72,8 +92,6 @@ class ItemCommand implements ServiceProviderInterface
                                             )
                                         );
                                     }
-
-                                    return new Output('Affect changed.');
                                 case null:
                                     return new Output(
                                         sprintf(
@@ -95,10 +113,10 @@ class ItemCommand implements ServiceProviderInterface
                                         )
                                     );
                                 default:
-                                    return new Output('Not understood, options are: value, affect');
+                                    return new Output('Not understood, options are: value, position, affect');
                             }
                         }
-                    );
+                    ) ?? new Output("They aren't here.");
                 }
 
                 public function getRequiredAccessLevel(): AccessLevel
