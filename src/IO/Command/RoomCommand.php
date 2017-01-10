@@ -30,7 +30,7 @@ class RoomCommand implements ServiceProviderInterface
                 {
                     switch ($input->getSubject()) {
                         case 'area':
-                            $areaName = strtolower(implode(' ', array_slice($input->getArgs(), 2)));
+                            $areaName = strtolower($input->getAssigningValue());
                             return with(
                                 first(
                                     $server->getAreas(),

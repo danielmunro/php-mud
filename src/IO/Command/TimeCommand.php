@@ -29,11 +29,12 @@ class TimeCommand implements ServiceProviderInterface
                     $years = $months / Time::MONTHS_PER_YEAR;
                      */
                     $timeOfDay = $server->getTime()->getHour() % Time::TICKS_PER_DAY;
+                    $hour = $timeOfDay % 12;
 
                     return new Output(
                         sprintf(
                             'It is %s %s, day of %s.',
-                            $timeOfDay === 0 ? 12 : $timeOfDay % 12,
+                            $hour === 0 ? 12 : $hour,
                             $timeOfDay >= 12 ? 'pm' : 'am',
                             Day::fromIndex(
                                 ($server->getTime()->getHour() / Time::TICKS_PER_DAY) % Time::DAYS_PER_WEEK

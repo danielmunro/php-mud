@@ -25,17 +25,28 @@ class Area
 {
     use PrimaryKeyTrait;
 
-    /** @Column(type="string") */
+    /**
+     * @Column(type="string")
+     * @var string $name
+     */
     protected $name;
 
-    /** @OneToMany(targetEntity="Room", mappedBy="area") */
+    /**
+     * @OneToMany(targetEntity="Room", mappedBy="area")
+     * @var ArrayCollection $rooms
+     */
     protected $rooms;
 
-    /** @var Weather $weather */
-    protected $weather;
-
-    /** @var Visibility $visibility */
+    /**
+     * @Column(type="string")
+     * @var Visibility $visibility
+     */
     protected $visibility;
+
+    /**
+     * @var Weather $weather
+     */
+    protected $weather;
 
     public function __construct(string $name, Visibility $visibility = null)
     {
@@ -99,7 +110,7 @@ class Area
      */
     public function reloadVisibilityEnum()
     {
-        $this->visibility = new Visibility($this->visibility ?? Visibility::AVERAGE);
+        $this->visibility = new Visibility((int)$this->visibility);
     }
 
     public function __toString(): string
