@@ -39,9 +39,9 @@ class RoomCommand implements ServiceProviderInterface
                                     }
                                 ),
                                 function (Area $area) use ($input) {
-                                   $input->getRoom()->setArea($area);
+                                    $input->getRoom()->setArea($area);
 
-                                   return new Output('Room area updated.');
+                                    return new Output('Room area updated.');
                                 }
                             ) ?? new Output('Unknown area.');
                         case 'title':

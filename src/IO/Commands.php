@@ -160,11 +160,9 @@ class Commands
 
     private function getAbilityCommand(Input $input, Ability $ability): Command
     {
-        if (
-            !$input->getMob()->getDisposition()->satisfiesMinimumDisposition(
-                $ability->getAbility()->getMinimumDisposition()
-            )
-        ) {
+        if (!$input->getMob()->getDisposition()->satisfiesMinimumDisposition(
+            $ability->getAbility()->getMinimumDisposition()
+        )) {
             return $this->dispositionCheckFailCommand();
         }
 

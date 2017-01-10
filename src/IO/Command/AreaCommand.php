@@ -36,14 +36,14 @@ class AreaCommand implements ServiceProviderInterface
                                 );
 
                                 return new Output('Area visibility set.');
-                            } catch (\UnexpectedValueException $e) {
-                                return new Output(
-                                    sprintf(
-                                        'Visibility options are: %s',
-                                        implode(' ', Visibility::values())
-                                    )
-                                );
-                            }
+                            } catch (\UnexpectedValueException $e) {}
+
+                            return new Output(
+                                sprintf(
+                                    'Visibility options are: %s',
+                                    implode(' ', Visibility::values())
+                                )
+                            );
                         case 'name':
                             $input->getArea()->setName($input->getAssigningValue());
 
@@ -61,7 +61,8 @@ class AreaCommand implements ServiceProviderInterface
                                             Color::cyan((string)$area->getVisibility())
                                         )
                                     );
-                                });
+                                }
+                            );
                         default:
                             return new Output('Area command not understood.');
                     }
