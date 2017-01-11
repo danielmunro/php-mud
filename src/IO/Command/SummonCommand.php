@@ -4,14 +4,15 @@ declare(strict_types=1);
 namespace PhpMud\IO\Command;
 
 use PhpMud\Enum\AccessLevel;
-use PhpMud\IO\Command\Command;
 use PhpMud\Entity\Mob;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Race\Human;
+use PhpMud\Race\Race;
 use PhpMud\Server;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
+use function Functional\with;
 
 class SummonCommand implements ServiceProviderInterface
 {
@@ -29,10 +30,25 @@ class SummonCommand implements ServiceProviderInterface
                         return $input->getClient()->getDispositionCheckFail();
                     }
 
-                    $mob = new Mob('a fresh mob', new Human());
+                    $race = with(
+                        $input->getSubject(),
+                        function (string $race) {
+                            try {
+                                return Race::matchPartialValue($race);
+                            } catch (\UnexpectedValueException $e) {
+                                return new Human();
+                            }
+                        }
+                    ) ?? new Human();
+
+                    $mob = new Mob(
+                        sprintf('a fresh %s', (string)$race),
+                        $race
+                    );
+
                     $mob->setRoom($input->getRoom());
 
-                    return new Output('A fresh mob arrives from the mob factory.');
+                    return new Output(sprintf('%s arrives from the mob factory.', (string)$mob));
                 }
 
                 public function getRequiredAccessLevel(): AccessLevel

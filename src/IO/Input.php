@@ -66,8 +66,8 @@ class Input
         $this->args = explode(' ', $input);
         $this->command = $this->args[0];
         $this->input = $input;
-        $this->subject = $this->args[1] ?? '';
-        if (strpos($this->subject, '.') !== false) {
+        $this->subject = $this->args[1] ?? null;
+        if ($this->subject && strpos($this->subject, '.') !== false) {
             list($this->skipCount, $this->subject) = explode('.', $this->subject);
             $this->skipCount = (int)$this->skipCount;
         }
@@ -110,9 +110,14 @@ class Input
         return $this->mob->getRoom()->getArea();
     }
 
-    public function getRoomMob(callable $fn): Mob
+    public function getRoomMob(callable $filter = null): ?Mob
     {
-        return first($this->mob->getRoom()->getMobs()->toArray(), $fn);
+        return first(
+            $this->mob->getRoom()->getMobs()->toArray(),
+            $filter ?: function (Mob $mob) {
+                return $this->isSubjectMatch($mob);
+            }
+        );
     }
 
     public function isAbilityMatch(Ability $ability): bool
@@ -167,7 +172,7 @@ class Input
         return $this->command;
     }
 
-    public function getSubject(): string
+    public function getSubject(): ?string
     {
         return $this->subject;
     }

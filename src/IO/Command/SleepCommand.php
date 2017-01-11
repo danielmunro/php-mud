@@ -31,7 +31,7 @@ class SleepCommand implements ServiceProviderInterface
 
                     $input->getMob()->setDisposition(Disposition::SLEEPING());
 
-                    return new Output('You lay down and go to sleep.');
+                    return new Output('You go to sleep.');
                 }
 
                 public function getRequiredAccessLevel(): AccessLevel

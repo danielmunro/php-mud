@@ -26,21 +26,16 @@ class VanquishCommand implements ServiceProviderInterface
                  */
                 public function execute(Server $server, Input $input): Output
                 {
-                    return with(
-                        $input->getRoomMob(function (Mob $mob) use ($input) {
-                            return $input->isSubjectMatch($mob);
-                        }),
-                        function (Mob $mob) use ($server) {
-                            $server->vanquish($mob);
+                    return with($input->getRoomMob(), function (Mob $mob) use ($server) {
+                        $server->vanquish($mob);
 
-                            return new Output(
-                                sprintf(
-                                    'You vanquish %s!',
-                                    (string)$mob
-                                )
-                            );
-                        }
-                    ) ?? new Output("You can't find them.");
+                        return new Output(
+                            sprintf(
+                                'You vanquish %s!',
+                                (string)$mob
+                            )
+                        );
+                    }) ?? new Output("You can't find them.");
                 }
 
                 public function getRequiredAccessLevel(): AccessLevel

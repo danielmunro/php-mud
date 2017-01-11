@@ -47,10 +47,7 @@ class KillCommand implements ServiceProviderInterface
                         return $input->getClient()->getDispositionCheckFail();
                     }
 
-                    /** @var Mob $target */
-                    $target = $input->getRoomMob(function (Mob $mob) use ($input) {
-                        return $input->isSubjectMatch($mob);
-                    });
+                    $target = $input->getRoomMob();
 
                     if (!$target || !$target->isAlive()) {
                         return new Output("They aren't here.");

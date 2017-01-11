@@ -46,10 +46,16 @@ class RoomCommand implements ServiceProviderInterface
                             ) ?? new Output('Unknown area.');
                         case 'title':
                             $input->getRoom()->setTitle($input->getAssigningValue());
+
                             return new Output('Room title updated.');
                         case 'description':
                             $input->getRoom()->setDescription($input->getAssigningValue());
+
                             return new Output('Room description updated.');
+                        case 'regen':
+                            $input->getRoom()->setRegenRate((float)$input->getAssigningValue());
+
+                            return new Output('Room regen rate updated.');
                         case 'link':
                             // @todo handle existing directions
                             $direction = \PhpMud\Direction\Direction::fromValue(
@@ -68,10 +74,11 @@ class RoomCommand implements ServiceProviderInterface
                         case null:
                             return new Output(
                                 sprintf(
-                                    "(%d) %s\n%s",
+                                    "(%d) %s\n%s\nRegen rate: %f",
                                     $input->getRoom()->getId(),
                                     $input->getRoom()->getTitle(),
-                                    (string)$input->getArea()
+                                    (string)$input->getArea(),
+                                    $input->getRoom()->getRegenRate()
                                 )
                             );
                         default:

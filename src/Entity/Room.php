@@ -126,6 +126,11 @@ class Room
         return $this->regenRate;
     }
 
+    public function setRegenRate(float $regenRate)
+    {
+        $this->regenRate = $regenRate;
+    }
+
     public function addRoomInDirection(AbstractDirection $directionEnum, Room $room): Direction
     {
         $direction = new Direction($this, $directionEnum, $room);

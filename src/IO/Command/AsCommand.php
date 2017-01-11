@@ -11,7 +11,6 @@ use PhpMud\Server;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use function Functional\with;
-use function Functional\first;
 
 class AsCommand implements ServiceProviderInterface
 {
@@ -23,9 +22,7 @@ class AsCommand implements ServiceProviderInterface
                 public function execute(Server $server, Input $input): Output
                 {
                     return with(
-                        $input->getRoomMob(function (Mob $mob) use ($input) {
-                            return $input->isSubjectMatch($mob);
-                        }),
+                        $input->getRoomMob(),
                         function (Mob $mob) use ($server, $input) {
                             return $server->execute(
                                 new Input(

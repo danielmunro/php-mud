@@ -23,7 +23,6 @@ class BuyCommand implements ServiceProviderInterface
             {
                 public function execute(Server $server, Input $input): Output
                 {
-                    /** @var Mob $shopkeeper */
                     $shopkeeper = $input->getRoomMob(function (Mob $mob) {
                         return $mob->hasRole(Role::SHOPKEEPER());
                     });

@@ -5,14 +5,13 @@ namespace PhpMud\IO\Command;
 
 use PhpMud\Client;
 use PhpMud\Enum\AccessLevel;
-use PhpMud\IO\Command\Command;
 use PhpMud\IO\Input;
 use PhpMud\IO\Output;
 use PhpMud\Server;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use function Functional\each;
-use function Functional\reduce_left;
+use function Functional\with;
 
 class GossipCommand implements ServiceProviderInterface
 {
@@ -22,28 +21,27 @@ class GossipCommand implements ServiceProviderInterface
             return new class() implements Command {
                 public function execute(Server $server, Input $input): Output
                 {
-                    if (count($input->getArgs()) === 1) {
-                        return new Output('Gossip what?');
-                    }
+                    return with(
+                        $input->getAssigningValue(1),
+                        function (string $message) use ($input, $server) {
+                            $messageToClients = sprintf(
+                                "%s gossips, \"%s\"\n",
+                                (string)$input->getMob(),
+                                $message
+                            );
 
-                    $strInput = (string)$input;
-                    $message = substr($strInput, strpos($strInput, ' '));
-                    $messageToClients = sprintf(
-                        "%s gossips, \"%s\"\n",
-                        $input->getMob()->getName(),
-                        $message
-                    );
+                            each(
+                                $server->getClients()->toArray(),
+                                function (Client $client) use ($input, $messageToClients) {
+                                    if ($client !== $input->getClient()) {
+                                        $client->write($messageToClients);
+                                    }
+                                }
+                            );
 
-                    each(
-                        $server->getClients()->toArray(),
-                        function (Client $client) use ($input, $messageToClients) {
-                            if ($client !== $input->getClient()) {
-                                $client->write($messageToClients);
-                            }
+                            return new Output(sprintf("You gossip, \"%s\"\n", $message));
                         }
-                    );
-
-                    return new Output(sprintf("You gossip, \"%s\"\n", $message));
+                    ) ?? new Output('Gossip what?');
                 }
 
                 public function getRequiredAccessLevel(): AccessLevel

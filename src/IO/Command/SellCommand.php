@@ -33,6 +33,7 @@ class SellCommand implements ServiceProviderInterface
                         return new Output("They aren't here.");
                     }
 
+                    /** @var Item $item */
                     $item = first(
                         $input->getMob()->getItems(),
                         function (Item $item) use ($input) {
@@ -42,6 +43,10 @@ class SellCommand implements ServiceProviderInterface
 
                     if (!$item) {
                         return new Output("You don't have that.");
+                    }
+
+                    if ($item->getCraftedBy() === $shopkeeper) {
+                        return new Output("They aren't interested in that.");
                     }
 
                     if ($item->getValue() > $shopkeeper->getInventory()->getValue()) {

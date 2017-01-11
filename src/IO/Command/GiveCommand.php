@@ -35,10 +35,7 @@ class GiveCommand implements ServiceProviderInterface
                         return new Output("You don't have that item.");
                     }
 
-                    /** @var Mob $receiver */
-                    $receiver = $input->getRoomMob(function (Mob $mob) use ($input) {
-                        return $input->isOptionMatch($mob);
-                    });
+                    $receiver = $input->getRoomMob();
 
                     if (!$receiver) {
                         return new Output("They aren't here.");
